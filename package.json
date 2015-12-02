@@ -15,7 +15,8 @@
     "karma-jasmine": "^0.3.5",
     "karma-junit-reporter": "^0.2.2",
     "protractor": "^2.1.0",
-    "shelljs": "^0.2.6"
+    "shelljs": "^0.2.6",
+    "express": "3.x"
   },
   "engines": {
     "node": "4.2.2",
@@ -25,7 +26,7 @@
     "postinstall": "bower install",
 
     "prestart": "npm install",
-    "start": "http-server -a localhost -p 8000 -c-1",
+    "start": "node web.js"
 
     "pretest": "npm install",
     "test": "karma start karma.conf.js",
