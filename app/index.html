@@ -2,79 +2,85 @@
 <!--[if lt IE 7]>      <html lang="en" ng-app="myApp" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html lang="en" ng-app="myApp" class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html lang="en" ng-app="myApp" class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html lang="ko" ng-app="myApp" class="no-js"> <!--<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="ko" data-ng-app="myApp" class="no-js">
+<!--<![endif]-->
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>My AngularJS App</title>
-  <meta name="description" content="">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/normalize.css">
-  <link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/main.css">
-  <link rel="stylesheet" href="app.css">
-  <link rel="stylesheet" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-  <!-- Latest compiled and minified CSS -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>시온찬양대 출석관리</title>
+<meta name="description" content="">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/normalize.css">
+<link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/main.css">
+<link rel="stylesheet" href="app.css">
+<link rel="stylesheet" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 
-  
-
-	<script src="//code.jquery.com/jquery.min.js"></script>
-
-   <!-- Latest compiled and minified JavaScript -->
-   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-
+<script src="//code.jquery.com/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 </head>
 <body>
-  <nav class="navbar navbar-inverse">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#"><i class="ion-android-cloud-done"></i>&nbsp;시온찬양대 출석 관리</a>
-        </div>
-        <div id="navbar" class="collapse navbar-collapse">
-          <ul class="nav navbar-nav">
-            <li class="active"><a href="#/view1"><i class="ion-home"></i> Home</a></li>
-            <li><a href="/app/#/view1"><i class="ion-person"></i> 대원관리</a></li>
-            <li><a href="/app/#/view1"><i class="ion-checkmark-round"></i> 출석관리</a></li>
-			<li><a href="/app/#/view1"><i class="ion-trophy"></i> 출석순위</a></li>
-			<li><a href="/app/#/view1"><i class="ion-easel"></i> 회의록</a></li>
-          </ul>
-		  <ul class="nav navbar-nav navbar-right">
-        <li><a href="#"><i class="ion-log-in"></i> 로그인</a></li>
-      </ul>
-        </div>
-      </div>
-    </nav>
+	<nav class="navbar navbar-inverse" style="margin-bottom: 0;">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed"
+					data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+					aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span> <span
+						class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="/app/#/main"><i class="ion-android-cloud-done"></i> 시온찬양대 출석 관리</a>
+			</div>
+			<div id="navbar" class="collapse navbar-collapse">
+				<ul class="nav navbar-nav">
+					<li class="active"><a href="/app/#/main"><i class="ion-home"></i>
+							Home</a></li>
+					<li><a href="/app/#/member"><i class="ion-person"></i> 대원관리</a></li>
+					<li><a href="/app/#/att"><i class="ion-checkmark-round"></i> 출석관리</a></li>
+					<li><a href="/app/#/rank"><i class="ion-trophy"></i> 출석순위</a></li>
+					<li><a href="/app/#/doc"><i class="ion-easel"></i> 회의록</a></li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<li><a href="/app/#/login"><i class="ion-log-in"></i> 로그인</a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
 
-  <!--[if lt IE 7]>
-      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-  <![endif]-->
+	<!--[if lt IE 7]>
+		<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+	<![endif]-->
+	<div data-ng-view></div>
 
-  <div class="container" ng-view></div>
+	<footer class="footer">
+		<nav class="navbar navbar-inverse">
+			<div class="container" style="text-align: center">
+				<p class="text-muted" style="margin: 20px 0;">Copyright © 2016
+					@yhzion All right reserved.</p>
+			</div>
+		</nav>
+	</footer>
 
- <footer class="footer">
- <nav class="navbar navbar-inverse">
-  <div class="container" style="text-align:center">
-	<p class="text-muted" style="margin:20px 0;">Copyright © 2016 @yhzion All right reserved.</p>
-  </div>
-</nav>
-</footer>
-
-  <!-- In production use:
+	<!-- In production use:
   <script src="//ajax.googleapis.com/ajax/libs/angularjs/x.x.x/angular.min.js"></script>
   -->
-  <script src="bower_components/angular/angular.js"></script>
-  <script src="bower_components/angular-route/angular-route.js"></script>
-  <script src="app.js"></script>
-  <script src="view1/view1.js"></script>
-  <script src="view2/view2.js"></script>
-  <script src="components/version/version.js"></script>
-  <script src="components/version/version-directive.js"></script>
-  <script src="components/version/interpolate-filter.js"></script>
+	<script src="bower_components/angular/angular.js"></script>
+	<script src="bower_components/angular-route/angular-route.js"></script>
+	<script src="bower_components/angular-animate/angular-animate.js"></script>
+	<script src="app.js"></script>
+	
+	<script src="view/main/main.js"></script>
+	<script src="view/member/member.js"></script>
+	<script src="view/att/att.js"></script>
+	<script src="view/rank/rank.js"></script>
+	<script src="view/doc/doc.js"></script>
+	<script src="view/login/login.js"></script>
+	
+	<script src="components/version/version.js"></script>
+	<script src="components/version/version-directive.js"></script>
+	<script src="components/version/interpolate-filter.js"></script>
 </body>
 </html>
