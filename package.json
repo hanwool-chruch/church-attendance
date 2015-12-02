@@ -26,7 +26,7 @@
     "postinstall": "bower install",
 
     "prestart": "npm install",
-    "start": "node web.js"
+    "start": "node web.js",
 
     "pretest": "npm install",
     "test": "karma start karma.conf.js",
