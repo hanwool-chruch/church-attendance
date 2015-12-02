@@ -17,7 +17,6 @@ angular.module('myApp', [
 }]);
 
 function selectMenu(i) {
-	console.log('선택된 메뉴 인덱스 : ', i);
 	$('#navbar li').removeClass('active');
 	$('#navbar li:eq('+i+')').addClass('active');
 }
