@@ -16,5 +16,6 @@ angular.module('myApp.rank', ['ngRoute'])
 	
 	init();
 	
-	$scope.title = '출석순위';
+	$rootScope.title = '출석순위';
+	$rootScope.title_icon = 'ion-trophy';
 }]);

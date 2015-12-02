@@ -1,8 +1,4 @@
 /* app css stylesheet */
-body {
-	padding-bottom: 70px;
-}
-
 .menu {
 	list-style: none;
 	border-bottom: 0.1em solid black;
@@ -32,7 +28,7 @@ body {
 	padding: 0;
 }
 
-.jumbotron {
+nav.title {
 	color:#fff;
 	background: #304CD8;
 	background: -webkit-linear-gradient(left, #304CD8 0%, #9F3762 100%);
@@ -40,6 +36,7 @@ body {
 	background: linear-gradient(to right, #304CD8 0%, #9F3762 100%);
 }
 
-.jumbotron h1{
-	color: rgba(0, 0, 0, 0.5)!important;
+span.badge {
+	color:#fff;
+	vertical-align: text-bottom!important;
 }

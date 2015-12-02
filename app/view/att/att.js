@@ -16,6 +16,7 @@ angular.module('myApp.att', ['ngRoute'])
 	
 	init();
 	
-	$scope.title = '출석관리';
+	$rootScope.title = '출석관리';
+	$rootScope.title_icon = 'ion-checkmark-round';
 	
 }]);

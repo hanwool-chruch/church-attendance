@@ -16,6 +16,7 @@ angular.module('myApp.doc', ['ngRoute'])
 	
 	init();
 	
-	$scope.title = '회의록';
+	$rootScope.title = '회의록';
+	$rootScope.title_icon = 'ion-easel';
 	
 }]);

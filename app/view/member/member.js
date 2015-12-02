@@ -16,5 +16,6 @@ angular.module('myApp.member', ['ngRoute'])
 	
 	init();
 	
-	$scope.title = '대원관리';
+	$rootScope.title = '대원관리';
+	$rootScope.title_icon = 'ion-person';
 }]);

@@ -16,5 +16,6 @@ angular.module('myApp.login', ['ngRoute'])
 	
 	init();
 	
-	$scope.title = '로그인';
+	$rootScope.title = '로그인';
+	$rootScope.title_icon = 'ion-log-in';
 }]);
