@@ -1,7 +1,7 @@
 <div class="container">
 	<div class="panel panel-default">
-		<div class="panel-heading">소프라노 <span class="badge" data-ng-bind="memberList.s.length"></span></div>
-		<table class="table">
+		<div class="panel-heading" data-ng-click="sView =! sView" style="cursor: pointer;">소프라노 <span class="badge" data-ng-bind="memberList.s.length"></span></div>
+		<table class="table" data-ng-show="sView">
 			<tr data-ng-repeat="m in memberList.s">
 				<td data-ng-bind="m.memberNm" class="text-center"></td>
 				<td data-ng-bind="m.cPositionNm" class="text-center"></td>
@@ -11,8 +11,8 @@
 		</table>
 	</div>
 	<div class="panel panel-default">
-		<div class="panel-heading">알토 <span class="badge" data-ng-bind="memberList.a.length"></span></div>
-		<table class="table">
+		<div class="panel-heading" data-ng-click="aView =! aView" style="cursor: pointer;">알토 <span class="badge" data-ng-bind="memberList.a.length"></span></div>
+		<table class="table" data-ng-show="aView">
 			<tr data-ng-repeat="m in memberList.a">
 				<td data-ng-bind="m.memberNm" class="text-center"></td>
 				<td data-ng-bind="m.cPositionNm" class="text-center"></td>
@@ -22,8 +22,8 @@
 		</table>
 	</div>
 	<div class="panel panel-default">
-		<div class="panel-heading">테너 <span class="badge" data-ng-bind="memberList.t.length"></span></div>
-		<table class="table">
+		<div class="panel-heading" data-ng-click="tView =! tView" style="cursor: pointer;">테너 <span class="badge" data-ng-bind="memberList.t.length"></span></div>
+		<table class="table" data-ng-show="tView">
 			<tr data-ng-repeat="m in memberList.t">
 				<td data-ng-bind="m.memberNm" class="text-center"></td>
 				<td data-ng-bind="m.cPositionNm" class="text-center"></td>
@@ -33,8 +33,8 @@
 		</table>
 	</div>
 	<div class="panel panel-default">
-		<div class="panel-heading">베이스 <span class="badge" data-ng-bind="memberList.b.length"></span></div>
-		<table class="table">
+		<div class="panel-heading" data-ng-click="bView =! bView" style="cursor: pointer;">베이스 <span class="badge" data-ng-bind="memberList.b.length"></span></div>
+		<table class="table" data-ng-show="bView">
 			<tr data-ng-repeat="m in memberList.b">
 				<td data-ng-bind="m.memberNm" class="text-center"></td>
 				<td data-ng-bind="m.cPositionNm" class="text-center"></td>
@@ -44,8 +44,8 @@
 		</table>
 	</div>
 	<div class="panel panel-default">
-		<div class="panel-heading">기타 <span class="badge" data-ng-bind="memberList.e.length"></span></div>
-		<table class="table">
+		<div class="panel-heading" data-ng-click="eView =! eView" style="cursor: pointer;">기타 <span class="badge" data-ng-bind="memberList.e.length"></span></div>
+		<table class="table" data-ng-show="eView">
 			<tr data-ng-repeat="m in memberList.e">
 				<td data-ng-bind="m.memberNm" class="text-center"></td>
 				<td data-ng-bind="m.cPositionNm" class="text-center"></td>
@@ -55,8 +55,8 @@
 		</table>
 	</div>
 	<div class="panel panel-default">
-		<div class="panel-heading">휴직 <span class="badge" data-ng-bind="memberList.h.length"></span></div>
-		<table class="table">
+		<div class="panel-heading" data-ng-click="hView =! hView" style="cursor: pointer;">휴직 <span class="badge" data-ng-bind="memberList.h.length"></span></div>
+		<table class="table" data-ng-show="hView">
 			<tr data-ng-repeat="m in memberList.h">
 				<td data-ng-bind="m.memberNm" class="text-center"></td>
 				<td data-ng-bind="m.cPositionNm" class="text-center"></td>
@@ -66,9 +66,9 @@
 		</table>
 	</div>
 	<div class="panel panel-default">
-		<div class="panel-heading">탈단 <span class="badge" data-ng-bind="memberList.t.length"></span></div>
-		<table class="table">
-			<tr data-ng-repeat="m in memberList.t">
+		<div class="panel-heading" data-ng-click="xView =! xView" style="cursor: pointer;">탈단 <span class="badge" data-ng-bind="memberList.x.length"></span></div>
+		<table class="table" data-ng-show="xView">
+			<tr data-ng-repeat="m in memberList.x">
 				<td data-ng-bind="m.memberNm" class="text-center"></td>
 				<td data-ng-bind="m.cPositionNm" class="text-center"></td>
 				<td data-ng-bind="m.positionNm" class="text-center"></td>

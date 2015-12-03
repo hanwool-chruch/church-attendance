@@ -22,3 +22,4 @@ app.use(
 );
 	
 app.get('/rest/member', routes.userList);
+app.get('/rest/member/:memberId', routes.user);

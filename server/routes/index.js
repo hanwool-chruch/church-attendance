@@ -249,7 +249,6 @@ exports.userList = function(req, res){
 
 						db.query(query, ['H'], function(err, hList){
 							db.query(query, ['X'], function(err, xList){
-								console.log('대원 목록');
 								res.send({s:sList, a:aList, t:tList, b:bList, e:eList, h:hList, x:xList});
 							});					
 						});					
@@ -257,6 +256,29 @@ exports.userList = function(req, res){
 				});					
 			});
 		});
+	});
+};
+
+exports.user = function(req, res){
+	var query = " select * from ( "+
+	" 			select  "+
+	" 			    MEMBER_ID   memberId, "+
+	" 			    MEMBER_NM   memberNm, "+
+	" 			    (SELECT C_POSITION_NM FROM CHOIR_C_POSITION CP WHERE CP.C_POSITION_CD = a.C_POSITION_CD) cPositionNm, "+
+	" 			    PHONE_NO    phoneNo, "+
+	" 			    PART_CD     partCd, "+
+	" 			    (SELECT POSITION_NM FROM CHOIR_POSITION CP WHERE CP.POSITION_CD = a.POSITION_CD) positionNm, "+
+	" 			    STATUS_CD   statusCd, "+
+	" 			    (SELECT STATUS_NM FROM CHOIR_STATUS CS WHERE CS.STATUS_CD = a.STATUS_CD) statusNm, "+
+	" 			    ETC_MSG     etcMsg "+
+	" 			from "+
+	" 			    choir_member a "+
+	"       ) m "+
+	"         WHERE memberId = ? ";
+	
+	db.query(query, [req.params.memberId], function(err, list){
+		console.log(list);
+		res.send({list});
 	});
 };
 
@@ -435,7 +457,7 @@ exports.modifyUser = function(req, res){
 
 	var memberId = req.body.memberId;
 
-	console.log(memberId);
+	//console.log(memberId);
 
 	var query = " 			select  "+
                 " 			    MEMBER_ID   memberId, "+

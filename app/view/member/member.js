@@ -9,7 +9,7 @@ angular.module('myApp.member', ['ngRoute'])
 		templateUrl: 'view/member/member.html',
 		controller: 'MemberCtrl'
 	})
-	.when('/member/:userId', {
+	.when('/member/:memberId', {
 		templateUrl: 'view/member/memberDetail.html',
 		controller: 'MemberDetailCtrl'
 	})
@@ -18,7 +18,7 @@ angular.module('myApp.member', ['ngRoute'])
 
 .factory('MemberSvc', ['$http', function($http){
 	
-	var memberList = {};
+	var memberList = null;
 	
 	return {
 		getMemberList : function(){
@@ -29,29 +29,14 @@ angular.module('myApp.member', ['ngRoute'])
 				method: 'GET'});
 		},
 		getDetail : function(id) {
-			console.log('대원 상세정보 보기, userId : ', id);
-
-			var keys = [];
-			for ( var key in memberList) {
-				if (memberList.hasOwnProperty(key)) {
-					keys.push(key);
-				}
-			}
 			
-			for(var i=0 ; i<keys.length ; i++) {
-				
-				var key = keys[i];
-				var mList = memberList[key];
-				
-				for(var j=0 ; j<mList.length ; j++) {
-					var m = mList[j];
-					if(m.userId.toString() === id) {
-						return m;
-					}
-				}
-			}
+			console.log('getDetail : ', id);
 			
-			return null;
+			return $http({ 
+				cache: false,
+				url: '/rest/member/'+id,
+				data: {t:new Date().getMilliseconds()},
+				method: 'GET'});
 		}
 	};
 }])
@@ -70,11 +55,10 @@ angular.module('myApp.member', ['ngRoute'])
 	
 	MemberSvc.getMemberList().success(function(data){
 		$scope.memberList = data;
-		console.log($scope.memberList);
 	});
 	
-	$scope.detail = function(userId){
-		$location.path('/member/'+userId).search({});
+	$scope.detail = function(memberId){
+		$location.path('/member/'+memberId).search({});
 	}
 	
 }])
@@ -91,14 +75,21 @@ angular.module('myApp.member', ['ngRoute'])
 	
 	init();
 	
-	$scope.member = MemberSvc.getDetail($routeParams.userId);
+	console.log('memberId : ', $routeParams.memberId);
 	
-	if($scope.member === null) {
-		/* 존재하지 않는 userId일 경우 대원목록 화면으로 이동 */
-		$location.path('/member');
-	}
+	MemberSvc.getDetail($routeParams.memberId).success(function(data){
+		
+		console.log(data);
+		
+		$scope.member = data;
+		
+		if($scope.member === null) {
+			/* 존재하지 않는 memberid일 경우 대원목록 화면으로 이동 */
+			$location.path('/member');
+		}
+	});
 	
-	/* 대원 목록으로 이동 */
+	/* 대원 목록으로 이동 버튼*/
 	$scope.gotoMemberList = function(){
 		$location.path('/member');
 	}
