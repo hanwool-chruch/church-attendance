@@ -37,7 +37,28 @@ angular.module('myApp.member', ['ngRoute'])
 		},
 		getDetail : function(id) {
 			console.log('대원 상세정보 보기, userId : ', id);
-			return memberList.sop[0];
+
+			var keys = [];
+			for ( var key in memberList) {
+				if (memberList.hasOwnProperty(key)) {
+					keys.push(key);
+				}
+			}
+			
+			for(var i=0 ; i<keys.length ; i++) {
+				
+				var key = keys[i];
+				var mList = memberList[key];
+				
+				for(var j=0 ; j<mList.length ; j++) {
+					var m = mList[j];
+					if(m.userId.toString() === id) {
+						return m;
+					}
+				}
+			}
+			
+			return null;
 		}
 	};
 }])
@@ -75,6 +96,11 @@ angular.module('myApp.member', ['ngRoute'])
 	init();
 	
 	$scope.member = MemberSvc.getDetail($routeParams.userId);
+	
+	if($scope.member === null) {
+		/* 존재하지 않는 userId일 경우 대원목록 화면으로 이동 */
+		$location.path('/member');
+	}
 	
 	/* 대원 목록으로 이동 */
 	$scope.gotoMemberList = function(){
