@@ -10,9 +10,7 @@
 						{{member.cPositionNm}} <span class="caret"></span>
 					</button>
 					<ul class="dropdown-menu dropdown-menu-right">
-						<li><a href="javascript:;">성도</a></li>
-						<li><a href="#">집사</a></li>
-						<li><a href="#">장로</a></li>
+						<li data-ng-repeat=" c in code.cPositionList"><a href="#" data-ng-bind="c.C_POSITION_NM"></a></li>
 					</ul>
 				</div>
 			</div>
@@ -31,30 +29,23 @@
 	<div class="panel panel-default">
 		<div class="panel-heading">파트 / 직책 / 활동상태</div>
 		<div class="panel-body">
-			<div class="btn-group" role="group" aria-label="...">
+			<div class="btn-group btn-group-justified" role="group" aria-label="...">
 				<div class="btn-group" role="group">
 					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{member.partCdNm}} <span class="caret"></span></button>
 					<ul class="dropdown-menu">
-						<li><a href="#">Dropdown link</a></li>
-						<li><a href="#">Dropdown link</a></li>
+						<li data-ng-repeat=" c in code.partList"><a href="#" data-ng-bind="c.PART_NM"></a></li>
 					</ul>
 				</div>
-			</div>
-			<div class="btn-group" role="group" aria-label="...">
 				<div class="btn-group" role="group">
 					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{member.positionNm}} <span class="caret"></span></button>
 					<ul class="dropdown-menu">
-						<li><a href="#">Dropdown link</a></li>
-						<li><a href="#">Dropdown link</a></li>
+						<li data-ng-repeat=" c in code.positionList"><a href="#" data-ng-bind="c.POSITION_NM"></a></li>
 					</ul>
 				</div>
-			</div>
-			<div class="btn-group" role="group" aria-label="...">
 				<div class="btn-group" role="group">
 					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{member.statusNm}} <span class="caret"></span></button>
 					<ul class="dropdown-menu">
-						<li><a href="#">Dropdown link</a></li>
-						<li><a href="#">Dropdown link</a></li>
+						<li data-ng-repeat=" c in code.statusList"><a href="#" data-ng-bind="c.STATUS_NM"></a></li>
 					</ul>
 				</div>
 			</div>

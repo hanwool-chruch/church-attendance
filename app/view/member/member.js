@@ -18,8 +18,6 @@ angular.module('myApp.member', ['ngRoute'])
 
 .factory('MemberSvc', ['$http', function($http){
 	
-	var memberList = null;
-	
 	return {
 		getMemberList : function(){
 			return $http({ 
@@ -29,12 +27,22 @@ angular.module('myApp.member', ['ngRoute'])
 				method: 'GET'});
 		},
 		getDetail : function(id) {
-			
-			console.log('getDetail : ', id);
-			
 			return $http({ 
 				cache: false,
 				url: '/rest/member/'+id,
+				data: {t:new Date().getMilliseconds()},
+				method: 'GET'});
+		}
+	};
+}])
+
+.factory('CodeSvc', ['$http', function($http){
+	
+	return {
+		getCodeList : function(){
+			return $http({ 
+				cache: true,
+				url: '/rest/codeList',
 				data: {t:new Date().getMilliseconds()},
 				method: 'GET'});
 		}
@@ -63,8 +71,8 @@ angular.module('myApp.member', ['ngRoute'])
 	
 }])
 
-.controller('MemberDetailCtrl', ['$scope', '$rootScope', '$window', '$routeParams', 'MemberSvc', '$location',
-                        function ($scope ,  $rootScope ,  $window ,  $routeParams ,  MemberSvc ,  $location) {
+.controller('MemberDetailCtrl', ['$scope', '$rootScope', '$window', '$routeParams', 'MemberSvc', '$location', 'CodeSvc',
+                        function ($scope ,  $rootScope ,  $window ,  $routeParams ,  MemberSvc ,  $location ,  CodeSvc) {
 	
 	$rootScope.title = '대원관리';
 	$rootScope.title_icon = 'ion-person';
@@ -75,8 +83,6 @@ angular.module('myApp.member', ['ngRoute'])
 	
 	init();
 	
-	console.log('memberId : ', $routeParams.memberId);
-	
 	MemberSvc.getDetail($routeParams.memberId).success(function(data){
 		
 		if(!data) {
@@ -84,6 +90,10 @@ angular.module('myApp.member', ['ngRoute'])
 			$location.path('/member');
 		} else {
 			$scope.member = data[0];
+			
+			CodeSvc.getCodeList($routeParams.memberId).success(function(codeData){
+				$scope.code = codeData;
+			});
 		}
 	});
 	

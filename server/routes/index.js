@@ -283,6 +283,25 @@ exports.user = function(req, res){
 	});
 };
 
+exports.codeList = function(req, res){
+	var query = "SELECT * FROM choir_c_position order by orderby_no";
+	db.query(query, [req.params.memberId], function(err, cPositionList){
+		var query = "SELECT * FROM choir_position order by orderby_no";
+		db.query(query, [req.params.memberId], function(err, positionList){
+			var query = "SELECT * FROM choir_part order by orderby_no";
+			db.query(query, [req.params.memberId], function(err, partList){
+				var query = "SELECT * FROM choir_practice order by orderby_no";
+				db.query(query, [req.params.memberId], function(err, practiceList){
+					var query = "SELECT * FROM choir_status order by orderby_no";
+					db.query(query, [req.params.memberId], function(err, statusList){
+						res.send({cPositionList:cPositionList, positionList:positionList, partList:partList, practiceList:practiceList, statusList:statusList});
+					});
+				});
+			});
+		});
+	});
+};
+
 exports.lockAttInfo = function(req, res){
 	
 	var practiceDt = req.body.practiceDt;
