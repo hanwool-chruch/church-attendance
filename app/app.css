@@ -38,5 +38,7 @@ nav.title {
 
 span.badge {
 	color:#fff;
-	vertical-align: text-bottom!important;
+	vertical-align: text-top!important;
+	padding: 3px 10px!important;
+	font-size:11px!important;
 }
