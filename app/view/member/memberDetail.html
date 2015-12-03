@@ -4,10 +4,10 @@
 		<div class="panel-body">
 			<div class="input-group">
 				<span class="input-group-addon" id="sizing-addon3"><i class="ion-person"></i></span>
-				<input type="text" class="form-control" aria-label="이름" placeholder="이름" data-ng-model="member.name">
+				<input type="text" class="form-control" aria-label="이름" placeholder="이름" data-ng-model="member.memberNm">
 				<div class="input-group-btn">
 					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						{{member.cPosition}} <span class="caret"></span>
+						{{member.cPositionNm}} <span class="caret"></span>
 					</button>
 					<ul class="dropdown-menu dropdown-menu-right">
 						<li><a href="javascript:;">성도</a></li>
@@ -23,7 +23,7 @@
 		<div class="panel-body">
 			<div class="input-group">
 				<span class="input-group-addon" id="sizing-addon3"><i class="ion-iphone"></i></span>
-				<input type="text" class="form-control" aria-label="핸드폰 전화번호" placeholder="핸드폰 전화번호" data-ng-model="member.phone">
+				<input type="text" class="form-control" aria-label="핸드폰 전화번호" placeholder="핸드폰 전화번호" data-ng-model="member.phoneNo">
 				<!-- /btn-group -->
 			</div>
 		</div>
@@ -33,7 +33,7 @@
 		<div class="panel-body">
 			<div class="btn-group" role="group" aria-label="...">
 				<div class="btn-group" role="group">
-					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{member.part}} <span class="caret"></span></button>
+					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{member.partCdNm}} <span class="caret"></span></button>
 					<ul class="dropdown-menu">
 						<li><a href="#">Dropdown link</a></li>
 						<li><a href="#">Dropdown link</a></li>
@@ -42,7 +42,7 @@
 			</div>
 			<div class="btn-group" role="group" aria-label="...">
 				<div class="btn-group" role="group">
-					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{member.position}} <span class="caret"></span></button>
+					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{member.positionNm}} <span class="caret"></span></button>
 					<ul class="dropdown-menu">
 						<li><a href="#">Dropdown link</a></li>
 						<li><a href="#">Dropdown link</a></li>
@@ -51,7 +51,7 @@
 			</div>
 			<div class="btn-group" role="group" aria-label="...">
 				<div class="btn-group" role="group">
-					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{member.status}} <span class="caret"></span></button>
+					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{member.statusNm}} <span class="caret"></span></button>
 					<ul class="dropdown-menu">
 						<li><a href="#">Dropdown link</a></li>
 						<li><a href="#">Dropdown link</a></li>
@@ -65,7 +65,7 @@
 		<div class="panel-body">
 			<div class="input-group">
 				<span class="input-group-addon" id="sizing-addon3"><i class="ion-clipboard"></i></span>
-				<input type="text" class="form-control" aria-label="메모" placeholder="텍스트 입력" data-ng-model="member.memo">
+				<input type="text" class="form-control" aria-label="메모" placeholder="텍스트 입력" data-ng-model="member.etcMsg">
 			</div>
 		</div>
 	</div>

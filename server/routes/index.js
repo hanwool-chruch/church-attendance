@@ -267,6 +267,7 @@ exports.user = function(req, res){
 	" 			    (SELECT C_POSITION_NM FROM CHOIR_C_POSITION CP WHERE CP.C_POSITION_CD = a.C_POSITION_CD) cPositionNm, "+
 	" 			    PHONE_NO    phoneNo, "+
 	" 			    PART_CD     partCd, "+
+	" 			    (SELECT PART_NM FROM CHOIR_PART CP WHERE CP.PART_CD = a.PART_CD) partCdNm, "+
 	" 			    (SELECT POSITION_NM FROM CHOIR_POSITION CP WHERE CP.POSITION_CD = a.POSITION_CD) positionNm, "+
 	" 			    STATUS_CD   statusCd, "+
 	" 			    (SELECT STATUS_NM FROM CHOIR_STATUS CS WHERE CS.STATUS_CD = a.STATUS_CD) statusNm, "+
@@ -278,7 +279,7 @@ exports.user = function(req, res){
 	
 	db.query(query, [req.params.memberId], function(err, list){
 		console.log(list);
-		res.send({list});
+		res.send(list);
 	});
 };
 

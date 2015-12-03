@@ -79,13 +79,11 @@ angular.module('myApp.member', ['ngRoute'])
 	
 	MemberSvc.getDetail($routeParams.memberId).success(function(data){
 		
-		console.log(data);
-		
-		$scope.member = data;
-		
-		if($scope.member === null) {
+		if(!data) {
 			/* 존재하지 않는 memberid일 경우 대원목록 화면으로 이동 */
 			$location.path('/member');
+		} else {
+			$scope.member = data[0];
 		}
 	});
 	
