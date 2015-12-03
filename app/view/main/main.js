@@ -16,6 +16,6 @@ angular.module('myApp.main', [ 'ngRoute' ])
 
 	init();
 	
-	$rootScope.title="환영합니다";
-	$rootScope.title_icon = 'ion-happy-outline';
+	$rootScope.title="마법같은 출석관리";
+	$rootScope.title_icon = 'ion-ios-color-wand';
 } ]);
