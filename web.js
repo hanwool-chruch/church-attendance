@@ -2,7 +2,14 @@ var port = Number(process.env.PORT || 8000);
 
 var express = require('express');
 
-var app = express();
+var app = express()
+  , routes = require('./server/routes')
+  , http = require('http')
+  , path = require('path')
+  , socketio = require('socket.io')
+  , fs = require('fs')
+  , pkginfo = require('./package')
+  , passport = require('passport');
 
 app.use(
 		
@@ -13,3 +20,5 @@ app.use(
 	}
 	
 );
+	
+app.get('/rest/member', routes.userList);

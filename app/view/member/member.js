@@ -16,24 +16,17 @@ angular.module('myApp.member', ['ngRoute'])
 	;
 }])
 
-.factory('MemberSvc', ['$http', function($scope, $http){
+.factory('MemberSvc', ['$http', function($http){
 	
-	var memberList = {
-	                  'sop':[
-	                  	        {userId:1, name:'이영하', part: '소프라노', cPosition:'집사', position:'찬양대원', phone:'010-1111-1111', status:'활동중', memo:'메모입니다.'},
-	                  	        {userId:2, name:'홍종순', part: '소프라노', cPosition:'집사', position:'찬양대원', phone:'010-1111-1111', status:'활동중', memo:'메모입니다.'}
-	        	             ]
-	                  ,
-	                  'alto':[
-	        	       	        {userId:3, name:'송민아', part: '알토', cPosition:'집사', position:'찬양대원', phone:'010-1111-1111', status:'활동중', memo:'메모입니다.'},
-	        	    	        {userId:4, name:'조은주', part: '알토', cPosition:'회계', position:'찬양대원', phone:'010-1111-1111', status:'활동중', memo:'메모입니다.'}
-	        	    	      ]
-	                  
-	};
+	var memberList = {};
 	
 	return {
 		getMemberList : function(){
-			return memberList;
+			return $http({ 
+				cache: false,
+				url: '/rest/member',
+				data: {t:new Date().getMilliseconds()},
+				method: 'GET'});
 		},
 		getDetail : function(id) {
 			console.log('대원 상세정보 보기, userId : ', id);
@@ -75,7 +68,10 @@ angular.module('myApp.member', ['ngRoute'])
 	
 	init();
 	
-	$scope.memberList = MemberSvc.getMemberList();
+	MemberSvc.getMemberList().success(function(data){
+		$scope.memberList = data;
+		console.log($scope.memberList);
+	});
 	
 	$scope.detail = function(userId){
 		$location.path('/member/'+userId).search({});

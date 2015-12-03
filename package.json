@@ -22,7 +22,13 @@
     "express": "~4.12.4",
     "morgan": "~1.5.3",
     "serve-favicon": "~2.2.1",
-    "monk": "~1.0.1"
+    "monk": "~1.0.1",
+    "mysql": "~2.3.2",
+    "socket.io": "*",
+    "passport": "~0.1.17",
+    "passport-google-oauth": "~0.1.5",
+    "passport-twitter": "~0.1.5",
+    "passport-facebook": "~0.1.5"
   },
   "engines": {
     "node": "4.2.2",
