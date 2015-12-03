@@ -3,10 +3,10 @@
 		<div class="panel-heading">소프라노 <span class="badge" data-ng-bind="memberList.sop.length"></span></div>
 		<table class="table">
 			<tr data-ng-repeat="m in memberList.sop">
-				<td data-ng-bind="m.name"></td>
-				<td data-ng-bind="m.cPosition"></td>
-				<td data-ng-bind="m.position"></td>
-				<td><a href="javascript:;" data-ng-click="detail(m.userId);"><i class='ion-edit'></i> 수정</a></td>
+				<td data-ng-bind="m.name" class="text-center"></td>
+				<td data-ng-bind="m.cPosition" class="text-center"></td>
+				<td data-ng-bind="m.position" class="text-center"></td>
+				<td class="text-center"><a href="javascript:;" data-ng-click="detail(m.userId);"><i class='ion-edit'></i> 수정</a></td>
 			</tr>
 		</table>
 	</div>
@@ -14,10 +14,10 @@
 		<div class="panel-heading">알토 <span class="badge" data-ng-bind="memberList.alto.length"></span></div>
 		<table class="table">
 			<tr data-ng-repeat="m in memberList.alto">
-				<td data-ng-bind="m.name"></td>
-				<td data-ng-bind="m.cPosition"></td>
-				<td data-ng-bind="m.position"></td>
-				<td><a href="javascript:;" data-ng-click="detail(m.userId);"><i class='ion-edit'></i> 수정</a></td>
+				<td data-ng-bind="m.name" class="text-center"></td>
+				<td data-ng-bind="m.cPosition" class="text-center"></td>
+				<td data-ng-bind="m.position" class="text-center"></td>
+				<td class="text-center"><a href="javascript:;" data-ng-click="detail(m.userId);"><i class='ion-edit'></i> 수정</a></td>
 			</tr>
 		</table>
 	</div>
