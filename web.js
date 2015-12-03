@@ -9,18 +9,20 @@ var app = express()
   , socketio = require('socket.io')
   , fs = require('fs')
   , pkginfo = require('./package')
-  , passport = require('passport');
+  , passport = require('passport')
+  , bodyParser = require('body-parser');
 
-app.use(
-		
-	express.static(__dirname + '/app')); 
+app.use(express.static(__dirname + '/app'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-	var server = app.listen(port, function() { 
-		console.log('Listening on port %d', server.address().port); 
-	}
+var server = app.listen(port, function() { 
+	console.log('Listening on port %d', server.address().port); 
+});
 	
-);
+
 	
 app.get('/rest/member', routes.userList);
+app.post('/rest/member', routes.saveUser);
 app.get('/rest/member/:memberId', routes.user);
 app.get('/rest/codeList', routes.codeList);

@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('myApp.member', ['ngRoute'])
+angular.module('myApp.member', ['ngRoute', 'ngResource'])
 
 .config(['$routeProvider', function($routeProvider) {
 	$routeProvider
@@ -27,11 +27,16 @@ angular.module('myApp.member', ['ngRoute'])
 				method: 'GET'});
 		},
 		getDetail : function(id) {
+			
 			return $http({ 
 				cache: false,
 				url: '/rest/member/'+id,
 				data: {t:new Date().getMilliseconds()},
 				method: 'GET'});
+		},
+		save : function(member) {
+			
+			return $http.post('/rest/member', member);
 		}
 	};
 }])
@@ -71,8 +76,8 @@ angular.module('myApp.member', ['ngRoute'])
 	
 }])
 
-.controller('MemberDetailCtrl', ['$scope', '$rootScope', '$window', '$routeParams', 'MemberSvc', '$location', 'CodeSvc',
-                        function ($scope ,  $rootScope ,  $window ,  $routeParams ,  MemberSvc ,  $location ,  CodeSvc) {
+.controller('MemberDetailCtrl', ['$scope', '$rootScope', '$window', '$routeParams', 'MemberSvc', '$location', 'CodeSvc', '$q',
+                        function ($scope ,  $rootScope ,  $window ,  $routeParams ,  MemberSvc ,  $location ,  CodeSvc ,  $q) {
 	
 	$rootScope.title = '대원관리';
 	$rootScope.title_icon = 'ion-person';
@@ -83,23 +88,32 @@ angular.module('myApp.member', ['ngRoute'])
 	
 	init();
 	
-	MemberSvc.getDetail($routeParams.memberId).success(function(data){
+	$q.all([MemberSvc.getDetail($routeParams.memberId), CodeSvc.getCodeList($routeParams.memberId)])
 		
-		if(!data) {
-			/* 존재하지 않는 memberid일 경우 대원목록 화면으로 이동 */
+	.then(function(resultArray){
+		
+		$scope.member = resultArray[0].data;
+		$scope.code = resultArray[1].data;
+		
+		if(!$scope.member) {
 			$location.path('/member');
-		} else {
-			$scope.member = data[0];
-			
-			CodeSvc.getCodeList($routeParams.memberId).success(function(codeData){
-				$scope.code = codeData;
-			});
 		}
 	});
 	
 	/* 대원 목록으로 이동 버튼*/
 	$scope.gotoMemberList = function(){
 		$location.path('/member');
+	}
+	
+	/* 대원정보 저장 */
+	$scope.save = function(){
+		
+		if($scope.member.memberId) {
+			MemberSvc.save($scope.member).success(function(data){
+				$location.path('/member');
+				$.notify('저장되었습니다.');
+			});
+		}
 	}
 }])
 

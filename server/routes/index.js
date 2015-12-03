@@ -264,10 +264,12 @@ exports.user = function(req, res){
 	" 			select  "+
 	" 			    MEMBER_ID   memberId, "+
 	" 			    MEMBER_NM   memberNm, "+
+	" 			    a.C_POSITION_CD   cPositionCd, "+
 	" 			    (SELECT C_POSITION_NM FROM CHOIR_C_POSITION CP WHERE CP.C_POSITION_CD = a.C_POSITION_CD) cPositionNm, "+
 	" 			    PHONE_NO    phoneNo, "+
 	" 			    PART_CD     partCd, "+
-	" 			    (SELECT PART_NM FROM CHOIR_PART CP WHERE CP.PART_CD = a.PART_CD) partCdNm, "+
+	" 			    (SELECT PART_NM FROM CHOIR_PART CP WHERE CP.PART_CD = a.PART_CD) partNm, "+
+	" 			    a.POSITION_CD     positionCd, "+
 	" 			    (SELECT POSITION_NM FROM CHOIR_POSITION CP WHERE CP.POSITION_CD = a.POSITION_CD) positionNm, "+
 	" 			    STATUS_CD   statusCd, "+
 	" 			    (SELECT STATUS_NM FROM CHOIR_STATUS CS WHERE CS.STATUS_CD = a.STATUS_CD) statusNm, "+
@@ -278,8 +280,8 @@ exports.user = function(req, res){
 	"         WHERE memberId = ? ";
 	
 	db.query(query, [req.params.memberId], function(err, list){
-		console.log(list);
-		res.send(list);
+		if(list.length != 0) return res.send(list[0]);
+		else return res.send(null);
 	});
 };
 
@@ -497,32 +499,12 @@ exports.modifyUser = function(req, res){
 	});
 }
 
-exports.updateUser = function(req, res){
-
-	var memberId = req.body.memberId;
-	var memberNm = req.body.memberNm;
-	var cPositionCd = req.body.cPositionCd;
-	var positionCd = req.body.positionCd;
-	var phoneNo = req.body.phoneNo;
-	var partCd = req.body.partCd;
-	var statusCd = req.body.statusCd;
-	var etcMsg = req.body.etcMsg;
-
-	var query = "update choir_member"+
-		        "   set MEMBER_NM=?, C_POSITION_CD=?, PHONE_NO=?, PART_CD=?, POSITION_CD=?, STATUS_CD=?, ETC_MSG=?"+
-		        "   where MEMBER_ID=?";
-
-	db.query(query, [ memberNm, cPositionCd, phoneNo, partCd, positionCd, statusCd, etcMsg, memberId ], function(){
-		res.writeHead(302, {'Location': '/userList'});
-		res.end();
-	});
-}
-
 exports.regUser = function(req, res){
 	res.render('regUser', {user: req.session.passport.user || {}});
 }
 
-exports.addUser = function(req, res){
+exports.saveUser = function(req, res){
+	
 	var memberId = req.body.memberId;
 	var memberNm = req.body.memberNm;
 	var cPositionCd = req.body.cPositionCd;
@@ -531,11 +513,22 @@ exports.addUser = function(req, res){
 	var partCd = req.body.partCd;
 	var statusCd = req.body.statusCd;
 	var etcMsg = req.body.etcMsg;
+	
+	var query = "";
+	
+	if(req.body.memberId) {
+		query = "update choir_member"+
+        "   set MEMBER_NM=?, C_POSITION_CD=?, PHONE_NO=?, PART_CD=?, POSITION_CD=?, STATUS_CD=?, ETC_MSG=?"+
+        "   where MEMBER_ID=?";
 
-	var query = "insert into CHOIR_MEMBER(MEMBER_NM,PHONE_NO,PART_CD,POSITION_CD,C_POSITION_CD,STATUS_CD,ETC_MSG,REG_DT,MODIFY_DT) values(?,?,?,?,?,?,?,current_timestamp,current_timestamp)";
-    
-	db.query(query, [ memberNm, phoneNo, partCd, positionCd, cPositionCd, statusCd, etcMsg ], function(){
-		res.writeHead(302, {'Location': '/userList'});
-		res.end();
-	});
+		db.query(query, [ memberNm, cPositionCd, phoneNo, partCd, positionCd, statusCd, etcMsg, memberId ], function(){
+			res.send({});
+		});
+	} else {
+		query = "insert into CHOIR_MEMBER(MEMBER_NM,PHONE_NO,PART_CD,POSITION_CD,C_POSITION_CD,STATUS_CD,ETC_MSG,REG_DT,MODIFY_DT) values(?,?,?,?,?,?,?,current_timestamp,current_timestamp)";
+	    
+		db.query(query, [ memberNm, phoneNo, partCd, positionCd, cPositionCd, statusCd, etcMsg ], function(){
+			res.send({});
+		});
+	}
 }

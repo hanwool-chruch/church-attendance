@@ -10,8 +10,12 @@ angular.module('myApp', [
 	'myApp.login',
 	'myApp.version',
 	'ngAnimate',
-	'ngRoute'
+	'ngRoute',
+	'ngResource'
 ])
+.config(['$resourceProvider', function($resourceProvider) {
+	$resourceProvider.defaults.stripTrailingSlashes = false;
+}])
 .config(['$routeProvider', function($routeProvider) {
 	$routeProvider.otherwise({redirectTo: '/main'});
 }]);
