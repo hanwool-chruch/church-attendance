@@ -50,12 +50,13 @@ angular.module('myApp.att', ['ngRoute'])
 			}
 			else {
 				for (var i in data) $scope.attList.push(data[i]);
-				$rootScope.backdrop = undefined;
 			}
 
 			if (data.length !== 0) {
 				++page;
 			}
+			
+			$rootScope.backdrop = undefined;
 		});
 	}
 	
