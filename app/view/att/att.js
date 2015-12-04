@@ -53,8 +53,6 @@ angular.module('myApp.att', ['ngRoute'])
 			if (data.length !== 0) {
 				++page;
 			}
-			
-			
 		});
 	}
 	
