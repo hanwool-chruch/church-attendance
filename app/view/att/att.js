@@ -47,6 +47,7 @@ angular.module('myApp.att', ['ngRoute'])
 			
 			if ($scope.attList.length === 0) {
 				$scope.attList = data;
+				$rootScope.backdrop = undefined;
 			}
 			else for (var i in data) $scope.attList.push(data[i]);
 
@@ -64,7 +65,6 @@ angular.module('myApp.att', ['ngRoute'])
 			if ($(window).scrollTop() >= $(document).height() - $(window).height() - 80) {
 				$rootScope.backdrop = 'backdrop';
 				moreLoad();	
-				$rootScope.backdrop = undefined;
 			}
 		}
 	);
