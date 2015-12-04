@@ -1,8 +1,9 @@
-<input type="hidden" data-ng-model="member.memberId"/>
-<input type="hidden" data-ng-model="member.cPositionCd"/>
-<input type="hidden" data-ng-model="member.partCd"/>
-<input type="hidden" data-ng-model="member.positionCd"/>
-<input type="hidden" data-ng-model="member.statusCd"/>
+<form name="memberForm">
+<input type="hidden" name="memberId" data-ng-model="member.memberId"/>
+<input type="hidden" name="cPositionCd" data-ng-model="member.cPositionCd"/>
+<input type="hidden" name="partCd" data-ng-model="member.partCd"/>
+<input type="hidden" name="positionCd" data-ng-model="member.positionCd"/>
+<input type="hidden" name="statusCd" data-ng-model="member.statusCd"/>
 
 <div class="container" style="margin-bottom:20px;">
 	<div class="panel panel-default">
@@ -10,7 +11,7 @@
 		<div class="panel-body">
 			<div class="input-group">
 				<span class="input-group-addon" id="sizing-addon3"><i class="ion-person"></i></span>
-				<input type="text" class="form-control" aria-label="이름" placeholder="이름" data-ng-model="member.memberNm">
+				<input type="text" class="form-control" name="memberNm" aria-label="이름" placeholder="이름" data-ng-model="member.memberNm" data-ng-required="true" maxlength="10" data-ng-maxlength="10">
 				<div class="input-group-btn">
 					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 						<span data-ng-bind="member.cPositionNm"></span> <span class="caret"></span>
@@ -27,7 +28,7 @@
 		<div class="panel-body">
 			<div class="input-group">
 				<span class="input-group-addon" id="sizing-addon3"><i class="ion-iphone"></i></span>
-				<input type="text" class="form-control" aria-label="핸드폰 전화번호" placeholder="핸드폰 전화번호" data-ng-model="member.phoneNo" data-ng-pattern="/^\d{3}-\d{3,4}-\d{4}$/">
+				<input type="text" class="form-control" name="phoneNo" aria-label="핸드폰 전화번호" placeholder="핸드폰 전화번호" data-ng-model="member.phoneNo" data-ng-pattern="/^\d{2,3}-\d{3,4}-\d{4}$/" data-ng-required="true" data-ng-maxlength="13" maxlength="13">
 				<!-- /btn-group -->
 			</div>
 		</div>
@@ -76,3 +77,4 @@
 		</div>
 	</div>
 </div>
+</form>
