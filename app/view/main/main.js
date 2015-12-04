@@ -23,4 +23,8 @@ angular.module('myApp.main', [ 'ngRoute' ])
 	
 	$rootScope.title="마법같은 출석관리";
 	$rootScope.title_icon = 'ion-ios-color-wand';
+	
+	if(document) {
+		document.body.scrollTop = 0;
+	}
 } ]);
