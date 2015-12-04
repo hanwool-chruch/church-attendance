@@ -18,7 +18,8 @@ angular.module('myApp.main', [ 'ngRoute' ])
 	init();
 	
 	$scope.gotoPage = function(page){
-		$location.path('#/'+page);
+		alert();
+		$location.path('/'+page);
 	}
 	
 	$rootScope.title="마법같은 출석관리";
