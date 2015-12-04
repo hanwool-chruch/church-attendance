@@ -59,6 +59,7 @@ angular.module('myApp.member', ['ngRoute', 'ngResource'])
 	
 	$rootScope.title = '대원관리';
 	$rootScope.title_icon = 'ion-person';
+	$rootScope.backdrop = 'backdrop';
 	
 	var init = function () {
 		selectMenu(1); /* 메뉴 선택 */
@@ -68,12 +69,12 @@ angular.module('myApp.member', ['ngRoute', 'ngResource'])
 	
 	MemberSvc.getMemberList().success(function(data){
 		$scope.memberList = data;
+		$rootScope.backdrop = undefined;
 	});
 	
 	$scope.detail = function(memberId){
 		$location.path('/member/'+memberId).search({});
 	}
-	
 }])
 
 .controller('MemberDetailCtrl', ['$scope', '$rootScope', '$window', '$routeParams', 'MemberSvc', '$location', 'CodeSvc', '$q',
@@ -81,6 +82,7 @@ angular.module('myApp.member', ['ngRoute', 'ngResource'])
 	
 	$rootScope.title = '대원관리';
 	$rootScope.title_icon = 'ion-person';
+	$rootScope.backdrop = 'backdrop';
 	
 	var init = function () {
 		selectMenu(1); /* 메뉴 선택 */
@@ -98,6 +100,8 @@ angular.module('myApp.member', ['ngRoute', 'ngResource'])
 		if(!$scope.member) {
 			$location.path('/member');
 		}
+		
+		$rootScope.backdrop = undefined;
 	});
 	
 	/* 대원 목록으로 이동 버튼*/
@@ -108,8 +112,13 @@ angular.module('myApp.member', ['ngRoute', 'ngResource'])
 	/* 대원정보 저장 */
 	$scope.save = function(){
 		
+		$rootScope.backdrop = 'backdrop';
+		
 		if($scope.member.memberId) {
 			MemberSvc.save($scope.member).success(function(data){
+				
+				$rootScope.backdrop = undefined;
+				
 				$location.path('/member');
 				$.notify('저장되었습니다.');
 			});

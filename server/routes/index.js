@@ -207,45 +207,39 @@ exports.attInfoModify = function(req, res){
 };
 
 exports.userList = function(req, res){
-	var query = " select * from ( "+
+	var query = 
                 " 			select  "+
                 " 			    MEMBER_ID   memberId, "+
                 " 			    MEMBER_NM   memberNm, "+
-                " 			    (SELECT C_POSITION_NM FROM CHOIR_C_POSITION CP WHERE CP.C_POSITION_CD = a.C_POSITION_CD) cPositionNm, "+
-                " 			    PHONE_NO    phoneNo, "+
-                " 			    PART_CD     partCd, "+
-                " 			    (SELECT POSITION_NM FROM CHOIR_POSITION CP WHERE CP.POSITION_CD = a.POSITION_CD) positionNm, "+
-                " 			    STATUS_CD   statusCd, "+
-                " 			    (SELECT STATUS_NM FROM CHOIR_STATUS CS WHERE CS.STATUS_CD = a.STATUS_CD) statusNm, "+
-                " 			    ETC_MSG     etcMsg "+
+                " 			    b.C_POSITION_NM cPositionNm, "+
+                " 			    c.POSITION_NM positionNm "+
                 " 			from "+
-                " 			    choir_member a "+
-                "       ) m "+
-                "         WHERE statusCd = ? "+
-                "         AND partCd = ? "+
-                "         order by memberNm ";
-
+                " 			    choir_member a, "+
+                " 			    CHOIR_C_POSITION b, "+
+                " 			    CHOIR_POSITION c "+
+                "         WHERE a.C_POSITION_CD = b.C_POSITION_CD AND a.POSITION_CD = c.POSITION_CD"+
+                "         AND a.STATUS_CD = ? "+
+                "         AND a.PART_CD = ? "+
+                "         order by a.MEMBER_NM ";
+	
 	db.query(query, ['O', 'S'], function(err, sList){
 		db.query(query, ['O', 'A'], function(err, aList){
 			db.query(query, ['O', 'T'], function(err, tList){
 				db.query(query, ['O', 'B'], function(err, bList){
 					db.query(query, ['O', 'E'], function(err, eList){
-						query = " select * from ( "+
-								" 			select  "+
-								" 			    MEMBER_ID   memberId, "+
-								" 			    MEMBER_NM   memberNm, "+
-								" 			    (SELECT C_POSITION_NM FROM CHOIR_C_POSITION CP WHERE CP.C_POSITION_CD = a.C_POSITION_CD) cPositionNm, "+
-								" 			    PHONE_NO    phoneNo, "+
-								" 			    PART_CD     partCd, "+
-								" 			    (SELECT POSITION_NM FROM CHOIR_POSITION CP WHERE CP.POSITION_CD = a.POSITION_CD) positionNm, "+
-								" 			    STATUS_CD   statusCd, "+
-								" 			    (SELECT STATUS_NM FROM CHOIR_STATUS CS WHERE CS.STATUS_CD = a.STATUS_CD) statusNm, "+
-								" 			    ETC_MSG     etcMsg "+
-								" 			from "+
-								" 			    choir_member a "+
-								"       ) m "+
-								"         WHERE statusCd = ? "+
-								"         order by memberNm ";
+						query = 
+							" 			select  "+
+			                " 			    MEMBER_ID   memberId, "+
+			                " 			    MEMBER_NM   memberNm, "+
+			                " 			    b.C_POSITION_NM cPositionNm, "+
+			                " 			    c.POSITION_NM positionNm "+
+			                " 			from "+
+			                " 			    choir_member a, "+
+			                " 			    CHOIR_C_POSITION b, "+
+			                " 			    CHOIR_POSITION c "+
+			                "         WHERE a.C_POSITION_CD = b.C_POSITION_CD AND a.POSITION_CD = c.POSITION_CD"+
+			                "         AND a.STATUS_CD = ? "+
+			                "         order by a.MEMBER_NM ";
 
 						db.query(query, ['H'], function(err, hList){
 							db.query(query, ['X'], function(err, xList){

@@ -12,7 +12,14 @@ angular.module('myApp', [
 	'ngAnimate',
 	'ngRoute',
 	'ngResource'
-])
+]).
+run(function($rootScope, $location) {
+	$rootScope.$on( "$routeChangeStart", function(event, next, current) {
+		if(document) {
+			document.body.scrollTop = 52;
+		}
+	})
+ })
 .config(['$resourceProvider', function($resourceProvider) {
 	$resourceProvider.defaults.stripTrailingSlashes = false;
 }])

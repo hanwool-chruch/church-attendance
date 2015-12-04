@@ -10,6 +10,7 @@ angular.module('myApp.main', [ 'ngRoute' ])
 } ])
 
 .controller('MainCtrl', [ '$scope', '$rootScope', function($scope, $rootScope) {
+	
 	var init = function() {
 		selectMenu(0); /* 메뉴 선택 */
 	};

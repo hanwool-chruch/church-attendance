@@ -42,3 +42,27 @@ span.badge {
 	padding: 3px 10px!important;
 	font-size:11px!important;
 }
+
+div.backdrop {
+	width: 100%;
+	height: 100%;
+	position: fixed;
+	z-index:9998;
+	background-color: rgba(255, 255, 255, 0.4);
+	top:0;
+	left:0;
+}
+
+.backdrop .fa {
+	font-size: 30px;
+	position: absolute;
+	top:50%;
+	left:50%;
+	margin-top:-19px;
+	margin-left:-19px;
+	color:#8B000C;
+}
+
+body.backdrop {
+	overflow: hidden;
+}
