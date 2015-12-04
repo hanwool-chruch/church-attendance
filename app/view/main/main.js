@@ -9,13 +9,17 @@ angular.module('myApp.main', [ 'ngRoute' ])
 	});
 } ])
 
-.controller('MainCtrl', [ '$scope', '$rootScope', function($scope, $rootScope) {
+.controller('MainCtrl', [ '$scope', '$rootScope', '$location', function($scope, $rootScope, $location) {
 	
 	var init = function() {
 		selectMenu(0); /* 메뉴 선택 */
 	};
 
 	init();
+	
+	$scope.gotoPage = function(page){
+		$location.path('#/'+page);
+	}
 	
 	$rootScope.title="마법같은 출석관리";
 	$rootScope.title_icon = 'ion-ios-color-wand';
