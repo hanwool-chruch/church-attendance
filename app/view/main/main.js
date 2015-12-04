@@ -18,7 +18,6 @@ angular.module('myApp.main', [ 'ngRoute' ])
 	init();
 	
 	$scope.gotoPage = function(page){
-		alert();
 		$location.path('/'+page);
 	}
 	

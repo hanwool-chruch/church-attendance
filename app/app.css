@@ -66,3 +66,11 @@ div.backdrop {
 body.backdrop {
 	overflow: hidden;
 }
+
+.main-menu {
+	cursor: pointer;
+}
+
+.main-menu:HOVER {
+	background-color: #F5F5F5;
+}
