@@ -47,9 +47,11 @@ angular.module('myApp.att', ['ngRoute'])
 			
 			if ($scope.attList.length === 0) {
 				$scope.attList = data;
+			}
+			else {
+				for (var i in data) $scope.attList.push(data[i]);
 				$rootScope.backdrop = undefined;
 			}
-			else for (var i in data) $scope.attList.push(data[i]);
 
 			if (data.length !== 0) {
 				++page;

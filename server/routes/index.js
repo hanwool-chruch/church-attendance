@@ -109,7 +109,7 @@ exports.rank = function(req, res){
 exports.attList = function(req, res){
 	
 	var page = req.params.page;
-	var size = 10;
+	var size = 5;
 	var sRow = (page-1) * size;
 	
 	var query = "	   SELECT "+
