@@ -60,7 +60,8 @@ angular.module('myApp.att', ['ngRoute'])
 	moreLoad();
 	
 	$(window).scroll(
-		function() {if ($(window).scrollTop() == $(document).height() - $(window).height()) moreLoad();}
+		
+		function() {if ($(window).scrollTop() >= $(document).height() - $(window).height() - 80) moreLoad();}
 	);
 	
 	$rootScope.title = '출석관리';
