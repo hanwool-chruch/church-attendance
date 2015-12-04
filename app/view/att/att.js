@@ -31,6 +31,11 @@ angular.module('myApp.att', ['ngRoute'])
 .controller('AttCtrl', [ '$scope', '$rootScope', 'AttSvc', 
                  function($scope ,  $rootScope ,  AttSvc) {
 	
+	$scope.mock = true;
+	
+	$rootScope.title = '출석관리';
+	$rootScope.title_icon = 'ion-checkmark-round';
+	$rootScope.backdrop = 'backdrop';
 	
 	var init = function () {
 		selectMenu(2); /* 메뉴 선택 */
@@ -38,41 +43,29 @@ angular.module('myApp.att', ['ngRoute'])
 	
 	init();
 	
-	$scope.page = 1;
-	$scope.attList = [];
+	var p=2;
 	
-	var moreLoad = function() {
-		
-		AttSvc.getAttList($scope.page).success(function(data){
+	$scope.more = function(){
+		$rootScope.backdrop = 'backdrop';
+		AttSvc.getAttList(p).success(function(data){
 			
-			if ($scope.attList.length === 0) {
-				$scope.attList = data;
-			}
-			else {
-				for (var i in data) $scope.attList.push(data[i]);
-			}
-
-			if (data.length !== 0) {
-				++$scope.page;
+			if(data != null && data.length > 0) {
+				for (var i in data) {$scope.attList.push(data[i]);}
+				p++;
 			}
 			
 			$rootScope.backdrop = undefined;
 		});
 	}
 	
-	moreLoad();
 	
-	$(window).scroll(
 		
-		function() {
-			if ($(window).scrollTop() >= $(document).height() - $(window).height() - 80) {
-				$rootScope.backdrop = 'backdrop';
-				moreLoad();	
-			}
-		}
-	);
+	AttSvc.getAttList(1).success(function(data){
+		$scope.attList = data;
+		$scope.mock = false;
+		$rootScope.backdrop = undefined;
+	});
 	
-	$rootScope.title = '출석관리';
-	$rootScope.title_icon = 'ion-checkmark-round';
+	
 	
 }]);

@@ -108,13 +108,16 @@ exports.rank = function(req, res){
 
 exports.attList = function(req, res){
 	
+	//console.log(req.params);
+	//console.log(req.body);
+	
 	var page = req.params.page;
-	var size = 5;
+	var size = 50;
 	var sRow = (page-1) * size;
 	
-	console.log('page',page);
-	console.log('sRow',sRow);
-	console.log('size',size);
+	//console.log('page',page);
+	//console.log('sRow',sRow);
+	//console.log('size',size);
 	
 	var query = "	   SELECT "+
                 "	    i.PRACTICE_DT practiceDt,  "+

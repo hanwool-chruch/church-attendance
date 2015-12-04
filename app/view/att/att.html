@@ -3,6 +3,9 @@
 	  <span class="input-group-addon" id="basic-addon1"><i class='ion-search'></i></span>
 	  <input type="text" data-ng-model="keyword" class="form-control" placeholder="검색어 입력" aria-describedby="basic-addon1">
 	</div>
+	<div class="panel" style="height:9000px;text-align: center;" data-ng-show="mock">
+		&nbsp;
+	</div>
 	<div class="panel" data-ng-class="att.practiceCd=='AM'?'panel-success':att.practiceCd=='PM'?'panel-info':'panel-danger'" data-ng-repeat="att in attList | filter : keyword">
 		<div class="panel-heading"><i data-ng-class="att.lockYn=='Y'?'ion-locked':'ion-calendar'"></i> <strong data-ng-bind="att.practiceDt"></strong> <span class="badge" data-ng-bind="att.practiceNm"></span> <span class="badge" data-ng-bind="att.attendanceCnt"></span> <span class="badge" data-ng-show="att.lockYn=='Y'">마감</span></div>
 		<ul class="list-group" style="font-size:90%;">
@@ -28,5 +31,10 @@
 				<span class="badge" data-ng-bind="att.e"></span>
 			</li>
 		</ul>
+	</div>
+	<div class="btn-group btn-group-justified" role="group" aria-label="더보기" style="margin-bottom:20px;">
+		<div class="btn-group" role="group">
+			<button type="button" class="btn btn-success btn-md" data-ng-click="more();"><i class='ion-person-add'></i> 더보기</button>
+		</div>
 	</div>
 </div>

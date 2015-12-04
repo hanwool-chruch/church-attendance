@@ -15,6 +15,9 @@ angular.module('myApp', [
 ]).
 run(function($rootScope, $location) {
 	$rootScope.$on( "$routeChangeStart", function(event, next, current) {
+		
+		$rootScope.backdrop = undefined;
+		
 		if(document) {
 			document.body.scrollTop = 52;
 		}
