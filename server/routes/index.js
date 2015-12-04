@@ -112,6 +112,10 @@ exports.attList = function(req, res){
 	var size = 5;
 	var sRow = (page-1) * size;
 	
+	console.log('page',page);
+	console.log('sRow',sRow);
+	console.log('size',size);
+	
 	var query = "	   SELECT "+
                 "	    i.PRACTICE_DT practiceDt,  "+
                 "	    i.PRACTICE_CD practiceCd,  "+

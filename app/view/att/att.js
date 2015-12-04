@@ -38,12 +38,12 @@ angular.module('myApp.att', ['ngRoute'])
 	
 	init();
 	
-	var page = 1;
+	$scope.page = 1;
 	$scope.attList = [];
 	
 	var moreLoad = function() {
 		
-		AttSvc.getAttList(page).success(function(data){
+		AttSvc.getAttList($scope.page).success(function(data){
 			
 			if ($scope.attList.length === 0) {
 				$scope.attList = data;
@@ -53,7 +53,7 @@ angular.module('myApp.att', ['ngRoute'])
 			}
 
 			if (data.length !== 0) {
-				++page;
+				++$scope.page;
 			}
 			
 			$rootScope.backdrop = undefined;
