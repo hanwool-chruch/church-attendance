@@ -14,7 +14,6 @@ angular.module('myApp.att', ['ngRoute'])
 	
 	return {
 		getAttList : function(page){
-			$rootScope.backdrop = 'backdrop';
 			return $http.get('/rest/attList/'+page);
 		},
 		getDetail : function(id) {
@@ -55,7 +54,7 @@ angular.module('myApp.att', ['ngRoute'])
 				++page;
 			}
 			
-			$rootScope.backdrop = undefined;
+			
 		});
 	}
 	
@@ -63,7 +62,13 @@ angular.module('myApp.att', ['ngRoute'])
 	
 	$(window).scroll(
 		
-		function() {if ($(window).scrollTop() >= $(document).height() - $(window).height() - 80) moreLoad();}
+		function() {
+			if ($(window).scrollTop() >= $(document).height() - $(window).height() - 80) {
+				$rootScope.backdrop = 'backdrop';
+				moreLoad();	
+				$rootScope.backdrop = undefined;
+			}
+		}
 	);
 	
 	$rootScope.title = '출석관리';
