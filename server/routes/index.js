@@ -106,7 +106,7 @@ exports.rank = function(req, res){
 	});
 };
 
-exports.attInfoList = function(req, res){
+exports.attList = function(req, res){
 
 	var query = "	   SELECT "+
                 "	    i.PRACTICE_DT practiceDt,  "+
@@ -127,7 +127,7 @@ exports.attInfoList = function(req, res){
 	//console.log('query : ' + query)
 	db.query(query, {}, function(err, rows){
 		//console.log(rows);
-		res.render('attInfoList', {list:rows, user: req.session.passport.user || {}});
+		res.send(rows);
 	});
 };
 
