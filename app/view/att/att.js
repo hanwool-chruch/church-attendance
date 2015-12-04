@@ -9,10 +9,12 @@ angular.module('myApp.att', ['ngRoute'])
 	});
 }])
 
-.factory('AttSvc', ['$http', function($http){
+.factory('AttSvc', ['$http','$rootScope', 
+            function($http , $rootScope){
 	
 	return {
 		getAttList : function(page){
+			$rootScope.backdrop = 'backdrop';
 			return $http.get('/rest/attList/'+page);
 		},
 		getDetail : function(id) {
@@ -30,7 +32,6 @@ angular.module('myApp.att', ['ngRoute'])
 .controller('AttCtrl', [ '$scope', '$rootScope', 'AttSvc', 
                  function($scope ,  $rootScope ,  AttSvc) {
 	
-	$rootScope.backdrop = 'backdrop';
 	
 	var init = function () {
 		selectMenu(2); /* 메뉴 선택 */
@@ -42,10 +43,6 @@ angular.module('myApp.att', ['ngRoute'])
 	$scope.attList = [];
 	
 	var moreLoad = function() {
-		
-		if(!$rootScope.backdrop) {
-			$rootScope.backdrop = 'backdrop';
-		}
 		
 		AttSvc.getAttList(page).success(function(data){
 			
