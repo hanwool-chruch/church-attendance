@@ -26,4 +26,4 @@ app.get('/rest/member', routes.userList);
 app.post('/rest/member', routes.saveUser);
 app.get('/rest/member/:memberId', routes.user);
 app.get('/rest/codeList', routes.codeList);
-app.get('/rest/att', routes.attList);
+app.get('/rest/attList/:page', routes.attList);

@@ -12,12 +12,8 @@ angular.module('myApp.att', ['ngRoute'])
 .factory('AttSvc', ['$http', function($http){
 	
 	return {
-		getAttList : function(){
-			return $http({ 
-				cache: false,
-				url: '/rest/att',
-				data: {t:new Date().getMilliseconds()},
-				method: 'GET'});
+		getAttList : function(page){
+			return $http.get('/rest/attList/'+page);
 		},
 		getDetail : function(id) {
 			/*
@@ -34,19 +30,38 @@ angular.module('myApp.att', ['ngRoute'])
 .controller('AttCtrl', [ '$scope', '$rootScope', 'AttSvc', 
                  function($scope ,  $rootScope ,  AttSvc) {
 	
-	$rootScope.title_icon = 'ion-person';
-	$rootScope.backdrop = 'backdrop';
-	
 	var init = function () {
 		selectMenu(2); /* 메뉴 선택 */
 	};
 	
 	init();
 	
-	AttSvc.getAttList().success(function(data){
-		$scope.attList = data;
-		$rootScope.backdrop = undefined;
-	});;
+	var page = 1;
+	$scope.attList = [];
+	
+	var moreLoad = function() {
+		$rootScope.backdrop = 'backdrop';
+		
+		AttSvc.getAttList(page).success(function(data){
+			
+			if ($scope.attList.length === 0) {
+				$scope.attList = data;
+			}
+			else for (var i in data) $scope.attList.push(data[i]);
+
+			if (data.length !== 0) {
+				++page;
+			}
+			
+			$rootScope.backdrop = undefined;
+		});
+	}
+	
+	moreLoad();
+	
+	$(window).scroll(
+		function() {if ($(window).scrollTop() == $(document).height() - $(window).height()) moreLoad();}
+	);
 	
 	$rootScope.title = '출석관리';
 	$rootScope.title_icon = 'ion-checkmark-round';

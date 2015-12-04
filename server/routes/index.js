@@ -107,7 +107,11 @@ exports.rank = function(req, res){
 };
 
 exports.attList = function(req, res){
-
+	
+	var page = req.params.page;
+	var size = 20;
+	var sRow = (page-1) * size;
+	
 	var query = "	   SELECT "+
                 "	    i.PRACTICE_DT practiceDt,  "+
                 "	    i.PRACTICE_CD practiceCd,  "+
@@ -123,9 +127,9 @@ exports.attList = function(req, res){
                 "	    (select count(*) from CHOIR_ATTENDANCE a WHERE a.PRACTICE_DT=i.PRACTICE_DT and a.PRACTICE_CD=i.PRACTICE_CD) attendanceCnt "+
                 "	  FROM CHOIR_PRACTICE_INFO i, CHOIR_PRACTICE p "+
                 "	 WHERE i.PRACTICE_CD = p.PRACTICE_CD "+
-                "	 ORDER BY i.PRACTICE_DT DESC , p.ORDERBY_NO DESC ";
+                "	 ORDER BY i.PRACTICE_DT DESC , p.ORDERBY_NO DESC Limit ?,?";
 	//console.log('query : ' + query)
-	db.query(query, {}, function(err, rows){
+	db.query(query, [sRow, size], function(err, rows){
 		//console.log(rows);
 		res.send(rows);
 	});
@@ -254,6 +258,10 @@ exports.userList = function(req, res){
 };
 
 exports.user = function(req, res){
+	
+	console.log(req.body);
+	console.log(req.params);
+	
 	var query = " select * from ( "+
 	" 			select  "+
 	" 			    MEMBER_ID   memberId, "+
@@ -470,7 +478,7 @@ exports.closeDoc = function(req, res){
 };
 
 exports.modifyUser = function(req, res){
-
+	
 	var memberId = req.body.memberId;
 
 	//console.log(memberId);
