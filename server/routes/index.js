@@ -118,6 +118,7 @@ exports.attList = function(req, res){
                 "	    i.MUSIC_INFO musicInfo,  "+
                 "	    i.ETC_MSG etcMsg,  "+
                 "	    i.LOCK_YN lockYn,  "+
+                "	    IF(i.LOCK_YN='Y','마감',NULL) lockNm,  "+
                 "	    p.PRACTICE_NM practiceNm, "+
 		        "       (SELECT COUNT(*)  FROM CHOIR_ATTENDANCE ca, CHOIR_MEMBER cm WHERE     ca.MEMBER_ID = cm.MEMBER_ID and ca.PRACTICE_DT = i.PRACTICE_DT and ca.PRACTICE_CD = i.PRACTICE_CD and cm.PART_CD = 'S' ) s, "+
                 "       (SELECT COUNT(*)  FROM CHOIR_ATTENDANCE ca, CHOIR_MEMBER cm WHERE     ca.MEMBER_ID = cm.MEMBER_ID and ca.PRACTICE_DT = i.PRACTICE_DT and ca.PRACTICE_CD = i.PRACTICE_CD and cm.PART_CD = 'A' ) a, "+
