@@ -38,7 +38,18 @@ angular.module('myApp.member', ['ngRoute', 'ngResource'])
 				data: {t:new Date().getMilliseconds()},
 				method: 'GET'});
 		},
-		save : function(member) {
+		save : function(method, member) {
+			
+			switch (method) {
+			    case 'insert':
+			    	console.log('insert');
+			    	return $http.post('/rest/member', member);
+			        break;
+			    case 'update':
+			    	console.log('update');
+			    	return $http.put('/rest/member', member);
+			        break;
+			}
 			
 			return $http.post('/rest/member', member);
 		}
@@ -126,7 +137,7 @@ angular.module('myApp.member', ['ngRoute', 'ngResource'])
 			
 			$rootScope.backdrop = 'backdrop';
 			
-			MemberSvc.save($scope.member).success(function(data) {
+			MemberSvc.save('update', $scope.member).success(function(data) {
 				
 				$rootScope.backdrop = undefined;
 				
@@ -181,7 +192,7 @@ angular.module('myApp.member', ['ngRoute', 'ngResource'])
 			
 			$rootScope.backdrop = 'backdrop';
 			
-			MemberSvc.save($scope.member).success(function(data) {
+			MemberSvc.save('insert', $scope.member).success(function(data) {
 				
 				$rootScope.backdrop = undefined;
 				

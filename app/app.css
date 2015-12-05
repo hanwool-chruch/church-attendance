@@ -74,3 +74,6 @@ body.backdrop {
 .main-menu:HOVER {
 	background-color: #F5F5F5;
 }
+table.att tr.att {
+	background-color: #FFE18A;
+}

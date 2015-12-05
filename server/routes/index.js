@@ -115,7 +115,7 @@ exports.attList = function(req, res){
 	//console.log(req.body);
 	
 	var page = req.params.page;
-	var size = 50;
+	var size = 10;
 	var sRow = (page-1) * size;
 	
 	//console.log('page',page);
@@ -146,14 +146,13 @@ exports.attList = function(req, res){
 	});
 };
 
-/* 연습정보 수정 */
-exports.attInfoModify = function(req, res){
+/* 연습정보 상세(출석정보 포함) */
+exports.attInfoDetail = function(req, res){
 
-	var practiceDt = req.body.practiceDt;
-	var practiceCd = req.body.practiceCd;
+	var practiceDt = req.params.practiceDt;
+	var practiceCd = req.params.practiceCd;
 
-
-	//console.log('[practiceDt='+practiceDt+';practiceCd='+practiceCd+']');
+	console.log('[practiceDt='+practiceDt+';practiceCd='+practiceCd+']');
 
 	var query = " SELECT "+
                 "	    i.PRACTICE_DT practiceDt,  "+
@@ -171,7 +170,7 @@ exports.attInfoModify = function(req, res){
 		query = " select * from ( "+
                 " 			select  "+
                 " 			    MEMBER_ID   memberId, "+
-                "                             (select count(*) from CHOIR_ATTENDANCE ca where ca.PRACTICE_DT=? and ca.PRACTICE_CD=? and ca.MEMBER_ID = a.MEMBER_ID) attYn, "+
+                "                             (select IF(count(*)=0,'N','Y') from CHOIR_ATTENDANCE ca where ca.PRACTICE_DT=? and ca.PRACTICE_CD=? and ca.MEMBER_ID = a.MEMBER_ID) attYn, "+
                 " 			    MEMBER_NM   memberNm, "+
                 " 			    (SELECT C_POSITION_NM FROM CHOIR_C_POSITION CP WHERE CP.C_POSITION_CD = a.C_POSITION_CD) cPositionNm, "+
                 " 			    PHONE_NO    phoneNo, "+
@@ -195,7 +194,7 @@ exports.attInfoModify = function(req, res){
 							query = " select * from ( "+
 									" 			select  "+
 									" 			    MEMBER_ID   memberId, "+
-									"                             (select count(*) from CHOIR_ATTENDANCE ca where ca.PRACTICE_DT=? and ca.PRACTICE_CD=? and ca.MEMBER_ID = a.MEMBER_ID) attYn, "+
+									"                             (select IF(count(*)=0,'N','Y') from CHOIR_ATTENDANCE ca where ca.PRACTICE_DT=? and ca.PRACTICE_CD=? and ca.MEMBER_ID = a.MEMBER_ID) attYn, "+
 									" 			    MEMBER_NM   memberNm, "+
 									" 			    (SELECT C_POSITION_NM FROM CHOIR_C_POSITION CP WHERE CP.C_POSITION_CD = a.C_POSITION_CD) cPositionNm, "+
 									" 			    PHONE_NO    phoneNo, "+
@@ -211,7 +210,7 @@ exports.attInfoModify = function(req, res){
 									"         order by memberNm ";
 							db.query(query, [practiceDt,practiceCd,'H'], function(err, hList){
 								db.query(query, [practiceDt,practiceCd,'X'], function(err, xList){
-									res.render('attInfoModify', {attInfo:row[0], s:sList, a:aList, t:tList, b:bList, e:eList, h:hList, x:xList, user: req.session.passport.user || {}});
+									res.send({attInfo:row[0], s:sList, a:aList, t:tList, b:bList, e:eList, h:hList, x:xList});
 								});					
 							});					
 						});					
@@ -223,7 +222,7 @@ exports.attInfoModify = function(req, res){
 };
 
 /* 대원목록*/
-exports.userList = function(req, res){
+exports.memberList = function(req, res){
 	var query = 
                 " 			select  "+
                 " 			    MEMBER_ID   memberId, "+
@@ -271,7 +270,7 @@ exports.userList = function(req, res){
 };
 
 /* 대원 상세정보 */
-exports.user = function(req, res){
+exports.member = function(req, res){
 	
 	console.log(req.body);
 	console.log(req.params);
@@ -393,16 +392,18 @@ exports.saveMemo = function(req, res){
 
 /* 연습정보 제거 */
 exports.removeAttInfo = function(req, res){
-	var practiceDt = req.body.practiceDt;
-	var practiceCd = req.body.practiceCd;
+	
+	var practiceDt = req.params.practiceDt;
+	var practiceCd = req.params.practiceCd;
+	
+	console.log('practiceDt :',practiceDt);
+	console.log('practiceCd :',practiceCd);
 
 	db.query("DELETE FROM CHOIR_ATTENDANCE WHERE PRACTICE_DT = ? AND PRACTICE_CD = ?", [ practiceDt, practiceCd], function(){
 		db.query("DELETE FROM CHOIR_PRACTICE_INFO WHERE PRACTICE_DT = ? AND PRACTICE_CD = ?", [ practiceDt, practiceCd],function(){
-			res.writeHead(302, {'Location': '/attInfoList'});
-			res.end();	
+			res.send({result : "success"});
 		});
 	});
-	
 }
 
 /* 연습정보 등록 */
@@ -414,23 +415,31 @@ exports.practiceInfo = function(req, res){
 
 /* 연습정보 생성 */
 exports.createPracticeInfo = function(req, res){
+	
 	var practiceDt = req.body.practiceDt;
 	var practiceCd = req.body.practiceCd;
-	var memo = req.body.memo;
+	var etgMsg = req.body.etgMsg;
 	var musicInfo = req.body.musicInfo;
+	
+	console.log('practiceDt :', practiceDt);
+	console.log('practiceCd :', practiceCd);
+	console.log('etgMsg :', etgMsg);
+	console.log('musicInfo :', musicInfo);
 
 	db.query("SELECT count(*) cnt FROM CHOIR_PRACTICE_INFO i WHERE i.PRACTICE_DT = ? and i.PRACTICE_CD = ?", [ practiceDt, practiceCd ], function(err, row){	
 
+		console.log('row[0] : ',row[0]);
+		console.log('row[0].cnt : ',row[0].cnt);
+		
 		if(row[0].cnt == 0) {
-			db.query("insert into CHOIR_PRACTICE_INFO(PRACTICE_DT, PRACTICE_CD, MUSIC_INFO, ETC_MSG) values(?,?,?,?)", [ practiceDt, practiceCd, musicInfo, memo], function(){
-				res.writeHead(302, {'Location': '/attInfoList'});
-				res.end();	
+			db.query("insert into CHOIR_PRACTICE_INFO(PRACTICE_DT, PRACTICE_CD, MUSIC_INFO, ETC_MSG) values(?,?,?,?)", [ practiceDt, practiceCd, musicInfo, etgMsg ], function(err, row){
+				console.log(err);
+				console.log("insert statement executed!");
+				res.send({'result':'success'});	
 			});
 		} else {
-			res.writeHead(302, {'Location': '/attInfoList'});
-			res.end();	
+			
 		}
-
 	});
 };
 
@@ -534,7 +543,24 @@ exports.regUser = function(req, res){
 	res.render('regUser', {user: req.session.passport.user || {}});
 }
 /* 대원정보 저장 */
-exports.saveUser = function(req, res){
+exports.insertMember = function(req, res){
+	
+	var memberNm = req.body.memberNm;
+	var cPositionCd = req.body.cPositionCd;
+	var positionCd = req.body.positionCd;
+	var phoneNo = req.body.phoneNo;
+	var partCd = req.body.partCd;
+	var statusCd = req.body.statusCd;
+	var etcMsg = req.body.etcMsg;
+	
+	var query = "insert into CHOIR_MEMBER(MEMBER_NM,PHONE_NO,PART_CD,POSITION_CD,C_POSITION_CD,STATUS_CD,ETC_MSG,REG_DT,MODIFY_DT) values(?,?,?,?,?,?,?,current_timestamp,current_timestamp)";
+    
+	db.query(query, [ memberNm, phoneNo, partCd, positionCd, cPositionCd, statusCd, etcMsg ], function(){
+		res.send({result : "success"});
+	});
+}
+/* 대원정보 저장 */
+exports.updateMember = function(req, res){
 	
 	var memberId = req.body.memberId;
 	var memberNm = req.body.memberNm;
@@ -545,21 +571,11 @@ exports.saveUser = function(req, res){
 	var statusCd = req.body.statusCd;
 	var etcMsg = req.body.etcMsg;
 	
-	var query = "";
-	
-	if(req.body.memberId) {
-		query = "update choir_member"+
-        "   set MEMBER_NM=?, C_POSITION_CD=?, PHONE_NO=?, PART_CD=?, POSITION_CD=?, STATUS_CD=?, ETC_MSG=?"+
-        "   where MEMBER_ID=?";
-
-		db.query(query, [ memberNm, cPositionCd, phoneNo, partCd, positionCd, statusCd, etcMsg, memberId ], function(){
-			res.send({});
-		});
-	} else {
-		query = "insert into CHOIR_MEMBER(MEMBER_NM,PHONE_NO,PART_CD,POSITION_CD,C_POSITION_CD,STATUS_CD,ETC_MSG,REG_DT,MODIFY_DT) values(?,?,?,?,?,?,?,current_timestamp,current_timestamp)";
-	    
-		db.query(query, [ memberNm, phoneNo, partCd, positionCd, cPositionCd, statusCd, etcMsg ], function(){
-			res.send({});
-		});
-	}
+	var	query = "update choir_member"+
+		"   set MEMBER_NM=?, C_POSITION_CD=?, PHONE_NO=?, PART_CD=?, POSITION_CD=?, STATUS_CD=?, ETC_MSG=?"+
+		"   where MEMBER_ID=?";
+		
+	db.query(query, [ memberNm, cPositionCd, phoneNo, partCd, positionCd, statusCd, etcMsg, memberId ], function(){
+		res.send({result : "success"});
+	});
 }
