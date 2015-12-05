@@ -91,6 +91,17 @@ angular.module('myApp.att', ['ngRoute'])
 	};
 	
 	init();
+	
+	/* 날짜선택 플러그인 적용 */
+	$(function () {
+		$('#datetimepicker').datetimepicker({
+			format: 'L',
+			locale: 'ko',
+			date : new Date()
+		});
+    });
+	
+	
 
 	/* 코드리스트 불러오기 */
 	$q.all([CodeSvc.getCodeList()])
@@ -104,7 +115,6 @@ angular.module('myApp.att', ['ngRoute'])
 		var idx = 0; /* 오전연습 */
 		var date = new Date();
 		var hours = date.getHours();
-		console.log(hours);
 		if(date.toString().indexOf('Sun') != -1) {
 			if(hours > 12) {
 				/* 오후연습 */
