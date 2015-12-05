@@ -1,0 +1,21 @@
+<form name="attForm">
+<div class="container">
+	<div class="panel panel-default">
+		<div class="panel-heading">연습일자</div>
+		<div class="panel-body">
+			<div class="input-group">
+				<span class="input-group-addon" id="sizing-addon3"><i class="ion-calendar"></i></span>
+				<input type="text" class="form-control" name="memberNm" aria-label="연습일자" placeholder="YYYY-MM-DD 형식에 맞게 입력">
+				<div class="input-group-btn">
+					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						<span data-ng-bind="att.practiceNm"></span> <span class="caret"></span>
+					</button>
+					<ul class="dropdown-menu dropdown-menu-right">
+						<li data-ng-repeat=" c in code.practiceList"><a href="javascript:;" data-ng-bind="c.PRACTICE_NM" data-ng-click="att.practiceCd = c.PRACTICE_CD;att.practiceNm = c.PRACTICE_NM;"></a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</form>

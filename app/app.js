@@ -35,16 +35,16 @@ function selectMenu(i) {
 	$('#navbar li:eq('+i+')').addClass('active');
 }
 
-$(function(){
+$(function() {
 	
 	/* 선택된 메뉴 활성화  */
-	$('#navbar li').click(function(){
+	$('#navbar li').click(function() {
 		$('#navbar li').removeClass('active');
 		$(this).addClass('active');
 	});
 	
 	/* 브랜드 선택시 홈 메뉴 활성화  */
-	$('.navbar-brand').click(function(){
+	$('.navbar-brand').click(function() {
 		
 		if($('#navbar').hasClass('in')) {
 			$('.navbar-toggle:visible').click();

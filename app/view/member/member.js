@@ -20,10 +20,10 @@ angular.module('myApp.member', ['ngRoute', 'ngResource'])
 	;
 }])
 
-.factory('MemberSvc', ['$http', function($http){
+.factory('MemberSvc', ['$http', function($http) {
 	
 	return {
-		getMemberList : function(){
+		getMemberList : function() {
 			return $http({ 
 				cache: false,
 				url: '/rest/member',
@@ -45,10 +45,10 @@ angular.module('myApp.member', ['ngRoute', 'ngResource'])
 	};
 }])
 
-.factory('CodeSvc', ['$http', function($http){
+.factory('CodeSvc', ['$http', function($http) {
 	
 	return {
-		getCodeList : function(){
+		getCodeList : function() {
 			return $http({ 
 				cache: true,
 				url: '/rest/codeList',
@@ -71,16 +71,16 @@ angular.module('myApp.member', ['ngRoute', 'ngResource'])
 	
 	init();
 	
-	MemberSvc.getMemberList().success(function(data){
+	MemberSvc.getMemberList().success(function(data) {
 		$scope.memberList = data;
 		$rootScope.backdrop = undefined;
 	});
 	
-	$scope.detail = function(memberId){
+	$scope.detail = function(memberId) {
 		$location.path('/member/view/'+memberId).search({});
 	}
 	
-	$scope.regist = function(){
+	$scope.regist = function() {
 		$location.path('/member/regist');
 	}
 }])
@@ -100,7 +100,7 @@ angular.module('myApp.member', ['ngRoute', 'ngResource'])
 	
 	$q.all([MemberSvc.getDetail($routeParams.memberId), CodeSvc.getCodeList()])
 		
-	.then(function(resultArray){
+	.then(function(resultArray) {
 		
 		$scope.member = resultArray[0].data;
 		$scope.code = resultArray[1].data;
@@ -113,12 +113,12 @@ angular.module('myApp.member', ['ngRoute', 'ngResource'])
 	});
 	
 	/* 대원 목록으로 이동 버튼*/
-	$scope.gotoMemberList = function(){
+	$scope.gotoMemberList = function() {
 		$location.path('/member');
 	}
 	
 	/* 대원정보 저장 */
-	$scope.save = function(){
+	$scope.save = function() {
 			
 		if($scope.memberForm.$invalid) {
 			$.notify('이름 혹은 핸드폰 전화번호를 형식에 맞게 입력해주세요.');
@@ -126,7 +126,7 @@ angular.module('myApp.member', ['ngRoute', 'ngResource'])
 			
 			$rootScope.backdrop = 'backdrop';
 			
-			MemberSvc.save($scope.member).success(function(data){
+			MemberSvc.save($scope.member).success(function(data) {
 				
 				$rootScope.backdrop = undefined;
 				
@@ -151,7 +151,7 @@ angular.module('myApp.member', ['ngRoute', 'ngResource'])
 	
 	$q.all([CodeSvc.getCodeList()])
 		
-	.then(function(resultArray){
+	.then(function(resultArray) {
 		$scope.code = resultArray[0].data;
 		$rootScope.backdrop = undefined;
 		
@@ -168,12 +168,12 @@ angular.module('myApp.member', ['ngRoute', 'ngResource'])
 	});
 	
 	/* 대원 목록으로 이동 버튼*/
-	$scope.gotoMemberList = function(){
+	$scope.gotoMemberList = function() {
 		$location.path('/member');
 	}
 	
 	/* 대원정보 저장 */
-	$scope.save = function(){
+	$scope.save = function() {
 			
 		if($scope.memberForm.$invalid) {
 			$.notify('이름 혹은 핸드폰 전화번호를 형식에 맞게 입력해주세요.');
@@ -181,7 +181,7 @@ angular.module('myApp.member', ['ngRoute', 'ngResource'])
 			
 			$rootScope.backdrop = 'backdrop';
 			
-			MemberSvc.save($scope.member).success(function(data){
+			MemberSvc.save($scope.member).success(function(data) {
 				
 				$rootScope.backdrop = undefined;
 				

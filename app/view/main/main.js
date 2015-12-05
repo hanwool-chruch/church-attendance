@@ -17,7 +17,7 @@ angular.module('myApp.main', [ 'ngRoute' ])
 
 	init();
 	
-	$scope.gotoPage = function(page){
+	$scope.gotoPage = function(page) {
 		$location.path('/'+page);
 	}
 	

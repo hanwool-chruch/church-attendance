@@ -36,6 +36,7 @@ function handleDisconnect() {
 
 handleDisconnect();
 
+/* 메인화면 장기 결석자 */
 exports.index = function(req, res){
 	var query = "SELECT C.MEMBER_ID memberId, C.MEMBER_NM memberNm, C.PART_CD partCd, (SELECT ORDERBY_NO FROM CHOIR_PART D WHERE D.PART_CD=C.PART_CD) ORDERBY_NO,C.PHONE_NO phoneNo  FROM CHOIR_MEMBER C WHERE STATUS_CD='O' AND PART_CD !='E' AND NOT EXISTS ( SELECT A.MEMBER_ID FROM (SELECT MEMBER_ID, PRACTICE_DT, PRACTICE_CD FROM CHOIR_ATTENDANCE) A, (SELECT PRACTICE_DT, PRACTICE_CD FROM CHOIR_PRACTICE_INFO WHERE PRACTICE_CD='AM' AND LOCK_YN='Y' ORDER BY PRACTICE_DT DESC LIMIT 3) B WHERE A.PRACTICE_DT = B.PRACTICE_DT AND A.PRACTICE_CD = B.PRACTICE_CD AND C.MEMBER_ID = A.MEMBER_ID) ORDER BY ORDERBY_NO ASC";
 	db.query(query, {}, function(err, rows){
@@ -44,6 +45,7 @@ exports.index = function(req, res){
 	});
 };
 
+/* 출석순위 */
 exports.rank = function(req, res){
 
 	var curDate = new Date();
@@ -106,6 +108,7 @@ exports.rank = function(req, res){
 	});
 };
 
+/* 연습정보 목록 */
 exports.attList = function(req, res){
 	
 	//console.log(req.params);
@@ -143,6 +146,7 @@ exports.attList = function(req, res){
 	});
 };
 
+/* 연습정보 수정 */
 exports.attInfoModify = function(req, res){
 
 	var practiceDt = req.body.practiceDt;
@@ -218,6 +222,7 @@ exports.attInfoModify = function(req, res){
 	});
 };
 
+/* 대원목록*/
 exports.userList = function(req, res){
 	var query = 
                 " 			select  "+
@@ -265,6 +270,7 @@ exports.userList = function(req, res){
 	});
 };
 
+/* 대원 상세정보 */
 exports.user = function(req, res){
 	
 	console.log(req.body);
@@ -295,6 +301,7 @@ exports.user = function(req, res){
 	});
 };
 
+/* 코드정보 */
 exports.codeList = function(req, res){
 	var query = "SELECT * FROM choir_c_position order by orderby_no";
 	db.query(query, [req.params.memberId], function(err, cPositionList){
@@ -314,6 +321,7 @@ exports.codeList = function(req, res){
 	});
 };
 
+/* 마감처리 */
 exports.lockAttInfo = function(req, res){
 	
 	var practiceDt = req.body.practiceDt;
@@ -325,6 +333,7 @@ exports.lockAttInfo = function(req, res){
 	});
 }
 
+/* 마감 취소 처리*/
 exports.cancelLockAttInfo = function(req, res){
 	
 	var practiceDt = req.body.practiceDt;
@@ -336,7 +345,7 @@ exports.cancelLockAttInfo = function(req, res){
 	});
 }
 
-
+/* 출석체크 */
 exports.select = function(req, res){
 	var practiceDt = req.body.practiceDt;
 	var practiceCd = req.body.practiceCd;
@@ -352,6 +361,7 @@ exports.select = function(req, res){
 	});
 }
 
+/* 출석체크 해제 */
 exports.deselect = function(req, res){
 	var practiceDt = req.body.practiceDt;
 	var practiceCd = req.body.practiceCd;
@@ -363,6 +373,7 @@ exports.deselect = function(req, res){
 	});
 }
 
+/* 연습곡 갱신 */
 exports.saveMusicInfo = function(req, res){
 	var practiceDt = req.body.practiceDt;
 	var practiceCd = req.body.practiceCd;
@@ -371,6 +382,7 @@ exports.saveMusicInfo = function(req, res){
 	db.query("UPDATE CHOIR_PRACTICE_INFO SET MUSIC_INFO = ? WHERE PRACTICE_DT = ? AND PRACTICE_CD = ?", [ musicInfo,  practiceDt, practiceCd ]);
 }
 
+/* 메모 갱신 */
 exports.saveMemo = function(req, res){
 	var practiceDt = req.body.practiceDt;
 	var practiceCd = req.body.practiceCd;
@@ -379,6 +391,7 @@ exports.saveMemo = function(req, res){
 	db.query("UPDATE CHOIR_PRACTICE_INFO SET ETC_MSG = ? WHERE PRACTICE_DT = ? AND PRACTICE_CD = ?", [ memo,  practiceDt, practiceCd ]);
 }
 
+/* 연습정보 제거 */
 exports.removeAttInfo = function(req, res){
 	var practiceDt = req.body.practiceDt;
 	var practiceCd = req.body.practiceCd;
@@ -392,10 +405,14 @@ exports.removeAttInfo = function(req, res){
 	
 }
 
+/* 연습정보 등록 */
+/*
 exports.practiceInfo = function(req, res){
 	res.render('practiceInfo', {user: req.session.passport.user || {}});
 };
+*
 
+/* 연습정보 생성 */
 exports.createPracticeInfo = function(req, res){
 	var practiceDt = req.body.practiceDt;
 	var practiceCd = req.body.practiceCd;
@@ -417,6 +434,7 @@ exports.createPracticeInfo = function(req, res){
 	});
 };
 
+/* 회의록 목록*/
 exports.docList = function(req, res){
 	
 	var query = "select MEET_SEQ meetSeq,MEET_DT meetDt,MEET_TITLE meetTitle,REPLACE(MEET_CONTENTS,'\n','<br/>') meetContents,REG_DT regDt,UPT_DT uptDt,LOCK_YN lockYn from MEETTING_DOC order by MEET_DT DESC, MEET_SEQ DESC";
@@ -426,10 +444,12 @@ exports.docList = function(req, res){
 	});
 };
 
+/* 회의록 ? */
 exports.doc = function(req, res){
 	res.render('doc', {user: req.session.passport.user || {}});
 };
 
+/* 회의록 생성 */
 exports.createDoc = function(req, res){
 	var meetDt = req.body.meetDt;
 	var meetTitle = req.body.meetTitle;
@@ -442,7 +462,7 @@ exports.createDoc = function(req, res){
 	});
 
 };
-
+/* 회의록 상세정보*/
 exports.modifyDoc = function(req, res){	
 	var meetSeq = req.body.meetSeq;
 	//console.log('meetSeq : '+meetSeq);
@@ -450,7 +470,7 @@ exports.modifyDoc = function(req, res){
 		res.render('modifyDoc', {data:row[0], user: req.session.passport.user || {}});
 	});
 };
-
+/* 회의록 수정 */
 exports.updateDoc = function(req, res){
 
 	var meetDt = req.body.meetDt;
@@ -464,7 +484,7 @@ exports.updateDoc = function(req, res){
 		res.end();	
 	});
 };
-
+/*회의록 제거*/
 exports.removeDoc = function(req, res){
 
 	var meetSeq = req.body.meetSeq;
@@ -474,7 +494,7 @@ exports.removeDoc = function(req, res){
 		res.end();	
 	});
 };
-
+/* 회의록 마감*/
 exports.closeDoc = function(req, res){
 
 	var meetSeq = req.body.meetSeq;
@@ -485,6 +505,7 @@ exports.closeDoc = function(req, res){
 	});
 };
 
+/*대원 상세정보*/
 exports.modifyUser = function(req, res){
 	
 	var memberId = req.body.memberId;
@@ -508,11 +529,11 @@ exports.modifyUser = function(req, res){
 		res.render('modifyUser', {data:row[0], user: req.session.passport.user || {}});
 	});
 }
-
+/* 대원 등록 화면으로 이동 */
 exports.regUser = function(req, res){
 	res.render('regUser', {user: req.session.passport.user || {}});
 }
-
+/* 대원정보 저장 */
 exports.saveUser = function(req, res){
 	
 	var memberId = req.body.memberId;
