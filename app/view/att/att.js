@@ -47,6 +47,19 @@ angular.module('myApp.att', ['ngRoute'])
 			
 			console.log('/rest/att/'+pDt+'/'+pCd+'/etcMsg');
 			return $http.put('/rest/att/'+pDt+'/'+pCd+'/etcMsg',{ etcMsg : etcMsg });
+		},
+		/* 출석체크 */
+		select : function(pDt, pCd, memberId, attYn) {
+			switch(attYn) {
+				case 'Y':
+					return $http.post('/rest/att/'+pDt+'/'+pCd+'/deselect',{ memberId : memberId });
+					break;
+				case 'N':
+					return $http.post('/rest/att/'+pDt+'/'+pCd+'/select',{ memberId : memberId });
+					break;
+				default:
+					break;
+			}
 		}
 	};
 }])
@@ -292,6 +305,111 @@ angular.module('myApp.att', ['ngRoute'])
 			
 			$rootScope.backdrop = undefined;
 		});
+	}
+	
+	/* 마감 */
+	$scope.lockAtt = function(pDt, pCd) {
+		console.log('연습정보 마감');
+		
+	}
+	
+	/* 마감 해제 */
+	$scope.unlockAtt = function(pDt, pCd) {
+		console.log('연습정보 마감 해제');
+	}
+	
+	/* 출석체크 */
+	$scope.select = function(pDt, pCd, memberId, lockYn, attYn, partCd) {
+		
+		console.log('pDt : ', pDt);
+		console.log('pCd : ', pCd);
+		console.log('memberId : ', memberId);
+		console.log('lockYn : ', lockYn);
+		console.log('attYn : ', attYn);
+		console.log('partCd : ', partCd);
+		
+		if(lockYn === 'N') {
+			
+			$rootScope.backdrop = 'backdrop';
+			
+			console.log('출석체크');
+			
+			//출석 정보 INSERT 후 콜백안에 넣을 코드
+			//select : function(pDt, pCd, memberId, attYn) {
+			
+			AttSvc.select(pDt, pCd, memberId, attYn).success(function(data) {
+				
+				if(data.result === 'success') {
+				
+					switch(partCd) {
+						case 'S':
+							$scope.sList.forEach(function(m){
+								if(m.memberId === memberId) {
+									if(m.attYn === 'Y') m.attYn = 'N';
+									else if(m.attYn === 'N') m.attYn = 'Y';
+								}
+							});
+							break;
+						case 'A':
+							$scope.aList.forEach(function(m){
+								if(m.memberId === memberId) {
+									if(m.attYn === 'Y') m.attYn = 'N';
+									else if(m.attYn === 'N') m.attYn = 'Y';
+								}
+							});
+							break;
+						case 'T':
+							$scope.tList.forEach(function(m){
+								if(m.memberId === memberId) {
+									if(m.attYn === 'Y') m.attYn = 'N';
+									else if(m.attYn === 'N') m.attYn = 'Y';
+								}
+							});
+							break;
+						case 'B':
+							$scope.bList.forEach(function(m){
+								if(m.memberId === memberId) {
+									if(m.attYn === 'Y') m.attYn = 'N';
+									else if(m.attYn === 'N') m.attYn = 'Y';
+								}
+							});
+							break;
+						case 'E':
+							$scope.eList.forEach(function(m){
+								if(m.memberId === memberId) {
+									if(m.attYn === 'Y') m.attYn = 'N';
+									else if(m.attYn === 'N') m.attYn = 'Y';
+								}
+							});
+							break;
+						case 'H':
+							$scope.hList.forEach(function(m){
+								if(m.memberId === memberId) {
+									if(m.attYn === 'Y') m.attYn = 'N';
+									else if(m.attYn === 'N') m.attYn = 'Y';
+								}
+							});
+							break;
+						case 'X':
+							$scope.xList.forEach(function(m){
+								if(m.memberId === memberId) {
+									if(m.attYn === 'Y') m.attYn = 'N';
+									else if(m.attYn === 'N') m.attYn = 'Y';
+								}
+							});
+							break;
+						default:
+							break;
+					}
+				} else {
+					$.notify('서버 오류가 발생하였습니다. 잠시 후 다시 시도 해주시기바랍니다.');
+				}
+				
+				$rootScope.backdrop = undefined;
+			});
+		} else {
+			console.log('마감된 정보는 출석체크 하지 않음');
+		}
 	}
 }])
 ;

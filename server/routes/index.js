@@ -346,8 +346,8 @@ exports.cancelLockAttInfo = function(req, res){
 
 /* 출석체크 */
 exports.select = function(req, res){
-	var practiceDt = req.body.practiceDt;
-	var practiceCd = req.body.practiceCd;
+	var practiceDt = req.params.practiceDt;
+	var practiceCd = req.params.practiceCd;
 	var memberId = req.body.memberId;
 
 	console.log('practiceDt : ', practiceDt);
@@ -355,20 +355,18 @@ exports.select = function(req, res){
 	console.log('memberId : ', memberId);
 
 	db.query("INSERT INTO choir_attendance VALUES (?,?,?)", [ practiceDt, practiceCd, memberId ], function(){
-		res.writeHead(200, {'Content-Type': 'text/plain'});
-		res.end('Hello World\n');
+		res.send({result:'success'});
 	});
 }
 
 /* 출석체크 해제 */
 exports.deselect = function(req, res){
-	var practiceDt = req.body.practiceDt;
-	var practiceCd = req.body.practiceCd;
+	var practiceDt = req.params.practiceDt;
+	var practiceCd = req.params.practiceCd;
 	var memberId = req.body.memberId;
 
 	db.query("DELETE FROM CHOIR_ATTENDANCE WHERE PRACTICE_DT = ? AND PRACTICE_CD = ? AND MEMBER_ID = ?", [ practiceDt, practiceCd, memberId ], function(){
-		res.writeHead(200, {'Content-Type': 'text/plain'});
-		res.end('Hello World\n');
+		res.send({result:'success'});
 	});
 }
 

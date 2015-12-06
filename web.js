@@ -36,6 +36,8 @@ app.delete	('/rest/att/:practiceDt/:practiceCd', routes.removeAttInfo);			/* 연
 app.get		('/rest/att/:practiceDt/:practiceCd', routes.attInfoDetail);			/* 연습정보 상세(출석정보 포함) */
 app.put		('/rest/att/:practiceDt/:practiceCd/musicInfo', routes.saveMusicInfo);	/* 연습곡 수정 */
 app.put		('/rest/att/:practiceDt/:practiceCd/etcMsg', routes.saveEtcMsg);		/* 메모 수정 */
+app.post	('/rest/att/:practiceDt/:practiceCd/select', routes.select);			/* 출석체크 */
+app.post	('/rest/att/:practiceDt/:practiceCd/deselect', routes.deselect);		/* 출석체크 해제 */
 
 /* 웹소켓 */
 var io = socketio.listen(server);
