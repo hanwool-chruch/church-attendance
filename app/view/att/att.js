@@ -30,7 +30,7 @@ angular.module('myApp.att', ['ngRoute'])
 		save : function(att) {
 			return $http.post('/rest/att', att);
 		},
-		/* 연습정보 삭제 */
+		/* 연습정보  */
 		remove : function(pDt,pCd) {
 			return $http.delete('/rest/att/'+pDt+'/'+pCd);
 		},
@@ -45,7 +45,6 @@ angular.module('myApp.att', ['ngRoute'])
 		/* 메모 수정 */
 		saveEtcMsg : function(pDt, pCd, etcMsg) {
 			
-			console.log('/rest/att/'+pDt+'/'+pCd+'/etcMsg');
 			return $http.put('/rest/att/'+pDt+'/'+pCd+'/etcMsg',{ etcMsg : etcMsg });
 		},
 		/* 출석체크 */
@@ -60,6 +59,14 @@ angular.module('myApp.att', ['ngRoute'])
 				default:
 					break;
 			}
+		},
+		/* 마감 처리 */
+		lockAtt: function(pDt, pCd) {
+			return $http.put('/rest/att/'+pDt+'/'+pCd+'/lockAtt');
+		},
+		/* 마감 해제 처리 */
+		unlockAtt: function(pDt, pCd) {
+			return $http.put('/rest/att/'+pDt+'/'+pCd+'/unlockAtt');
 		}
 	};
 }])
@@ -203,8 +210,8 @@ angular.module('myApp.att', ['ngRoute'])
 	}
 }])
 
-.controller('AttDetailCtrl', [ '$scope', '$rootScope', 'AttSvc', '$location', 'CodeSvc', '$q', '$routeParams', 'socket',
-                       function($scope ,  $rootScope ,  AttSvc ,  $location ,  CodeSvc ,  $q ,  $routeParams ,  socket) {
+.controller('AttDetailCtrl', [ '$scope', '$rootScope', 'AttSvc', '$location', 'CodeSvc', '$q', '$routeParams', 'socket', '$route',
+                       function($scope ,  $rootScope ,  AttSvc ,  $location ,  CodeSvc ,  $q ,  $routeParams ,  socket ,  $route) {
 	
 	$rootScope.title = '출석관리';
 	$rootScope.title_icon = 'ion-checkmark-round';
@@ -311,11 +318,68 @@ angular.module('myApp.att', ['ngRoute'])
 	$scope.lockAtt = function(pDt, pCd) {
 		console.log('연습정보 마감');
 		
+		bootbox.dialog({
+			message: "연습정보 및 출석정보를 정말로 마감 하시겠습니까?",
+			title: "마감 확인",
+			buttons: {
+				danger: {
+					label: "마감",
+					className: "btn-danger",
+					callback: function() {
+						$rootScope.backdrop = 'backdrop';
+						
+						AttSvc.lockAtt(pDt, pCd).success(function(data) {
+							
+							$rootScope.backdrop = undefined;
+							
+							$route.reload();
+							$.notify('연습일정이 마감 되었습니다. 마감해제 전에 연습정보를 수정하실 수 없습니다.');
+						});
+					}
+				},
+				main: {
+					label: "취소",
+					className: "btn-primary",
+					callback: function() {
+					
+					}
+				}
+			}
+		});
 	}
 	
 	/* 마감 해제 */
 	$scope.unlockAtt = function(pDt, pCd) {
 		console.log('연습정보 마감 해제');
+
+		bootbox.dialog({
+			message: "연습정보 및 출석정보를 정말로 마감 해제 하시겠습니까?",
+			title: "마감 해제 확인",
+			buttons: {
+				danger: {
+					label: "마감 해제",
+					className: "btn-danger",
+					callback: function() {
+						$rootScope.backdrop = 'backdrop';
+						
+						AttSvc.unlockAtt(pDt, pCd).success(function(data) {
+							
+							$rootScope.backdrop = undefined;
+							
+							$route.reload();
+							$.notify('연습일정이 마감 해제 되었습니다. 이제 연습정보를 수정하실 수 있습니다.');
+						});
+					}
+				},
+				main: {
+					label: "취소",
+					className: "btn-primary",
+					callback: function() {
+					
+					}
+				}
+			}
+		});
 	}
 	
 	/* 출석체크 */

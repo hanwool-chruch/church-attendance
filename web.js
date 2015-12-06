@@ -38,6 +38,8 @@ app.put		('/rest/att/:practiceDt/:practiceCd/musicInfo', routes.saveMusicInfo);	
 app.put		('/rest/att/:practiceDt/:practiceCd/etcMsg', routes.saveEtcMsg);		/* 메모 수정 */
 app.post	('/rest/att/:practiceDt/:practiceCd/select', routes.select);			/* 출석체크 */
 app.post	('/rest/att/:practiceDt/:practiceCd/deselect', routes.deselect);		/* 출석체크 해제 */
+app.put		('/rest/att/:practiceDt/:practiceCd/lockAtt', routes.lockAtt);			/* 마감 */
+app.put		('/rest/att/:practiceDt/:practiceCd/unlockAtt', routes.unlockAtt);		/* 마감 해제 */
 
 /* 웹소켓 */
 var io = socketio.listen(server);

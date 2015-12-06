@@ -321,26 +321,24 @@ exports.codeList = function(req, res){
 };
 
 /* 마감처리 */
-exports.lockAttInfo = function(req, res){
+exports.lockAtt = function(req, res){
 	
-	var practiceDt = req.body.practiceDt;
-	var practiceCd = req.body.practiceCd;
+	var practiceDt = req.params.practiceDt;
+	var practiceCd = req.params.practiceCd;
 
 	db.query("UPDATE CHOIR_PRACTICE_INFO SET LOCK_YN = 'Y' WHERE PRACTICE_DT = ? AND PRACTICE_CD = ? AND LOCK_YN = 'N'", [ practiceDt, practiceCd ], function(){
-		res.writeHead(302, {'Location': '/attInfoList'});
-		res.end();	
+		res.send({result:'success'});
 	});
 }
 
 /* 마감 취소 처리*/
-exports.cancelLockAttInfo = function(req, res){
+exports.unlockAtt = function(req, res){
 	
-	var practiceDt = req.body.practiceDt;
-	var practiceCd = req.body.practiceCd;
+	var practiceDt = req.params.practiceDt;
+	var practiceCd = req.params.practiceCd;
 
 	db.query("UPDATE CHOIR_PRACTICE_INFO SET LOCK_YN = 'N' WHERE PRACTICE_DT = ? AND PRACTICE_CD = ? AND LOCK_YN = 'Y'", [ practiceDt, practiceCd ], function(){
-		res.writeHead(302, {'Location': '/attInfoList'});
-		res.end();	
+		res.send({result:'success'});
 	});
 }
 
