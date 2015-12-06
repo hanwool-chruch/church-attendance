@@ -250,7 +250,7 @@ angular.module('myApp.att', ['ngRoute'])
 		
 		bootbox.dialog({
 			message: "연습정보 및 출석정보를 정말로 삭제하시겠습니까?",
-			title: "삭제 확인",
+			title: "<i class='ion-android-alert' style='color:#CA4343;'></i> 삭제 확인",
 			buttons: {
 				danger: {
 					label: "삭제",
@@ -320,7 +320,7 @@ angular.module('myApp.att', ['ngRoute'])
 		
 		bootbox.dialog({
 			message: "연습정보 및 출석정보를 정말로 마감 하시겠습니까?",
-			title: "마감 확인",
+			title: "<i class='ion-android-alert' style='color:#CA4343;'></i> 마감 확인",
 			buttons: {
 				danger: {
 					label: "마감",
@@ -354,7 +354,7 @@ angular.module('myApp.att', ['ngRoute'])
 
 		bootbox.dialog({
 			message: "연습정보 및 출석정보를 정말로 마감 해제 하시겠습니까?",
-			title: "마감 해제 확인",
+			title: "<i class='ion-android-alert' style='color:#CA4343;'></i> 마감 해제 확인",
 			buttons: {
 				danger: {
 					label: "마감 해제",
