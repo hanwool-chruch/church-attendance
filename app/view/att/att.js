@@ -120,8 +120,9 @@ angular.module('myApp.att', ['ngRoute'])
 		
 		$scope.att = new Object();
 		
-		var idx = 0; /* 오전연습 */
-		if(moment().days() == 0 && new Date().getHours() > 12) idx = 1; /* 오후연습 */
+		var idx = 0;
+		if(moment().days() == 0 && new Date().getHours() <= 12) idx = 0; /* 오전연습 */
+		else if(moment().days() == 0 && new Date().getHours() > 12) idx = 1; /* 오후연습 */
 		else idx = 2; /* 특별연습 */
 		$scope.att.practiceCd = $scope.code.practiceList[idx].PRACTICE_CD;
 		$scope.att.practiceNm = $scope.code.practiceList[idx].PRACTICE_NM;

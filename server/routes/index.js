@@ -115,7 +115,7 @@ exports.attList = function(req, res){
 	//console.log(req.body);
 	
 	var page = req.params.page;
-	var size = 10;
+	var size = 50;
 	var sRow = (page-1) * size;
 	
 	//console.log('page',page);

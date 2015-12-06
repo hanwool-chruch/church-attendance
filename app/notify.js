@@ -18,6 +18,9 @@ if (typeof jQuery === 'undefined') {
 +function ($) {
 
 	$.notify = function(message, options) {
+		
+		message = "<i class='ion-chatbubble'></i> " +message;
+		
 		var config = $.extend({
 			delay: 3000,
 			type: "default",
