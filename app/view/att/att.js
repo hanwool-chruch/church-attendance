@@ -24,7 +24,7 @@ angular.module('myApp.att', ['ngRoute'])
 	return {
 		/* 연습정보 목록 */
 		getAttList : function(page) {
-			return $http.get('/rest/att/list/'+page);
+			return $http.get('/rest/att/list/'+page + '?t='+new Date());
 		},
 		/* 연습정보 등록 */
 		save : function(att) {
@@ -36,13 +36,47 @@ angular.module('myApp.att', ['ngRoute'])
 		},
 		/* 연습정보 상세(출석정보 포함) */
 		getDetail : function(pDt, pCd) {
-			return $http.get('/rest/att/'+pDt+'/'+pCd);
+			return $http.get('/rest/att/'+pDt+'/'+pCd + '?t='+new Date());
+		},
+		/* 연습곡 수정 */
+		saveMusicInfo : function(pDt, pCd, musicInfo) {
+			return $http.put('/rest/att/'+pDt+'/'+pCd+'/musicInfo',{ musicInfo : musicInfo });
+		},
+		/* 메모 수정 */
+		saveEtcMsg : function(pDt, pCd, etcMsg) {
+			
+			console.log('/rest/att/'+pDt+'/'+pCd+'/etcMsg');
+			return $http.put('/rest/att/'+pDt+'/'+pCd+'/etcMsg',{ etcMsg : etcMsg });
 		}
 	};
 }])
-
-.controller('AttCtrl', [ '$scope', '$rootScope', 'AttSvc', '$location', 
-                 function($scope ,  $rootScope ,  AttSvc ,  $location) {
+.factory('socket', function ($rootScope) {
+	
+	var socket = io.connect();
+	
+	return {
+		on: function (eventName, callback) {
+			socket.on(eventName, function () {  
+				var args = arguments;
+				$rootScope.$apply(function () {
+					callback.apply(socket, args);
+				});
+			});
+		},
+		emit: function (eventName, data, callback) {
+			socket.emit(eventName, data, function () {
+				var args = arguments;
+				$rootScope.$apply(function () {
+					if (callback) {
+						callback.apply(socket, args);
+					}
+				});
+			})
+		}
+	};
+})
+.controller('AttCtrl', [ '$scope', '$rootScope', 'AttSvc', '$location', 'socket',
+                 function($scope ,  $rootScope ,  AttSvc ,  $location ,  socket) {
 	
 	$scope.mock = true;
 	
@@ -90,8 +124,8 @@ angular.module('myApp.att', ['ngRoute'])
 	
 }])
 
-.controller('AttRegistCtrl', [ '$scope', '$rootScope', 'AttSvc', '$location', 'CodeSvc', '$q',
-                       function($scope ,  $rootScope ,  AttSvc ,  $location ,  CodeSvc ,  $q) {
+.controller('AttRegistCtrl', [ '$scope', '$rootScope', 'AttSvc', '$location', 'CodeSvc', '$q', 'socket',
+                       function($scope ,  $rootScope ,  AttSvc ,  $location ,  CodeSvc ,  $q ,  socket) {
 	
 	$rootScope.title = '출석관리';
 	$rootScope.title_icon = 'ion-checkmark-round';
@@ -156,8 +190,8 @@ angular.module('myApp.att', ['ngRoute'])
 	}
 }])
 
-.controller('AttDetailCtrl', [ '$scope', '$rootScope', 'AttSvc', '$location', 'CodeSvc', '$q', '$routeParams',
-                       function($scope ,  $rootScope ,  AttSvc ,  $location ,  CodeSvc ,  $q ,  $routeParams) {
+.controller('AttDetailCtrl', [ '$scope', '$rootScope', 'AttSvc', '$location', 'CodeSvc', '$q', '$routeParams', 'socket',
+                       function($scope ,  $rootScope ,  AttSvc ,  $location ,  CodeSvc ,  $q ,  $routeParams ,  socket) {
 	
 	$rootScope.title = '출석관리';
 	$rootScope.title_icon = 'ion-checkmark-round';
@@ -221,6 +255,42 @@ angular.module('myApp.att', ['ngRoute'])
 					}
 				}
 			}
+		});
+	}
+	
+	/* 연습곡 저장 */
+	$scope.saveMusicInfo = function(pDt, pCd, musicInfo) {
+		
+		$rootScope.backdrop = 'backdrop';
+		
+		console.log('연습곡 저장');
+		AttSvc.saveMusicInfo(pDt, pCd, musicInfo).success(function(data) {
+			
+			if(data.result == 'success') {
+				$.notify('연습곡이 저장되었습니다.');
+			} else {
+				$.notify('저장에 실패하였습니다.');
+			}
+			
+			$rootScope.backdrop = undefined;
+		});
+	}
+	
+	/* 메모 저장 */
+	$scope.saveEtcMsg = function(pDt, pCd, etcMsg) {
+		
+		$rootScope.backdrop = 'backdrop';
+		
+		console.log(etcMsg);
+		AttSvc.saveEtcMsg(pDt, pCd, etcMsg).success(function(data) {
+			
+			if(data.result == 'success') {
+				$.notify('메모가 저장되었습니다.');
+			} else {
+				$.notify('저장에 실패하였습니다.');
+			}
+			
+			$rootScope.backdrop = undefined;
 		});
 	}
 }])

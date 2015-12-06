@@ -374,20 +374,32 @@ exports.deselect = function(req, res){
 
 /* 연습곡 갱신 */
 exports.saveMusicInfo = function(req, res){
-	var practiceDt = req.body.practiceDt;
-	var practiceCd = req.body.practiceCd;
+	
+	console.log(req.params);
+	console.log(req.body);
+	
+	var practiceDt = req.params.practiceDt;
+	var practiceCd = req.params.practiceCd;
 	var musicInfo = req.body.musicInfo;
 
-	db.query("UPDATE CHOIR_PRACTICE_INFO SET MUSIC_INFO = ? WHERE PRACTICE_DT = ? AND PRACTICE_CD = ?", [ musicInfo,  practiceDt, practiceCd ]);
+	db.query("UPDATE CHOIR_PRACTICE_INFO SET MUSIC_INFO = ? WHERE PRACTICE_DT = ? AND PRACTICE_CD = ?", [ musicInfo,  practiceDt, practiceCd ], function(){
+		res.send({result : "success"});
+	});
 }
 
 /* 메모 갱신 */
-exports.saveMemo = function(req, res){
-	var practiceDt = req.body.practiceDt;
-	var practiceCd = req.body.practiceCd;
-	var memo = req.body.memo;
+exports.saveEtcMsg = function(req, res){
+	
+	console.log(req.params);
+	console.log(req.body);
+	
+	var practiceDt = req.params.practiceDt;
+	var practiceCd = req.params.practiceCd;
+	var etcMsg = req.body.etcMsg;
 
-	db.query("UPDATE CHOIR_PRACTICE_INFO SET ETC_MSG = ? WHERE PRACTICE_DT = ? AND PRACTICE_CD = ?", [ memo,  practiceDt, practiceCd ]);
+	db.query("UPDATE CHOIR_PRACTICE_INFO SET ETC_MSG = ? WHERE PRACTICE_DT = ? AND PRACTICE_CD = ?", [ etcMsg,  practiceDt, practiceCd ], function() {
+		res.send({result : "success"});
+	});
 }
 
 /* 연습정보 제거 */
