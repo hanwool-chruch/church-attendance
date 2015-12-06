@@ -269,7 +269,7 @@ angular.module('myApp.att', ['ngRoute'])
 				},
 				main: {
 					label: "취소",
-					className: "btn-primary",
+					className: "btn-default",
 					callback: function() {
 					
 					}
@@ -324,7 +324,7 @@ angular.module('myApp.att', ['ngRoute'])
 			buttons: {
 				danger: {
 					label: "마감",
-					className: "btn-danger",
+					className: "btn-success",
 					callback: function() {
 						$rootScope.backdrop = 'backdrop';
 						
@@ -339,7 +339,7 @@ angular.module('myApp.att', ['ngRoute'])
 				},
 				main: {
 					label: "취소",
-					className: "btn-primary",
+					className: "btn-default",
 					callback: function() {
 					
 					}
@@ -358,7 +358,7 @@ angular.module('myApp.att', ['ngRoute'])
 			buttons: {
 				danger: {
 					label: "마감 해제",
-					className: "btn-danger",
+					className: "btn-success",
 					callback: function() {
 						$rootScope.backdrop = 'backdrop';
 						
@@ -373,7 +373,7 @@ angular.module('myApp.att', ['ngRoute'])
 				},
 				main: {
 					label: "취소",
-					className: "btn-primary",
+					className: "btn-default",
 					callback: function() {
 					
 					}
