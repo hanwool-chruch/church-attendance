@@ -15,6 +15,6 @@
     "html5-boilerplate": "~5.2.0",
     "eonasdan-bootstrap-datetimepicker":"4.17.37",
     "bootbox":"4.4.0",
-    "ng-websocket":"0.2.1"
+    "angular-bootstrap-datepicker":"*"
   }
 }

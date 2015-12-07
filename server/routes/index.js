@@ -352,8 +352,17 @@ exports.select = function(req, res){
 	console.log('practiceCd : ', practiceCd);
 	console.log('memberId : ', memberId);
 
-	db.query("INSERT INTO choir_attendance VALUES (?,?,?)", [ practiceDt, practiceCd, memberId ], function(){
-		res.send({result:'success'});
+	
+	db.query("SELECT count(*) cnt FROM choir_attendance i WHERE i.PRACTICE_DT = ? and i.PRACTICE_CD = ? AND i.MEMBER_ID = ? ", [ practiceDt, practiceCd, memberId ], function(err, row){	
+
+		console.log('row[0] : ',row[0]);
+		console.log('row[0].cnt : ',row[0].cnt);
+		
+		if(row[0].cnt == 0) {
+			db.query("INSERT INTO choir_attendance VALUES (?,?,?)", [ practiceDt, practiceCd, memberId ], function(){
+				res.send({result:'success'});
+			});
+		}
 	});
 }
 
@@ -424,8 +433,8 @@ exports.practiceInfo = function(req, res){
 /* 연습정보 생성 */
 exports.createPracticeInfo = function(req, res){
 	
-	var practiceDt = req.body.practiceDt;
-	var practiceCd = req.body.practiceCd;
+	var practiceDt = req.params.practiceDt;
+	var practiceCd = req.params.practiceCd;
 	var etgMsg = req.body.etgMsg;
 	var musicInfo = req.body.musicInfo;
 	

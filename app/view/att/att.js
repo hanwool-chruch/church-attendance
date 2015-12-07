@@ -27,8 +27,8 @@ angular.module('myApp.att', ['ngRoute'])
 			return $http.get('/rest/att/list/'+page + '?t='+new Date());
 		},
 		/* 연습정보 등록 */
-		save : function(att) {
-			return $http.post('/rest/att', att);
+		save : function(pDt, pCd, musicInfo, etcMsg) {
+			return $http.post('/rest/att/'+pDt+'/'+pCd, {musicInfo:musicInfo, etcMsg:etcMsg});
 		},
 		/* 연습정보  */
 		remove : function(pDt,pCd) {
@@ -92,16 +92,29 @@ angular.module('myApp.att', ['ngRoute'])
 					}
 				});
 			})
+		},
+		removeAllListeners: function() {
+			socket.removeAllListeners();
 		}
 	};
 })
-.controller('AttCtrl', [ '$scope', '$rootScope', 'AttSvc', '$location', 'socket',
-                 function($scope ,  $rootScope ,  AttSvc ,  $location ,  socket) {
-	
-	// Socket listeners
-	// ================
+.controller('AttCtrl', [ '$scope', '$rootScope', 'AttSvc', '$location', 'socket', '$route',
+                 function($scope ,  $rootScope ,  AttSvc ,  $location ,  socket ,  $route) {
 	
 	
+	/* socket - remove all listeners */
+	$scope.$on('$destroy', function (event) {
+		socket.removeAllListeners();
+	});
+
+	/* 소켓-연습정보 목록 입장 */
+	socket.emit('hallJoin');
+	
+	/* 연습정보가 변경되었을때, 페이지 리프레시 */
+	socket.on('refreshPage', function(data) {
+		$.notify(data);
+		$route.reload();
+	});
 	
 	/* Backdrop 적용시 레이아웃 깨짐 방지 목업 div 엘리먼트 show */
 	$scope.mock = true;
@@ -153,6 +166,11 @@ angular.module('myApp.att', ['ngRoute'])
 .controller('AttRegistCtrl', [ '$scope', '$rootScope', 'AttSvc', '$location', 'CodeSvc', '$q', 'socket',
                        function($scope ,  $rootScope ,  AttSvc ,  $location ,  CodeSvc ,  $q ,  socket) {
 	
+	/* socket - remove all listeners */
+	$scope.$on('$destroy', function (event) {
+		socket.removeAllListeners();
+	});
+	
 	$rootScope.title = '출석관리';
 	$rootScope.title_icon = 'ion-checkmark-round';
 	$rootScope.backdrop = 'backdrop';
@@ -163,13 +181,14 @@ angular.module('myApp.att', ['ngRoute'])
 	
 	init();
 	
-	/* 날짜선택 플러그인 적용 */
+	/**
 	$(function () {
 		$('#datetimepicker').datetimepicker({
 			format: 'L',
 			locale: 'ko'
 		});
     });
+    **/
 
 	/* 코드리스트 불러오기 */
 	$q.all([CodeSvc.getCodeList()])
@@ -198,17 +217,24 @@ angular.module('myApp.att', ['ngRoute'])
 	}
 	
 	/* 저장 버튼*/
-	$scope.save = function() {
+	$scope.save = function(pDt, pCd, musicInfo, etcMsg) {
+
 		if($scope.attForm.$invalid) {
 			$.notify('날짜를 형식(YYYY-MM-DD)에 맞게 선택/입력해주세요.');
 		} else {
 			
 			$rootScope.backdrop = 'backdrop';
 			
-			AttSvc.save($scope.att).success(function(data) {
+			AttSvc.save(pDt, pCd, musicInfo, etcMsg).success(function(data) {
+				
+				console.log(pDt);
+				console.log(pCd);
+				console.log(musicInfo);
+				console.log(etcMsg);
 				
 				if(data.result === 'success') {
-					$.notify('저장되었습니다.');
+					/* 소켓-연습정보 추가 알림 */
+					socket.emit('addAtt');
 					$location.path('/att');
 				} else if(data.result === 'dup') {
 					$.notify('이미 생성된 연습정보가 있습니다.');
@@ -226,6 +252,48 @@ angular.module('myApp.att', ['ngRoute'])
 
 .controller('AttDetailCtrl', [ '$scope', '$rootScope', 'AttSvc', '$location', 'CodeSvc', '$q', '$routeParams', 'socket', '$route',
                        function($scope ,  $rootScope ,  AttSvc ,  $location ,  CodeSvc ,  $q ,  $routeParams ,  socket ,  $route) {
+	
+	/* socket - remove all listeners */
+	$scope.$on('$destroy', function (event) {
+		socket.removeAllListeners();
+	});
+	
+	/* 소켓-연습 상세정보 입장 */
+	socket.emit('join', $routeParams.practiceDt + $routeParams.practiceCd);
+	
+	/* 연습곡 정보 갱신 */
+	socket.on('replaceMusicInfo', function(data) {
+		$scope.att.musicInfo = data;
+		$.notify('연습곡 정보가 갱신되었습니다.');
+	});
+	
+	/* 연습정보가 변경되었을때, 페이지 리프레시 */
+	socket.on('refreshPage', function(data) {
+		$.notify(data);
+		$route.reload();
+	});
+	
+	/* 연습곡 정보 갱신 */
+	socket.on('replaceEtcMsg', function(data) {
+		$scope.att.etcMsg = data;
+		$.notify('메모가 갱신되었습니다.');
+	});
+	
+	/* 출석체크 */
+	socket.on('select', function(data) {
+		$scope.sList .concat(
+				$scope.aList).concat(
+				$scope.tList).concat(
+				$scope.bList).concat(
+				$scope.eList).concat(
+				$scope.hList).concat(
+				$scope.xList).forEach(function(m){
+					if(m.memberId === data.memberId) {
+						m.attYn = data.attYn==='Y'?'N':'Y';
+						return false;
+					}
+				});
+	});
 	
 	$rootScope.title = '출석관리';
 	$rootScope.title_icon = 'ion-checkmark-round';
@@ -277,7 +345,9 @@ angular.module('myApp.att', ['ngRoute'])
 							$rootScope.backdrop = undefined;
 							
 							$location.path('/att');
-							$.notify('연습일정이 삭제되었습니다.');
+							
+							/* 소켓-연습정보 삭제 알림 */
+							socket.emit('removeAtt');
 						});
 					}
 				},
@@ -301,7 +371,8 @@ angular.module('myApp.att', ['ngRoute'])
 		AttSvc.saveMusicInfo(pDt, pCd, musicInfo).success(function(data) {
 			
 			if(data.result == 'success') {
-				$.notify('연습곡이 저장되었습니다.');
+				/* 소켓-연습곡 갱신 알림 */
+				socket.emit('refreshMusicInfo', musicInfo);
 			} else {
 				$.notify('저장에 실패하였습니다.');
 			}
@@ -319,7 +390,8 @@ angular.module('myApp.att', ['ngRoute'])
 		AttSvc.saveEtcMsg(pDt, pCd, etcMsg).success(function(data) {
 			
 			if(data.result == 'success') {
-				$.notify('메모가 저장되었습니다.');
+				/* 소켓-메모 갱신 알림 */
+				socket.emit('refreshEtcMsg', etcMsg);
 			} else {
 				$.notify('저장에 실패하였습니다.');
 			}
@@ -346,8 +418,8 @@ angular.module('myApp.att', ['ngRoute'])
 							
 							$rootScope.backdrop = undefined;
 							
-							$route.reload();
-							$.notify('연습일정이 마감 되었습니다.');
+							/* 소켓-마감 알림 */
+							socket.emit('closeAtt');
 						});
 					}
 				},
@@ -380,8 +452,8 @@ angular.module('myApp.att', ['ngRoute'])
 							
 							$rootScope.backdrop = undefined;
 							
-							$route.reload();
-							$.notify('연습일정이 마감 해제 되었습니다. 이제 연습정보를 수정하실 수 있습니다.');
+							/* 소켓-마감 해제 알림 */
+							socket.emit('uncloseAtt');
 						});
 					}
 				},
@@ -396,7 +468,7 @@ angular.module('myApp.att', ['ngRoute'])
 		});
 	}
 	
-	/* 출석체크 */
+	/* 출석체크/해제 */
 	$scope.select = function(pDt, pCd, memberId, lockYn, attYn, partCd) {
 		
 		console.log('pDt : ', pDt);
@@ -412,73 +484,18 @@ angular.module('myApp.att', ['ngRoute'])
 			
 			console.log('출석체크');
 			
-			//출석 정보 INSERT 후 콜백안에 넣을 코드
-			//select : function(pDt, pCd, memberId, attYn) {
-			
 			AttSvc.select(pDt, pCd, memberId, attYn).success(function(data) {
 				
 				if(data.result === 'success') {
 				
-					switch(partCd) {
-						case 'S':
-							$scope.sList.forEach(function(m){
-								if(m.memberId === memberId) {
-									if(m.attYn === 'Y') m.attYn = 'N';
-									else if(m.attYn === 'N') m.attYn = 'Y';
-								}
-							});
-							break;
-						case 'A':
-							$scope.aList.forEach(function(m){
-								if(m.memberId === memberId) {
-									if(m.attYn === 'Y') m.attYn = 'N';
-									else if(m.attYn === 'N') m.attYn = 'Y';
-								}
-							});
-							break;
-						case 'T':
-							$scope.tList.forEach(function(m){
-								if(m.memberId === memberId) {
-									if(m.attYn === 'Y') m.attYn = 'N';
-									else if(m.attYn === 'N') m.attYn = 'Y';
-								}
-							});
-							break;
-						case 'B':
-							$scope.bList.forEach(function(m){
-								if(m.memberId === memberId) {
-									if(m.attYn === 'Y') m.attYn = 'N';
-									else if(m.attYn === 'N') m.attYn = 'Y';
-								}
-							});
-							break;
-						case 'E':
-							$scope.eList.forEach(function(m){
-								if(m.memberId === memberId) {
-									if(m.attYn === 'Y') m.attYn = 'N';
-									else if(m.attYn === 'N') m.attYn = 'Y';
-								}
-							});
-							break;
-						case 'H':
-							$scope.hList.forEach(function(m){
-								if(m.memberId === memberId) {
-									if(m.attYn === 'Y') m.attYn = 'N';
-									else if(m.attYn === 'N') m.attYn = 'Y';
-								}
-							});
-							break;
-						case 'X':
-							$scope.xList.forEach(function(m){
-								if(m.memberId === memberId) {
-									if(m.attYn === 'Y') m.attYn = 'N';
-									else if(m.attYn === 'N') m.attYn = 'Y';
-								}
-							});
-							break;
-						default:
-							break;
-					}
+					var params = new Object();
+					params.pDt = pDt;
+					params.pCd = pCd;
+					params.memberId = memberId;
+					params.attYn = attYn;
+					
+					socket.emit('select', params);
+					
 				} else {
 					$.notify('서버 오류가 발생하였습니다. 잠시 후 다시 시도 해주시기바랍니다.');
 				}

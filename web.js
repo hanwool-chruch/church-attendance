@@ -31,7 +31,7 @@ app.get		('/rest/member/:memberId', routes.member);		/* 대원 상세정보 */
 
 /* 출석관리 */
 app.get		('/rest/att/list/:page', routes.attList);								/* 연습정보 목록 */
-app.post	('/rest/att', routes.createPracticeInfo);								/* 연습정보 생성 */
+app.post	('/rest/att/:practiceDt/:practiceCd', routes.createPracticeInfo);								/* 연습정보 생성 */
 app.delete	('/rest/att/:practiceDt/:practiceCd', routes.removeAttInfo);			/* 연습정보 삭제 */
 app.get		('/rest/att/:practiceDt/:practiceCd', routes.attInfoDetail);			/* 연습정보 상세(출석정보 포함) */
 app.put		('/rest/att/:practiceDt/:practiceCd/musicInfo', routes.saveMusicInfo);	/* 연습곡 수정 */
@@ -44,6 +44,56 @@ app.put		('/rest/att/:practiceDt/:practiceCd/unlockAtt', routes.unlockAtt);		/* 
 /* 웹소켓 */
 var io = socketio.listen(server);
 io.set('log level',1);
-io.sockets.on('connection',function(socket) {
+io.on('connection',function(socket) {
+
+	/* 연습정보 상세정보 입장 */
+	socket.on('join', function(data) {
+		socket.join(data);
+		socket.room = data;
+	});
+
+	/* 연습정보 목록 입장 */
+	socket.on('hallJoin', function() {
+		socket.join('hall');
+	});
 	
+	/* 연습곡 정보 갱신 */
+	socket.on('refreshMusicInfo', function(data){
+		io.sockets.in('hall').emit('refreshPage', "연습곡 정보가 갱신되었습니다.");
+		io.sockets.in(socket.room).emit('replaceMusicInfo', data);
+	});
+
+	/* 메모 갱신 */
+	socket.on('refreshEtcMsg', function(data){
+		io.sockets.in('hall').emit('refreshPage', "메모가 갱신되었습니다.");
+		io.sockets.in(socket.room).emit('replaceEtcMsg', data);
+	});
+
+	/* 마감 (목록과 상세 두군데로 보내야 함) */
+	socket.on('closeAtt', function(data){
+		io.sockets.in('hall').emit('refreshPage', "연습정보가 마감되었습니다.");
+		io.sockets.in(socket.room).emit('refreshPage', "연습정보가 마감되었습니다.");
+	});
+	
+	/* 마감 해제 (목록과 상세 두군데로 보내야 함) */
+	socket.on('uncloseAtt', function(data){
+		io.sockets.in('hall').emit('refreshPage', "연습정보가 마감 해제 되었습니다.");
+		io.sockets.in(socket.room).emit('refreshPage', "연습정보가 마감 해제 되었습니다.");
+	});
+	
+	/* 연습정보 추가 */
+	socket.on('addAtt', function(data){
+		io.sockets.in('hall').emit('refreshPage', "새로운 연습정보가 추가되었습니다.");
+	});
+	
+	/* 연습정보 삭제 */
+	socket.on('removeAtt', function(data){
+		io.sockets.in('hall').emit('refreshPage', "연습정보가 삭제되었습니다.");
+	});
+	
+	/* 출석 체크 */
+	socket.on('select', function(data){
+		console.log('select Client Send Data:', data);
+		io.sockets.in(socket.room).emit('select', data);
+	});
 });
