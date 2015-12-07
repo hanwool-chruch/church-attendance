@@ -13,6 +13,7 @@
     "angular-loader": "1.4.8",
     "angular-mocks": "1.4.8",
     "html5-boilerplate": "~5.2.0",
-    "eonasdan-bootstrap-datetimepicker":"4.17.37"
+    "eonasdan-bootstrap-datetimepicker":"4.17.37",
+    "bootbox":"4.4.0"
   }
 }
