@@ -113,7 +113,9 @@ angular.module('myApp.att', ['ngRoute'])
 	/* 연습정보가 변경되었을때, 페이지 리프레시 */
 	socket.on('refreshPage', function(data) {
 		$.notify(data);
-		$route.reload();
+		setTimeout(function(){
+			$route.reload();
+		}, 500);
 	});
 	
 	/* Backdrop 적용시 레이아웃 깨짐 방지 목업 div 엘리먼트 show */
@@ -274,7 +276,9 @@ angular.module('myApp.att', ['ngRoute'])
 	/* 연습정보가 변경되었을때, 페이지 리프레시 */
 	socket.on('refreshPage', function(data) {
 		$.notify(data);
-		$route.reload();
+		setTimeout(function(){
+			$route.reload();
+		}, 500);
 	});
 	
 	/* 연습곡 정보 갱신 */
