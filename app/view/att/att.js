@@ -98,6 +98,12 @@ angular.module('myApp.att', ['ngRoute'])
 .controller('AttCtrl', [ '$scope', '$rootScope', 'AttSvc', '$location', 'socket',
                  function($scope ,  $rootScope ,  AttSvc ,  $location ,  socket) {
 	
+	// Socket listeners
+	// ================
+	
+	
+	
+	/* Backdrop 적용시 레이아웃 깨짐 방지 목업 div 엘리먼트 show */
 	$scope.mock = true;
 	
 	$rootScope.title = '출석관리';
@@ -205,11 +211,14 @@ angular.module('myApp.att', ['ngRoute'])
 					$.notify('저장되었습니다.');
 					$location.path('/att');
 				} else if(data.result === 'dup') {
-					$.notify('이미 생성된 연습정보가 존재합니다.');
+					$.notify('이미 생성된 연습정보가 있습니다.');
 					$location.path('/att');
 				}
 				
 				$rootScope.backdrop = undefined;
+				
+				
+				
 			});
 		}
 	}

@@ -13,7 +13,7 @@ angular.module('myApp', [
 	'ngRoute',
 	'ngResource'
 ]).
-run(function($rootScope, $location) {
+run(function($rootScope, $location, $websocket) {
 	$rootScope.$on( "$routeChangeStart", function(event, next, current) {
 		
 		$rootScope.backdrop = undefined;
@@ -21,8 +21,43 @@ run(function($rootScope, $location) {
 		if(document) {
 			document.body.scrollTop = 52;
 		}
-	})
- })
+	});
+	
+	var ws = $websocket.$new('ws://localhost:12345');
+	
+	ws.$on('$open', function () {
+		console.log('Oh my gosh, websocket is really open! Fukken awesome!');
+
+		ws.$emit('ping', 'hi listening websocket server'); // send a message to the websocket server
+
+		var data = {
+			level: 1,
+			text: 'ngWebsocket rocks!',
+			array: ['one', 'two', 'three'],
+			nested: {
+				level: 2,
+				deeper: [{
+					hell: 'yeah'
+				}, {
+					so: 'good'
+				}]
+			}
+		};
+
+		ws.$emit('pong', data);
+	});
+
+	ws.$on('pong', function (data) {
+		console.log('The websocket server has sent the following data:');
+		console.log(data);
+
+		ws.$close();
+	});
+
+	ws.$on('$close', function () {
+		console.log('Noooooooooou, I want to have more fun with ngWebsocket, damn it!');
+	});
+})
 .config(['$resourceProvider', function($resourceProvider) {
 	$resourceProvider.defaults.stripTrailingSlashes = false;
 }])
