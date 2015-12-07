@@ -201,10 +201,15 @@ angular.module('myApp.att', ['ngRoute'])
 			
 			AttSvc.save($scope.att).success(function(data) {
 				
-				$rootScope.backdrop = undefined;
+				if(data.result === 'success') {
+					$.notify('저장되었습니다.');
+					$location.path('/att');
+				} else if(data.result === 'dup') {
+					$.notify('이미 생성된 연습정보가 존재합니다.');
+					$location.path('/att');
+				}
 				
-				$location.path('/att');
-				$.notify('저장되었습니다.');
+				$rootScope.backdrop = undefined;
 			});
 		}
 	}
@@ -250,7 +255,7 @@ angular.module('myApp.att', ['ngRoute'])
 		
 		bootbox.dialog({
 			message: "연습정보 및 출석정보를 정말로 삭제하시겠습니까?",
-			title: "<i class='ion-android-alert' style='color:#CA4343;'></i> 삭제 확인",
+			title: "<i class='ion-android-alert'></i> 삭제 확인",
 			buttons: {
 				danger: {
 					label: "삭제",
@@ -319,8 +324,8 @@ angular.module('myApp.att', ['ngRoute'])
 		console.log('연습정보 마감');
 		
 		bootbox.dialog({
-			message: "연습정보 및 출석정보를 정말로 마감 하시겠습니까?",
-			title: "<i class='ion-android-alert' style='color:#CA4343;'></i> 마감 확인",
+			message: "연습정보 및 출석정보를 정말로 마감 하시겠습니까? 마감된 연습정보는 수정하실 수 없습니다.",
+			title: "<i class='ion-android-alert'></i> 마감 확인",
 			buttons: {
 				danger: {
 					label: "마감",
@@ -333,7 +338,7 @@ angular.module('myApp.att', ['ngRoute'])
 							$rootScope.backdrop = undefined;
 							
 							$route.reload();
-							$.notify('연습일정이 마감 되었습니다. 마감해제 전에 연습정보를 수정하실 수 없습니다.');
+							$.notify('연습일정이 마감 되었습니다.');
 						});
 					}
 				},
@@ -354,7 +359,7 @@ angular.module('myApp.att', ['ngRoute'])
 
 		bootbox.dialog({
 			message: "연습정보 및 출석정보를 정말로 마감 해제 하시겠습니까?",
-			title: "<i class='ion-android-alert' style='color:#CA4343;'></i> 마감 해제 확인",
+			title: "<i class='ion-android-alert'></i> 마감 해제 확인",
 			buttons: {
 				danger: {
 					label: "마감 해제",

@@ -446,7 +446,7 @@ exports.createPracticeInfo = function(req, res){
 				res.send({'result':'success'});	
 			});
 		} else {
-			
+			res.send({'result':'dup'});	
 		}
 	});
 };

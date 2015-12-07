@@ -14,8 +14,8 @@
 	<div class="panel" data-ng-repeat="att in attList | filter : keyword" data-ng-class="att.practiceCd=='AM'?'panel-success':att.practiceCd=='PM'?'panel-info':'panel-danger'">
 		<div class="panel-heading" data-ng-click="detail(att);" style="cursor: pointer;"><i data-ng-class="att.lockYn=='Y'?'ion-locked':'ion-calendar'"></i> <strong data-ng-bind="att.practiceDt"></strong> <span class="badge" data-ng-bind="att.practiceNm"></span> <span class="badge" data-ng-bind="att.attendanceCnt"></span> <span class="badge" data-ng-show="att.lockYn=='Y'">마감</span></div>
 		<ul class="list-group" style="font-size:90%;">
-			<li class="list-group-item" data-ng-show="att.musicInfo != ''"><i class="ion-music-note"></i> <span data-ng-bind="att.musicInfo"></span></li>
-			<li class="list-group-item" data-ng-show="att.etcMsg != ''"><i class="ion-android-document"></i> <span data-ng-bind="att.etcMsg"></span></li>
+			<li class="list-group-item" data-ng-show="att.musicInfo"><i class="ion-music-note"></i> <span data-ng-bind="att.musicInfo"></span></li>
+			<li class="list-group-item" data-ng-show="att.etcMsg"><i class="ion-android-document"></i> <span data-ng-bind="att.etcMsg"></span></li>
 			<li class="list-group-item">
 				<span>소프라노</span>
 				<span class="badge" data-ng-bind="att.s"></span>
