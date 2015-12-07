@@ -189,7 +189,12 @@ angular.module('myApp.att', ['ngRoute'])
 			$scope.$apply(function() {
 				$scope.att.practiceDt = moment(e.date).format("YYYY-MM-DD");
 			});
-		});
+		}).on("dp.show", function(e) {
+			$(this).attr('readonly', true);
+		}).on("dp.hide", function(e) {
+			$(this).attr('readonly', false);
+		})
+		;
 	});
 
 	/* 코드리스트 불러오기 */
@@ -205,10 +210,6 @@ angular.module('myApp.att', ['ngRoute'])
 		if(moment().days() == 0 && new Date().getHours() <= 12) idx = 0; /* 오전연습 */
 		else if(moment().days() == 0 && new Date().getHours() > 12) idx = 1; /* 오후연습 */
 		else idx = 2; /* 특별연습 */
-		
-		alert(idx);
-		
-		alert($scope.code.practiceList[idx].PRACTICE_NM);
 		
 		$scope.att.practiceCd = $scope.code.practiceList[idx].PRACTICE_CD;
 		$scope.att.practiceNm = $scope.code.practiceList[idx].PRACTICE_NM;
