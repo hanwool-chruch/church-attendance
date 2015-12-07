@@ -5,10 +5,10 @@
 		<div class="panel-body">
 			<div class="input-group date">
 				<span class="input-group-addon" id="sizing-addon3"><i class="ion-calendar"></i></span>
-				<input type="text" class="form-control" data-ng-datepicker data-ng-options="datepickerOptions" name="practiceDt" data-ng-model="att.practiceDt" aria-label="연습일자" placeholder="연습일자" id='datetimepicker' maxlength="10" data-ng-maxlength="10" data-ng-required="true" data-ng-pattern="/^\d{4}-\d{2}-\d{2}$/">
+				<input type="text" class="form-control" data-ng-model="att.practiceDt" aria-label="연습일자" placeholder="연습일자" id='datetimepicker' maxlength="10" data-ng-maxlength="10" data-ng-required="true" data-ng-pattern="/^\d{4}-\d{2}-\d{2}$/">
 				<div class="input-group-btn">
 					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						<span data-ng-bind="att.practiceNm"></span> <span class="caret"></span>
+						<span data-ng-bind="att.practimceNm"></span> <span class="caret"></span>
 					</button>
 					<ul class="dropdown-menu dropdown-menu-right">
 						<li data-ng-repeat=" c in code.practiceList"><a href="javascript:;" data-ng-bind="c.PRACTICE_NM" data-ng-click="att.practiceCd = c.PRACTICE_CD;att.practiceNm = c.PRACTICE_NM;"></a></li>

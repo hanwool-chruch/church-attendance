@@ -11,8 +11,7 @@ angular.module('myApp', [
 	'myApp.version',
 	'ngAnimate',
 	'ngRoute',
-	'ngResource',
-	'ng-bootstrap-datepicker'
+	'ngResource'
 ]).
 run(function($rootScope, $location, socket) {
 	

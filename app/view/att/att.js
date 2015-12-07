@@ -181,21 +181,16 @@ angular.module('myApp.att', ['ngRoute'])
 	
 	init();
 	
-	
-	$scope.datepickerOptions = {
-		format: 'yyyy-mm-dd',
-		language: 'ko',
-		autoclose: true,
-		weekStart: 0
-	}
-	/**
-	$(function () {
+	$(function(){
 		$('#datetimepicker').datetimepicker({
 			format: 'L',
 			locale: 'ko'
+		}).on("dp.change", function(e) {
+			$scope.$apply(function() {
+				$scope.att.practiceDt = moment(e.date).format("YYYY-MM-DD");
+			});
 		});
-    });
-    **/
+	});
 
 	/* 코드리스트 불러오기 */
 	$q.all([CodeSvc.getCodeList()])
