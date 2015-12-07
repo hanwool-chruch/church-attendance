@@ -181,6 +181,13 @@ angular.module('myApp.att', ['ngRoute'])
 	
 	init();
 	
+	
+	$scope.datepickerOptions = {
+		format: 'yyyy-mm-dd',
+		language: 'ko',
+		autoclose: true,
+		weekStart: 0
+	}
 	/**
 	$(function () {
 		$('#datetimepicker').datetimepicker({
