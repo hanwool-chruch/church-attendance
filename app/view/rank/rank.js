@@ -25,6 +25,9 @@ angular.module('myApp.rank', ['ngRoute'])
 	};
 	
 	init();
+
+	/* Backdrop 적용시 레이아웃 깨짐 방지 목업 div 엘리먼트 show */
+	$scope.mock = true;
 	
 	$rootScope.title = '출석순위';
 	$rootScope.title_icon = 'ion-trophy';
@@ -66,6 +69,8 @@ angular.module('myApp.rank', ['ngRoute'])
 			prevSpCnt = rank.spCnt;
 		});
 		
+		/* Backdrop 적용시 레이아웃 깨짐 방지 목업 div 엘리먼트 show */
+		$scope.mock = false;
 		$rootScope.backdrop = undefined;
 	});
 	
