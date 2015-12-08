@@ -23,7 +23,6 @@ choirzion_v2/db/mysql/create_database.sql
 ```
 ```javascript
 [접속정보 설정 예]
-DB정보는 꼭 변경하여서 사용해주시기 바랍니다.
  var db_config = {
 	host     : 'us-cdbr-iron-east-03.cleardb.net',
 	user     : 'b884ba11ab5f27',
