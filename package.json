@@ -8,7 +8,7 @@
   "dependencies": {
     "bower": "^1.6.5",
     "http-server": "^0.6.1",
-    "jasmine-core": "^2.3.4",
+    "jasmine-core": "2.3.0",
     "karma": "~0.12",
     "karma-chrome-launcher": "^0.1.12",
     "karma-firefox-launcher": "^0.1.6",
