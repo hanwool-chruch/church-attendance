@@ -137,6 +137,13 @@ angular.module('myApp.att', ['ngRoute'])
 		AttSvc.getAttList(p).success(function(data) {
 			
 			if(data != null && data.length > 0) {
+				
+				if(data.length == 50) {
+					$scope.needMoreButton = true;
+				} else {
+					$scope.needMoreButton = false;
+				}
+				
 				for (var i in data) {$scope.attList.push(data[i]);}
 				p++;
 			}
@@ -151,6 +158,13 @@ angular.module('myApp.att', ['ngRoute'])
 	}
 		
 	AttSvc.getAttList(1).success(function(data) {
+		
+		if(data.length == 50) {
+			$scope.needMoreButton = true;
+		} else {
+			$scope.needMoreButton = false;
+		}
+		
 		$scope.attList = data;
 		$scope.mock = false;
 		$rootScope.backdrop = undefined;
