@@ -89,6 +89,7 @@ io.on('connection',function(socket) {
 	/* 연습정보 삭제 */
 	socket.on('removeAtt', function(data){
 		io.sockets.in('hall').emit('refreshPage', "연습정보가 삭제되었습니다.");
+		io.sockets.in(socket.room).emit('backToList', "연습정보가 삭제되었습니다.");
 	});
 	
 	/* 출석 체크 */

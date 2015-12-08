@@ -77,8 +77,12 @@ body.backdrop {
 table.att tr.att {
 	background-color: #FFE18A;
 }
-tr.att i.ion-checkmark-round {
+tr.att i.chk {
 	color: #10A000;
+}
+
+tr.att i.unchk {
+	color: #E6E6E6;
 }
 
 div.notify {

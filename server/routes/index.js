@@ -1,4 +1,3 @@
-
 /*
  * GET home page.
  */
@@ -363,6 +362,8 @@ exports.select = function(req, res){
 				res.send({result:'success'});
 			});
 		}
+		
+		res.send({result:'success'});
 	});
 }
 

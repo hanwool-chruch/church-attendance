@@ -283,6 +283,11 @@ angular.module('myApp.att', ['ngRoute'])
 		$.notify('연습곡 정보가 갱신되었습니다.');
 	});
 	
+	/* 연습정보 목록으로 이동 */
+	socket.on('backToList', function(data) {
+		$location.path('/att');
+	});
+	
 	/* 연습정보가 변경되었을때, 페이지 리프레시 */
 	socket.on('refreshPage', function(data) {
 		$rootScope.backdrop = "backdrop";
