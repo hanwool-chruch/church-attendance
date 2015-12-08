@@ -44,6 +44,10 @@ app.put		('/rest/att/:practiceDt/:practiceCd/unlockAtt', routes.unlockAtt);		/* 
 /* 출석순위 */
 app.get		('/rest/rank', routes.rank);
 
+/* 회의록 */
+app.get		('/rest/doc', routes.docList);
+app.get		('/rest/doc/:docId', routes.modifyDoc);
+
 /* 웹소켓 */
 var io = socketio.listen(server);
 io.set('log level',1);

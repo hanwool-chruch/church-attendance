@@ -1,3 +1,20 @@
 <div class="container">
-	
+	<div class="btn-group btn-group-justified" role="group" aria-label="새 회의록 입력" style="margin-bottom:20px;">
+		<div class="btn-group" role="group">
+			<button type="button" class="btn btn-success btn-md"><i class='ion-plus'></i> 새 회의록 등록</button>
+		</div>
+	</div>
+	<div class="input-group" style="margin-bottom:15px;">
+	  <span class="input-group-addon" id="basic-addon1"><i class='ion-search'></i></span>
+	  <input type="text" data-ng-model="keyword" class="form-control" placeholder="검색어 입력" aria-describedby="basic-addon1">
+	</div>
+	<div class="panel" data-ng-class="doc.lockYn=='Y'?'panel-success':doc.lockYn=='N'?'panel-danger':''" data-ng-repeat="doc in docList | filter:keyword">
+		<div class="panel-heading" style="cursor: pointer;">
+			<strong data-ng-bind="doc.meetTitle"></strong>
+			<br/>
+			<i data-ng-class="doc.lockYn=='Y'?'ion-locked':doc.lockYn=='N'?'ion-calendar':''"></i> <span data-ng-bind="doc.meetDt"></span>
+			<span class="badge" data-ng-show="doc.lockYn=='Y'">마감</span>
+		</div>
+		<div class="panel-body" data-ng-bind-html="doc.meetContents" data-ng-trim="true" style="line-height: 10px;"></div>
+	</div>
 </div>

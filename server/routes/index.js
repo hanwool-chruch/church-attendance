@@ -463,17 +463,11 @@ exports.createPracticeInfo = function(req, res){
 
 /* 회의록 목록*/
 exports.docList = function(req, res){
-	
 	var query = "select MEET_SEQ meetSeq,MEET_DT meetDt,MEET_TITLE meetTitle,REPLACE(MEET_CONTENTS,'\n','<br/>') meetContents,REG_DT regDt,UPT_DT uptDt,LOCK_YN lockYn from MEETTING_DOC order by MEET_DT DESC, MEET_SEQ DESC";
-
 	db.query(query, {}, function(err, rows){
-		res.render('docList', {list:rows, user: req.session.passport.user || {}});
+		console.log(rows);
+		res.send(rows);
 	});
-};
-
-/* 회의록 ? */
-exports.doc = function(req, res){
-	res.render('doc', {user: req.session.passport.user || {}});
 };
 
 /* 회의록 생성 */
@@ -491,10 +485,10 @@ exports.createDoc = function(req, res){
 };
 /* 회의록 상세정보*/
 exports.modifyDoc = function(req, res){	
-	var meetSeq = req.body.meetSeq;
+	var docId = req.params.docId;
 	//console.log('meetSeq : '+meetSeq);
-	db.query("select MEET_SEQ meetSeq,MEET_DT meetDt,MEET_TITLE meetTitle,MEET_CONTENTS meetContents,REG_DT regDt,UPT_DT uptDt,LOCK_YN lockYn from meetting_doc where MEET_SEQ = ?", [ meetSeq ], function(err, row){	
-		res.render('modifyDoc', {data:row[0], user: req.session.passport.user || {}});
+	db.query("select MEET_SEQ meetSeq,MEET_DT meetDt,MEET_TITLE meetTitle,MEET_CONTENTS meetContents,REG_DT regDt,UPT_DT uptDt,LOCK_YN lockYn from meetting_doc where MEET_SEQ = ?", [ docId ], function(err, row){
+		res.send(row[0]);
 	});
 };
 /* 회의록 수정 */
