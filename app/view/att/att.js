@@ -285,6 +285,7 @@ angular.module('myApp.att', ['ngRoute'])
 	
 	/* 연습정보 목록으로 이동 */
 	socket.on('backToList', function(data) {
+		$.notify('연습정보가 삭제되었습니다.');
 		$location.path('/att');
 	});
 	
@@ -332,6 +333,11 @@ angular.module('myApp.att', ['ngRoute'])
 			$scope.eList = resultArray[1].data.e;
 			$scope.hList = resultArray[1].data.h;
 			$scope.xList = resultArray[1].data.x;
+			
+			if(!$scope.att) {
+				$.notify('존재하지 않는 연습정보입니다.');
+				$location.path('/att');
+			}
 			
 			$rootScope.backdrop = undefined;
 		});
