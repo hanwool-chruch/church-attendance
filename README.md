@@ -10,21 +10,21 @@ http://choirzion-v2.herokuapp.com/
 ## 설치
 ### 프로젝트 내려받기
 ```
-> git clone https://github.com/yhzion/choirzion_v2.git
-> cd choirzion_v2
+> git clone https://github.com/yhzion/choirzion-demo.git
+> cd choirzion-demo
 ```
 
 ### Mysql 테이블 생성
 직접 준비한 mysql에 접속해서 `테이블 생성 스크립트` 실행
 ```
 [생성 파일위치]
-choirzion_v2/db/mysql/create_database.sql
+choirzion-demo/db/mysql/create_database.sql
 ```
 
 ### Mysql 접속정보 설정
 ```
 [설정파일 위치]
-/choirzion_v2/server/routes/index.js
+/choirzion-demo/server/routes/index.js
 ```
 ```javascript
 [접속정보 설정 예]
@@ -52,5 +52,5 @@ http://localhost:8000/
 
 ## Contact
 
-For more information on choirzion_v2 please email me.
+For more information on choirzion-demo please email me.
 email : gplusit@gmail.com
