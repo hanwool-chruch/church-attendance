@@ -1,3 +1,25 @@
 <div class="container">
-	
+	<p class='small'>- 조회기간 : <span data-ng-bind="startDt"></span> ~ <span data-ng-bind="endDt"></span><br/>
+	- 대상 : 현재 활동중인 대원<br/>
+	- 산정기준 : 오전출석, 오후출석, 특별연습출석 순</p>
+	<div class="panel panel-default">
+		<table class="table">
+			 <thead>
+			 <tr>
+			 	<th class="text-center">순위</th>
+			 	<th class="text-center">이름</th>
+			 	<th class="text-center">오전</th>
+			 	<th class="text-center">오후</th>
+			 	<th class="text-center">특별</th>
+			 </tr>
+			 </thead>
+			 <tr data-ng-repeat="rank in rankList">
+			 	<td class="text-center" data-ng-bind="rank.rankNo"></td>
+			 	<td class="text-center" data-ng-bind="rank.memberNm+' '+rank.cPositionNm"></td>
+			 	<td class="text-center" data-ng-bind="rank.amCnt + '/' + rank.amPracticeCnt">-</td>
+			 	<td class="text-center" data-ng-bind="rank.pmCnt + '/' + rank.pmPracticeCnt">-</td>
+			 	<td class="text-center" data-ng-bind="rank.spCnt + '/' + rank.spPracticeCnt">-</td>
+			 </tr>
+		</table>
+	</div>
 </div>

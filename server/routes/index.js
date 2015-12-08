@@ -51,9 +51,9 @@ exports.rank = function(req, res){
 	var curYear = curDate.getFullYear();
 	var curMonth = (curDate.getMonth()+1);
 
-	//console.log('현재날짜 : ' + curDate);
-	//console.log('현재연도 : ' + curYear);
-	//console.log('현재월 : ' + curMonth);
+	console.log('현재날짜 : ' + curDate);
+	console.log('현재연도 : ' + curYear);
+	console.log('현재월 : ' + curMonth);
 
 	var startDt = '';
 	var endDt = '';
@@ -66,8 +66,8 @@ exports.rank = function(req, res){
 		endDt = (curYear) + "-11-30";
 	}
 
-	//console.log('조회시작기간 : ' + startDt);
-	//console.log('조회종료기간 : ' + endDt);
+	console.log('조회시작기간 : ' + startDt);
+	console.log('조회종료기간 : ' + endDt);
 
 	var query = "  select * from ( "+
 				"	select  "+
@@ -102,8 +102,8 @@ exports.rank = function(req, res){
 		startDt,
 		endDt
 	], function(err, rows){
-		//console.log(rows);
-		res.render('rank', {list:rows, user: req.session.passport.user || {}});
+		console.log(rows);
+		res.send(rows);
 	});
 };
 

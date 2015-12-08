@@ -41,6 +41,9 @@ app.post	('/rest/att/:practiceDt/:practiceCd/deselect', routes.deselect);		/* �
 app.put		('/rest/att/:practiceDt/:practiceCd/lockAtt', routes.lockAtt);			/* 마감 */
 app.put		('/rest/att/:practiceDt/:practiceCd/unlockAtt', routes.unlockAtt);		/* 마감 해제 */
 
+/* 출석순위 */
+app.get		('/rest/rank', routes.rank);
+
 /* 웹소켓 */
 var io = socketio.listen(server);
 io.set('log level',1);
