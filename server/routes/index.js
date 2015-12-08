@@ -361,9 +361,9 @@ exports.select = function(req, res){
 			db.query("INSERT INTO choir_attendance VALUES (?,?,?)", [ practiceDt, practiceCd, memberId ], function(){
 				res.send({result:'success'});
 			});
+		} else {
+			res.send({result:'success'});
 		}
-		
-		res.send({result:'success'});
 	});
 }
 
