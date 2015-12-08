@@ -2,6 +2,11 @@
 
 이 프로젝트는 HTML5의 웹소켓을 이용하여 동시에 여러명이 출석체크를 진행할 수 있도록 설계되었습니다. Node.js, jQuery, AngularJS, Bootstrap 등의 프로그램들을 이용하였고, SPA(Single Page Application) 입니다.
 
+### 데모
+```
+http://choirzion-v2.herokuapp.com/
+```
+
 ## 설치
 ### 프로젝트 내려받기
 ```
