@@ -51,9 +51,9 @@ exports.rank = function(req, res){
 	var curYear = curDate.getFullYear();
 	var curMonth = (curDate.getMonth()+1);
 
-	console.log('현재날짜 : ' + curDate);
-	console.log('현재연도 : ' + curYear);
-	console.log('현재월 : ' + curMonth);
+//	console.log('현재날짜 : ' + curDate);
+//	console.log('현재연도 : ' + curYear);
+//	console.log('현재월 : ' + curMonth);
 
 	var startDt = '';
 	var endDt = '';
@@ -66,8 +66,8 @@ exports.rank = function(req, res){
 		endDt = (curYear) + "-11-30";
 	}
 
-	console.log('조회시작기간 : ' + startDt);
-	console.log('조회종료기간 : ' + endDt);
+//	console.log('조회시작기간 : ' + startDt);
+//	console.log('조회종료기간 : ' + endDt);
 
 	var query = "  select * from ( "+
 				"	select  "+
@@ -102,7 +102,7 @@ exports.rank = function(req, res){
 		startDt,
 		endDt
 	], function(err, rows){
-		console.log(rows);
+//		console.log(rows);
 		res.send(rows);
 	});
 };
@@ -151,7 +151,7 @@ exports.attInfoDetail = function(req, res){
 	var practiceDt = req.params.practiceDt;
 	var practiceCd = req.params.practiceCd;
 
-	console.log('[practiceDt='+practiceDt+';practiceCd='+practiceCd+']');
+//	console.log('[practiceDt='+practiceDt+';practiceCd='+practiceCd+']');
 
 	var query = " SELECT "+
                 "	    i.PRACTICE_DT practiceDt,  "+
@@ -271,8 +271,8 @@ exports.memberList = function(req, res){
 /* 대원 상세정보 */
 exports.member = function(req, res){
 	
-	console.log(req.body);
-	console.log(req.params);
+//	console.log(req.body);
+//	console.log(req.params);
 	
 	var query = " select * from ( "+
 	" 			select  "+
@@ -347,15 +347,15 @@ exports.select = function(req, res){
 	var practiceCd = req.params.practiceCd;
 	var memberId = req.body.memberId;
 
-	console.log('practiceDt : ', practiceDt);
-	console.log('practiceCd : ', practiceCd);
-	console.log('memberId : ', memberId);
+//	console.log('practiceDt : ', practiceDt);
+//	console.log('practiceCd : ', practiceCd);
+//	console.log('memberId : ', memberId);
 
 	
 	db.query("SELECT count(*) cnt FROM choir_attendance i WHERE i.PRACTICE_DT = ? and i.PRACTICE_CD = ? AND i.MEMBER_ID = ? ", [ practiceDt, practiceCd, memberId ], function(err, row){	
 
-		console.log('row[0] : ',row[0]);
-		console.log('row[0].cnt : ',row[0].cnt);
+//		console.log('row[0] : ',row[0]);
+//		console.log('row[0].cnt : ',row[0].cnt);
 		
 		if(row[0].cnt == 0) {
 			db.query("INSERT INTO choir_attendance VALUES (?,?,?)", [ practiceDt, practiceCd, memberId ], function(){
@@ -381,8 +381,8 @@ exports.deselect = function(req, res){
 /* 연습곡 갱신 */
 exports.saveMusicInfo = function(req, res){
 	
-	console.log(req.params);
-	console.log(req.body);
+//	console.log(req.params);
+//	console.log(req.body);
 	
 	var practiceDt = req.params.practiceDt;
 	var practiceCd = req.params.practiceCd;
@@ -396,8 +396,8 @@ exports.saveMusicInfo = function(req, res){
 /* 메모 갱신 */
 exports.saveEtcMsg = function(req, res){
 	
-	console.log(req.params);
-	console.log(req.body);
+//	console.log(req.params);
+//	console.log(req.body);
 	
 	var practiceDt = req.params.practiceDt;
 	var practiceCd = req.params.practiceCd;
@@ -414,8 +414,8 @@ exports.removeAttInfo = function(req, res){
 	var practiceDt = req.params.practiceDt;
 	var practiceCd = req.params.practiceCd;
 	
-	console.log('practiceDt :',practiceDt);
-	console.log('practiceCd :',practiceCd);
+//	console.log('practiceDt :',practiceDt);
+//	console.log('practiceCd :',practiceCd);
 
 	db.query("DELETE FROM CHOIR_ATTENDANCE WHERE PRACTICE_DT = ? AND PRACTICE_CD = ?", [ practiceDt, practiceCd], function(){
 		db.query("DELETE FROM CHOIR_PRACTICE_INFO WHERE PRACTICE_DT = ? AND PRACTICE_CD = ?", [ practiceDt, practiceCd],function(){
@@ -439,20 +439,20 @@ exports.createPracticeInfo = function(req, res){
 	var etgMsg = req.body.etgMsg;
 	var musicInfo = req.body.musicInfo;
 	
-	console.log('practiceDt :', practiceDt);
-	console.log('practiceCd :', practiceCd);
-	console.log('etgMsg :', etgMsg);
-	console.log('musicInfo :', musicInfo);
+//	console.log('practiceDt :', practiceDt);
+//	console.log('practiceCd :', practiceCd);
+//	console.log('etgMsg :', etgMsg);
+//	console.log('musicInfo :', musicInfo);
 
 	db.query("SELECT count(*) cnt FROM CHOIR_PRACTICE_INFO i WHERE i.PRACTICE_DT = ? and i.PRACTICE_CD = ?", [ practiceDt, practiceCd ], function(err, row){	
 
-		console.log('row[0] : ',row[0]);
-		console.log('row[0].cnt : ',row[0].cnt);
+//		console.log('row[0] : ',row[0]);
+//		console.log('row[0].cnt : ',row[0].cnt);
 		
 		if(row[0].cnt == 0) {
 			db.query("insert into CHOIR_PRACTICE_INFO(PRACTICE_DT, PRACTICE_CD, MUSIC_INFO, ETC_MSG) values(?,?,?,?)", [ practiceDt, practiceCd, musicInfo, etgMsg ], function(err, row){
-				console.log(err);
-				console.log("insert statement executed!");
+//				console.log(err);
+//				console.log("insert statement executed!");
 				res.send({'result':'success'});	
 			});
 		} else {
@@ -465,7 +465,7 @@ exports.createPracticeInfo = function(req, res){
 exports.docList = function(req, res){
 	var query = "select MEET_SEQ meetSeq,MEET_DT meetDt,MEET_TITLE meetTitle,REPLACE(MEET_CONTENTS,'\n','<br/>') meetContents,REG_DT regDt,UPT_DT uptDt,LOCK_YN lockYn from MEETTING_DOC order by MEET_DT DESC, MEET_SEQ DESC";
 	db.query(query, {}, function(err, rows){
-		console.log(rows);
+//		console.log(rows);
 		res.send(rows);
 	});
 };
