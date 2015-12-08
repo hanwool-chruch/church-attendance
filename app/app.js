@@ -37,7 +37,6 @@ function selectMenu(i) {
 }
 
 $(function() {
-	
 	/* 선택된 메뉴 활성화  */
 	$('#navbar li').click(function() {
 		$('#navbar li').removeClass('active');

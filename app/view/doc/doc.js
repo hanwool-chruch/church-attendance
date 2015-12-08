@@ -40,5 +40,28 @@ angular.module('myApp.doc', ['ngRoute'])
 		$scope.docList = data;
 		$rootScope.backdrop = undefined;
 	});
+}])
+.controller('DocDetailCtrl', [ '$scope', '$rootScope', 'DocSvc', '$sce', 
+                 function($scope ,  $rootScope ,  DocSvc ,  $sce) {
+	var init = function () {
+		selectMenu(4); /* 메뉴 선택 */
+	};
 	
-}]);
+	init();
+	
+	$rootScope.title = '회의록';
+	$rootScope.title_icon = 'ion-easel';
+	
+	$rootScope.backdrop = 'backdrop';
+	
+	DocSvc.getDocList().success(function(data) {
+		
+		for(var i in data) {
+			data[i]['meetContents'] = $sce.trustAsHtml((data[i]['meetContents']));
+		}
+		
+		$scope.docList = data;
+		$rootScope.backdrop = undefined;
+	});
+}])
+;

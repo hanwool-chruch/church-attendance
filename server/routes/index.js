@@ -18,13 +18,11 @@ function handleDisconnect() {
 	db = mysql.createConnection(db_config);
 	db.connect(function(err) {
 		if (err) {
-			//console.log('error when connecting to db:', err);
 			setTimeout(handleDisconnect, 2000);
 		}
 	});
 	
 	db.on('error', function(err) {
-		//console.log('db error', err);
 		if (err.code === 'PROTOCOL_CONNECTION_LOST') {
 			handleDisconnect();
 		} else {
@@ -35,12 +33,11 @@ function handleDisconnect() {
 
 handleDisconnect();
 
-/* 메인화면 장기 결석자 */
+/* 장기 결석자 목록 (3주) */
 exports.index = function(req, res){
 	var query = "SELECT C.MEMBER_ID memberId, C.MEMBER_NM memberNm, C.PART_CD partCd, (SELECT ORDERBY_NO FROM CHOIR_PART D WHERE D.PART_CD=C.PART_CD) ORDERBY_NO,C.PHONE_NO phoneNo  FROM CHOIR_MEMBER C WHERE STATUS_CD='O' AND PART_CD !='E' AND NOT EXISTS ( SELECT A.MEMBER_ID FROM (SELECT MEMBER_ID, PRACTICE_DT, PRACTICE_CD FROM CHOIR_ATTENDANCE) A, (SELECT PRACTICE_DT, PRACTICE_CD FROM CHOIR_PRACTICE_INFO WHERE PRACTICE_CD='AM' AND LOCK_YN='Y' ORDER BY PRACTICE_DT DESC LIMIT 3) B WHERE A.PRACTICE_DT = B.PRACTICE_DT AND A.PRACTICE_CD = B.PRACTICE_CD AND C.MEMBER_ID = A.MEMBER_ID) ORDER BY ORDERBY_NO ASC";
 	db.query(query, {}, function(err, rows){
-		//console.log(rows);
-		res.render('index', {list:rows, user: req.session.passport.user || {}});
+		res.send(rows);
 	});
 };
 
@@ -50,10 +47,6 @@ exports.rank = function(req, res){
 	var curDate = new Date();
 	var curYear = curDate.getFullYear();
 	var curMonth = (curDate.getMonth()+1);
-
-//	console.log('현재날짜 : ' + curDate);
-//	console.log('현재연도 : ' + curYear);
-//	console.log('현재월 : ' + curMonth);
 
 	var startDt = '';
 	var endDt = '';
@@ -65,9 +58,6 @@ exports.rank = function(req, res){
 		startDt = (curYear-1) + "-12-01";
 		endDt = (curYear) + "-11-30";
 	}
-
-//	console.log('조회시작기간 : ' + startDt);
-//	console.log('조회종료기간 : ' + endDt);
 
 	var query = "  select * from ( "+
 				"	select  "+
@@ -87,7 +77,7 @@ exports.rank = function(req, res){
 				"		where a.STATUS_CD='O' "+
 				"	) m "+
 				"	order by m.amCnt desc, m.pmCnt desc, m.spCnt desc, m.memberNm ";
-	//console.log('query : ' + query)
+
 	db.query(query, [
 		startDt,
 		endDt,
@@ -102,7 +92,6 @@ exports.rank = function(req, res){
 		startDt,
 		endDt
 	], function(err, rows){
-//		console.log(rows);
 		res.send(rows);
 	});
 };
@@ -110,16 +99,9 @@ exports.rank = function(req, res){
 /* 연습정보 목록 */
 exports.attList = function(req, res){
 	
-	//console.log(req.params);
-	//console.log(req.body);
-	
 	var page = req.params.page;
 	var size = 50;
 	var sRow = (page-1) * size;
-	
-	//console.log('page',page);
-	//console.log('sRow',sRow);
-	//console.log('size',size);
 	
 	var query = "	   SELECT "+
                 "	    i.PRACTICE_DT practiceDt,  "+
@@ -138,9 +120,7 @@ exports.attList = function(req, res){
                 "	  FROM CHOIR_PRACTICE_INFO i, CHOIR_PRACTICE p "+
                 "	 WHERE i.PRACTICE_CD = p.PRACTICE_CD "+
                 "	 ORDER BY i.PRACTICE_DT DESC , p.ORDERBY_NO DESC Limit ?,?";
-	//console.log('query : ' + query)
 	db.query(query, [sRow, size], function(err, rows){
-		//console.log(rows);
 		res.send(rows);
 	});
 };
@@ -150,8 +130,6 @@ exports.attInfoDetail = function(req, res){
 
 	var practiceDt = req.params.practiceDt;
 	var practiceCd = req.params.practiceCd;
-
-//	console.log('[practiceDt='+practiceDt+';practiceCd='+practiceCd+']');
 
 	var query = " SELECT "+
                 "	    i.PRACTICE_DT practiceDt,  "+
@@ -271,9 +249,6 @@ exports.memberList = function(req, res){
 /* 대원 상세정보 */
 exports.member = function(req, res){
 	
-//	console.log(req.body);
-//	console.log(req.params);
-	
 	var query = " select * from ( "+
 	" 			select  "+
 	" 			    MEMBER_ID   memberId, "+
@@ -347,16 +322,8 @@ exports.select = function(req, res){
 	var practiceCd = req.params.practiceCd;
 	var memberId = req.body.memberId;
 
-//	console.log('practiceDt : ', practiceDt);
-//	console.log('practiceCd : ', practiceCd);
-//	console.log('memberId : ', memberId);
-
-	
 	db.query("SELECT count(*) cnt FROM choir_attendance i WHERE i.PRACTICE_DT = ? and i.PRACTICE_CD = ? AND i.MEMBER_ID = ? ", [ practiceDt, practiceCd, memberId ], function(err, row){	
 
-//		console.log('row[0] : ',row[0]);
-//		console.log('row[0].cnt : ',row[0].cnt);
-		
 		if(row[0].cnt == 0) {
 			db.query("INSERT INTO choir_attendance VALUES (?,?,?)", [ practiceDt, practiceCd, memberId ], function(){
 				res.send({result:'success'});
@@ -381,9 +348,6 @@ exports.deselect = function(req, res){
 /* 연습곡 갱신 */
 exports.saveMusicInfo = function(req, res){
 	
-//	console.log(req.params);
-//	console.log(req.body);
-	
 	var practiceDt = req.params.practiceDt;
 	var practiceCd = req.params.practiceCd;
 	var musicInfo = req.body.musicInfo;
@@ -395,9 +359,6 @@ exports.saveMusicInfo = function(req, res){
 
 /* 메모 갱신 */
 exports.saveEtcMsg = function(req, res){
-	
-//	console.log(req.params);
-//	console.log(req.body);
 	
 	var practiceDt = req.params.practiceDt;
 	var practiceCd = req.params.practiceCd;
@@ -414,22 +375,12 @@ exports.removeAttInfo = function(req, res){
 	var practiceDt = req.params.practiceDt;
 	var practiceCd = req.params.practiceCd;
 	
-//	console.log('practiceDt :',practiceDt);
-//	console.log('practiceCd :',practiceCd);
-
 	db.query("DELETE FROM CHOIR_ATTENDANCE WHERE PRACTICE_DT = ? AND PRACTICE_CD = ?", [ practiceDt, practiceCd], function(){
 		db.query("DELETE FROM CHOIR_PRACTICE_INFO WHERE PRACTICE_DT = ? AND PRACTICE_CD = ?", [ practiceDt, practiceCd],function(){
 			res.send({result : "success"});
 		});
 	});
 }
-
-/* 연습정보 등록 */
-/*
-exports.practiceInfo = function(req, res){
-	res.render('practiceInfo', {user: req.session.passport.user || {}});
-};
-*
 
 /* 연습정보 생성 */
 exports.createPracticeInfo = function(req, res){
@@ -439,20 +390,10 @@ exports.createPracticeInfo = function(req, res){
 	var etgMsg = req.body.etgMsg;
 	var musicInfo = req.body.musicInfo;
 	
-//	console.log('practiceDt :', practiceDt);
-//	console.log('practiceCd :', practiceCd);
-//	console.log('etgMsg :', etgMsg);
-//	console.log('musicInfo :', musicInfo);
-
 	db.query("SELECT count(*) cnt FROM CHOIR_PRACTICE_INFO i WHERE i.PRACTICE_DT = ? and i.PRACTICE_CD = ?", [ practiceDt, practiceCd ], function(err, row){	
 
-//		console.log('row[0] : ',row[0]);
-//		console.log('row[0].cnt : ',row[0].cnt);
-		
 		if(row[0].cnt == 0) {
 			db.query("insert into CHOIR_PRACTICE_INFO(PRACTICE_DT, PRACTICE_CD, MUSIC_INFO, ETC_MSG) values(?,?,?,?)", [ practiceDt, practiceCd, musicInfo, etgMsg ], function(err, row){
-//				console.log(err);
-//				console.log("insert statement executed!");
 				res.send({'result':'success'});	
 			});
 		} else {
@@ -465,7 +406,6 @@ exports.createPracticeInfo = function(req, res){
 exports.docList = function(req, res){
 	var query = "select MEET_SEQ meetSeq,MEET_DT meetDt,MEET_TITLE meetTitle,REPLACE(MEET_CONTENTS,'\n','<br/>') meetContents,REG_DT regDt,UPT_DT uptDt,LOCK_YN lockYn from MEETTING_DOC order by MEET_DT DESC, MEET_SEQ DESC";
 	db.query(query, {}, function(err, rows){
-//		console.log(rows);
 		res.send(rows);
 	});
 };
@@ -478,19 +418,18 @@ exports.createDoc = function(req, res){
 
 	db.query("insert into MEETTING_DOC(MEET_DT, MEET_TITLE, MEET_CONTENTS, REG_DT, UPT_DT) values(?,?,?,current_timestamp,current_timestamp)", 
 		[ meetDt, meetTitle, meetContents], function(){
-		res.writeHead(302, {'Location': '/docList'});
-		res.end();	
+		res.send({result:'success'});
 	});
-
 };
+
 /* 회의록 상세정보*/
 exports.modifyDoc = function(req, res){	
 	var docId = req.params.docId;
-	//console.log('meetSeq : '+meetSeq);
 	db.query("select MEET_SEQ meetSeq,MEET_DT meetDt,MEET_TITLE meetTitle,MEET_CONTENTS meetContents,REG_DT regDt,UPT_DT uptDt,LOCK_YN lockYn from meetting_doc where MEET_SEQ = ?", [ docId ], function(err, row){
 		res.send(row[0]);
 	});
 };
+
 /* 회의록 수정 */
 exports.updateDoc = function(req, res){
 
@@ -501,59 +440,25 @@ exports.updateDoc = function(req, res){
 
 	db.query("update MEETTING_DOC set MEET_DT = ?,MEET_TITLE = ?,MEET_CONTENTS = ?,UPT_DT = current_timestamp where MEET_SEQ = ?", 
 		[ meetDt, meetTitle, meetContents, meetSeq], function(){
-		res.writeHead(302, {'Location': '/docList'});
-		res.end();	
+		res.send({result:'success'});	
 	});
 };
+
 /*회의록 제거*/
 exports.removeDoc = function(req, res){
-
-	var meetSeq = req.body.meetSeq;
-
-	db.query("delete from MEETTING_DOC where MEET_SEQ = ?", [ meetSeq], function(){
-		res.writeHead(302, {'Location': '/docList'});
-		res.end();	
+	db.query("delete from MEETTING_DOC where MEET_SEQ = ?", [req.body.meetSeq], function(){
+		res.send({result:'success'});
 	});
 };
+
 /* 회의록 마감*/
 exports.closeDoc = function(req, res){
 
-	var meetSeq = req.body.meetSeq;
-
-	db.query("update MEETTING_DOC set LOCK_YN = 'Y' where MEET_SEQ = ?", [ meetSeq], function(){
-		res.writeHead(302, {'Location': '/docList'});
-		res.end();	
+	db.query("update MEETTING_DOC set LOCK_YN = 'Y' where MEET_SEQ = ?", [req.body.meetSeq], function(){
+		res.send({result:'success'});	
 	});
 };
 
-/*대원 상세정보*/
-exports.modifyUser = function(req, res){
-	
-	var memberId = req.body.memberId;
-
-	//console.log(memberId);
-
-	var query = " 			select  "+
-                " 			    MEMBER_ID   memberId, "+
-                " 			    MEMBER_NM   memberNm, "+
-                " 			    C_POSITION_CD cPositionCd, "+
-                " 			    PHONE_NO    phoneNo, "+
-                " 			    PART_CD     partCd, "+
-                " 			    POSITION_CD positionCd, "+
-                " 			    STATUS_CD   statusCd, "+
-                " 			    ETC_MSG     etcMsg "+
-                " 			from "+
-                " 			    choir_member a where member_id = ?";
-
-	db.query(query, memberId, function(err, row){
-
-		res.render('modifyUser', {data:row[0], user: req.session.passport.user || {}});
-	});
-}
-/* 대원 등록 화면으로 이동 */
-exports.regUser = function(req, res){
-	res.render('regUser', {user: req.session.passport.user || {}});
-}
 /* 대원정보 저장 */
 exports.insertMember = function(req, res){
 	
