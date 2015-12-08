@@ -132,7 +132,7 @@ angular.module('myApp.member', ['ngRoute', 'ngResource'])
 	$scope.save = function() {
 			
 		if($scope.memberForm.$invalid) {
-			$.notify('이름 혹은 핸드폰 전화번호를 형식에 맞게 입력해주세요.',{delay:0});
+			$.notify('이름 혹은 핸드폰 전화번호를 형식에 맞게 입력해주세요.');
 		} else {
 			
 			$rootScope.backdrop = 'backdrop';
@@ -187,7 +187,7 @@ angular.module('myApp.member', ['ngRoute', 'ngResource'])
 	$scope.save = function() {
 			
 		if($scope.memberForm.$invalid) {
-			$.notify('이름 혹은 핸드폰 전화번호를 형식에 맞게 입력해주세요.', {delay:0});
+			$.notify('이름 혹은 핸드폰 전화번호를 형식에 맞게 입력해주세요.');
 		} else {
 			
 			$rootScope.backdrop = 'backdrop';

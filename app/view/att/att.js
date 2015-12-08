@@ -318,7 +318,7 @@ angular.module('myApp.att', ['ngRoute'])
 				});
 	});
 	
-	var attDataLoad = function() { 
+	var attDataLoad = function() {
 		
 		$q.all([CodeSvc.getCodeList(), AttSvc.getDetail($routeParams.practiceDt, $routeParams.practiceCd)])
 	
