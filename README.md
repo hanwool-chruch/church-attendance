@@ -41,8 +41,10 @@ npm install
 ```
 npm start
 ```
-
-Now browse to the app at `http://localhost:8000/.
+### 어플리케이션 접속
+```
+http://localhost:8000/
+```
 
 ## Contact
 
