@@ -112,10 +112,8 @@ angular.module('myApp.att', ['ngRoute'])
 	
 	/* 연습정보가 변경되었을때, 페이지 리프레시 */
 	socket.on('refreshPage', function(data) {
+		$route.reload();
 		$.notify(data);
-		setTimeout(function(){
-			$route.reload();
-		}, 500);
 	});
 	
 	/* Backdrop 적용시 레이아웃 깨짐 방지 목업 div 엘리먼트 show */
@@ -184,9 +182,11 @@ angular.module('myApp.att', ['ngRoute'])
 	init();
 	
 	$(function(){
+		
+		moment.locale('ko', { week: { dow: 1 } });
+		
 		$('#datetimepicker').datetimepicker({
-			format: 'L',
-			locale: 'ko'
+			format: 'L'
 		}).on("dp.change", function(e) {
 			$scope.$apply(function() {
 				$scope.att.practiceDt = moment(e.date).format("YYYY-MM-DD");
@@ -259,6 +259,16 @@ angular.module('myApp.att', ['ngRoute'])
 .controller('AttDetailCtrl', [ '$scope', '$rootScope', 'AttSvc', '$location', 'CodeSvc', '$q', '$routeParams', 'socket', '$route',
                        function($scope ,  $rootScope ,  AttSvc ,  $location ,  CodeSvc ,  $q ,  $routeParams ,  socket ,  $route) {
 	
+	$rootScope.title = '출석관리';
+	$rootScope.title_icon = 'ion-checkmark-round';
+	$rootScope.backdrop = 'backdrop';
+	
+	var init = function() {
+		selectMenu(2); /* 메뉴 선택 */
+	};
+	
+	init();
+	
 	/* socket - remove all listeners */
 	$scope.$on('$destroy', function (event) {
 		socket.removeAllListeners();
@@ -275,10 +285,9 @@ angular.module('myApp.att', ['ngRoute'])
 	
 	/* 연습정보가 변경되었을때, 페이지 리프레시 */
 	socket.on('refreshPage', function(data) {
+		$rootScope.backdrop = "backdrop";
 		$.notify(data);
-		setTimeout(function(){
-			$route.reload();
-		}, 500);
+		attDataLoad();
 	});
 	
 	/* 연습곡 정보 갱신 */
@@ -303,32 +312,27 @@ angular.module('myApp.att', ['ngRoute'])
 				});
 	});
 	
-	$rootScope.title = '출석관리';
-	$rootScope.title_icon = 'ion-checkmark-round';
-	$rootScope.backdrop = 'backdrop';
-	
-	var init = function() {
-		selectMenu(2); /* 메뉴 선택 */
-	};
-	
-	init();
-	
-	$q.all([CodeSvc.getCodeList(), AttSvc.getDetail($routeParams.practiceDt, $routeParams.practiceCd)])
-	
-	.then(function(resultArray) {
-		$scope.code = resultArray[0].data;
+	var attDataLoad = function() { 
 		
-		$scope.att = resultArray[1].data.attInfo;
-		$scope.sList = resultArray[1].data.s;
-		$scope.aList = resultArray[1].data.a;
-		$scope.tList = resultArray[1].data.t;
-		$scope.bList = resultArray[1].data.b;
-		$scope.eList = resultArray[1].data.e;
-		$scope.hList = resultArray[1].data.h;
-		$scope.xList = resultArray[1].data.x;
-		
-		$rootScope.backdrop = undefined;
-	});
+		$q.all([CodeSvc.getCodeList(), AttSvc.getDetail($routeParams.practiceDt, $routeParams.practiceCd)])
+	
+		.then(function(resultArray) {
+			$scope.code = resultArray[0].data;
+			
+			$scope.att = resultArray[1].data.attInfo;
+			$scope.sList = resultArray[1].data.s;
+			$scope.aList = resultArray[1].data.a;
+			$scope.tList = resultArray[1].data.t;
+			$scope.bList = resultArray[1].data.b;
+			$scope.eList = resultArray[1].data.e;
+			$scope.hList = resultArray[1].data.h;
+			$scope.xList = resultArray[1].data.x;
+			
+			$rootScope.backdrop = undefined;
+		});
+	}
+	
+	attDataLoad();
 	
 	/* 연습일정 목록으로 이동 버튼*/
 	$scope.gotoAttList = function() {
