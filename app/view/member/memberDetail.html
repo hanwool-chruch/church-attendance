@@ -77,46 +77,13 @@
 		</div>
 	</div>
 	<div class="panel panel-default">
-		<div class="panel-heading">출석현황</div>
-		<table class="table">
+		<div class="panel-heading">출석현황{{attList}}</div>
+		<table class="table att-status">
 			<tbody>
-				<tr>
-					<td class="text-center">2015-12</td>
+				<tr data-ng-repeat="attMonth in attMonthList">
+					<td class="text-center" data-ng-bind="attMonth.month" style="vertical-align: middle;"></td>
 					<td>
-						<i class="ion-ios-circle-outline" style="color:#a94442"></i>
-						<i class="ion-ios-circle-outline" style="color:#31708f"></i>
-						<i class=ion-checkmark-circled style="color:#3c763d"></i>
-						<i class="ion-checkmark-circled" style="color:#31708f"></i>
-						<i class="ion-ios-circle-outline" style="color:#a94442"></i>
-						<i class="ion-ios-circle-outline" style="color:#31708f"></i>
-						<i class=ion-checkmark-circled style="color:#3c763d"></i>
-						<i class="ion-checkmark-circled" style="color:#31708f"></i>
-					</td>
-				</tr>
-				<tr>
-					<td class="text-center">2015-12</td>
-					<td>
-						<i class="ion-ios-circle-outline" style="color:#a94442"></i>
-						<i class="ion-ios-circle-outline" style="color:#31708f"></i>
-						<i class=ion-checkmark-circled style="color:#3c763d"></i>
-						<i class="ion-checkmark-circled" style="color:#31708f"></i>
-						<i class="ion-ios-circle-outline" style="color:#a94442"></i>
-						<i class="ion-ios-circle-outline" style="color:#31708f"></i>
-						<i class=ion-checkmark-circled style="color:#3c763d"></i>
-						<i class="ion-checkmark-circled" style="color:#31708f"></i>
-					</td>
-				</tr>
-				<tr>
-					<td class="text-center">2015-12</td>
-					<td>
-						<i class="ion-ios-circle-outline" style="color:#a94442"></i>
-						<i class="ion-ios-circle-outline" style="color:#31708f"></i>
-						<i class=ion-checkmark-circled style="color:#3c763d"></i>
-						<i class="ion-checkmark-circled" style="color:#31708f"></i>
-						<i class="ion-ios-circle-outline" style="color:#a94442"></i>
-						<i class="ion-ios-circle-outline" style="color:#31708f"></i>
-						<i class=ion-checkmark-circled style="color:#3c763d"></i>
-						<i class="ion-checkmark-circled" style="color:#31708f"></i>
+						<span data-ng-repeat="att in attMonth.data" style="margin-right:3px;" data-ng-class="att.practice_cd=='AM'?'success':att.practice_cd=='PM'?'info':att.practice_cd=='SP'?'danger':''"><i data-ng-class="att.member_id ? 'ion-ios-checkmark' : 'ion-ios-circle-outline'"></i></span>
 					</td>
 				</tr>
 			</tbody>

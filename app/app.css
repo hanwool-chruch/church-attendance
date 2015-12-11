@@ -104,3 +104,13 @@ div.notify {
 	background: -ms-linear-gradient(up, #00BC43 0%, #A5EC72 100%);
 	background: linear-gradient(to top, #00BC43 0%, #A5EC72 100%);
 }
+
+.att-status span.danger {
+	color:#a94442;
+}
+.att-status span.success {
+	color:#3C763D;
+}
+.att-status span.info {
+	color:#31708F;
+}

@@ -1,8 +1,4 @@
-/*
- * GET home page.
- */
-
- var db_config = {
+var db_config = {
 	host     : 'us-cdbr-iron-east-03.cleardb.net',
 	user     : 'b884ba11ab5f27',
 	password : '42d453a9',
@@ -269,8 +265,31 @@ exports.member = function(req, res){
 	"         WHERE memberId = ? ";
 	
 	db.query(query, [req.params.memberId], function(err, list){
-		if(list.length != 0) return res.send(list[0]);
-		else return res.send(null);
+		
+		if(list.length != 0) {
+			
+			query = 
+				"select distinct left(a.practice_dt, 7) month, a.practice_dt, a.practice_cd, b.member_id from " +
+				"(select practice_dt, practice_cd from choir_practice_info) a left outer join  " +
+				"( " +
+				"select p.practice_dt, p.practice_cd, a.member_id " +
+				"  from  " +
+				"    choir_practice_info p inner join choir_attendance a " +
+				"    on p.practice_dt = a.practice_dt and p.practice_cd = a.practice_cd " +
+				"where  " +
+				"  member_id = ? " +
+				") b on a.practice_dt = b.practice_dt " +
+				"where left(a.practice_dt, 7) >= (select min(left(practice_dt, 7)) as mm from choir_attendance where member_id= ?) " +
+				"and left(a.practice_dt, 7) <= (select max(left(practice_dt, 7)) as mm from choir_attendance where member_id= ?) " +
+				"order by month desc, practice_dt asc, practice_cd";
+			
+			db.query(query, [req.params.memberId,req.params.memberId,req.params.memberId], function(err, attMonthList){
+				
+				return res.send({member:list[0], attMonthList:attMonthList});
+			});
+		} else {
+			return res.send(null);
+		}
 	});
 };
 

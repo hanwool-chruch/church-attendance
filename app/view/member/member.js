@@ -109,7 +109,8 @@ angular.module('myApp.member', ['ngRoute', 'ngResource'])
 		
 	.then(function(resultArray) {
 		
-		$scope.member = resultArray[0].data;
+		$scope.member = resultArray[0].data.member;
+		$scope.attMonthList = getAttMonthList(resultArray[0].data.attMonthList);
 		$scope.code = resultArray[1].data;
 		
 		if(!$scope.member) {
@@ -196,5 +197,32 @@ angular.module('myApp.member', ['ngRoute', 'ngResource'])
 		}
 	}
 }])
+
+function getAttMonthList(list) {
+	
+	if(!list || list.length == 0) {
+		return null;
+	}
+	
+	var result = [];
+
+	var preMonth = '';
+	var o = null;
+	for(var i=0 ; i<list.length ; i++) {
+		
+		var month = list[i].month;
+		
+		if(month !== preMonth || o === null) {
+			o = { month : month, data : []};
+			result.push(o);
+		}
+		
+		o.data.push(list[i]);
+		
+		preMonth = month;
+	}
+	
+	return result;
+}
 
 ;
