@@ -6,14 +6,15 @@ angular.module('myApp', [
 	'myApp.member',
 	'myApp.att',
 	'myApp.rank',
-	'myApp.doc',
-	'myApp.login',
-	'myApp.version',
+	'myApp.info',
 	'ngAnimate',
 	'ngRoute',
-	'ngResource'
-]).
-run(function($rootScope, $location, socket) {
+	'ngResource',
+  //'ngVersion',
+  //'ngLogin',
+  //'ngDoc'
+])
+.run(function($rootScope, $location, socket) {
 	
 	$rootScope.$on( "$routeChangeStart", function(event, next, current) {
 		
