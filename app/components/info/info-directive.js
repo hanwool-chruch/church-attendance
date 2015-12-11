@@ -19,7 +19,7 @@ angular.module('myApp.info.info-directive', [])
 /* 환영 메세지 디렉티브 */
 .directive('appWelcomeMessage', ['welcomeMessage', function(welcomeMessage) {
 	return function(scope, elm, attrs) {
-		elm.text(welcomeMessage);
+		elm.html(welcomeMessage);
 	};
 }])
 
