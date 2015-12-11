@@ -26,6 +26,9 @@ angular.module('myApp.doc', ['ngRoute'])
 	
 	init();
 	
+	$rootScope.title = '회의록';
+	$rootScope.title_icon = 'ion-easel';
+	
 	$rootScope.backdrop = 'backdrop';
 	
 	DocSvc.getDocList().success(function(data) {
@@ -45,6 +48,9 @@ angular.module('myApp.doc', ['ngRoute'])
 	};
 	
 	init();
+	
+	$rootScope.title = '회의록';
+	$rootScope.title_icon = 'ion-easel';
 	
 	$rootScope.backdrop = 'backdrop';
 	
