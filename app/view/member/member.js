@@ -72,8 +72,6 @@ angular.module('myApp.member', ['ngRoute', 'ngResource'])
 .controller('MemberCtrl', ['$scope', '$rootScope', '$window', '$location', 'MemberSvc',
                   function ($scope ,  $rootScope ,  $window ,  $location ,  MemberSvc) {
 	
-	$rootScope.title = '대원관리';
-	$rootScope.title_icon = 'ion-person';
 	$rootScope.backdrop = 'backdrop';
 	
 	var init = function () {
@@ -99,8 +97,6 @@ angular.module('myApp.member', ['ngRoute', 'ngResource'])
 .controller('MemberDetailCtrl', ['$scope', '$rootScope', '$window', '$routeParams', 'MemberSvc', '$location', 'CodeSvc', '$q',
                         function ($scope ,  $rootScope ,  $window ,  $routeParams ,  MemberSvc ,  $location ,  CodeSvc ,  $q) {
 	
-	$rootScope.title = '대원관리';
-	$rootScope.title_icon = 'ion-person';
 	$rootScope.backdrop = 'backdrop';
 	
 	var init = function () {
@@ -150,8 +146,6 @@ angular.module('myApp.member', ['ngRoute', 'ngResource'])
 .controller('MemberRegistCtrl', ['$scope', '$rootScope', '$window', 'MemberSvc', '$location', 'CodeSvc', '$q',
                         function ($scope ,  $rootScope ,  $window ,  MemberSvc ,  $location ,  CodeSvc ,  $q) {
 	
-	$rootScope.title = '대원관리';
-	$rootScope.title_icon = 'ion-person';
 	$rootScope.backdrop = 'backdrop';
 	
 	var init = function () {
