@@ -29,9 +29,6 @@ angular.module('myApp.rank', ['ngRoute'])
 	/* Backdrop 적용시 레이아웃 깨짐 방지 목업 div 엘리먼트 show */
 	$scope.mock = true;
 	
-	$rootScope.title = '출석순위';
-	$rootScope.title_icon = 'ion-trophy';
-
 	// 조회기간 구하기
 	// ===============
 	var curDate = new Date();
@@ -49,6 +46,7 @@ angular.module('myApp.rank', ['ngRoute'])
 	$rootScope.backdrop = 'backdrop';
 	
 	RankSvc.getRankList().success(function(data){
+		
 		$scope.rankList = data;
 		
 		var prevAmCnt=0, prevPmCnt=0, prevSpCnt=0, rankNo=1;

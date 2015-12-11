@@ -119,8 +119,6 @@ angular.module('myApp.att', ['ngRoute'])
 	/* Backdrop 적용시 레이아웃 깨짐 방지 목업 div 엘리먼트 show */
 	$scope.mock = true;
 	
-	$rootScope.title = '출석관리';
-	$rootScope.title_icon = 'ion-checkmark-round';
 	$rootScope.backdrop = 'backdrop';
 	
 	var init = function() {
@@ -185,8 +183,6 @@ angular.module('myApp.att', ['ngRoute'])
 		socket.removeAllListeners();
 	});
 	
-	$rootScope.title = '출석관리';
-	$rootScope.title_icon = 'ion-checkmark-round';
 	$rootScope.backdrop = 'backdrop';
 	
 	var init = function() {
@@ -273,8 +269,6 @@ angular.module('myApp.att', ['ngRoute'])
 .controller('AttDetailCtrl', [ '$scope', '$rootScope', 'AttSvc', '$location', 'CodeSvc', '$q', '$routeParams', 'socket', '$route',
                        function($scope ,  $rootScope ,  AttSvc ,  $location ,  CodeSvc ,  $q ,  $routeParams ,  socket ,  $route) {
 	
-	$rootScope.title = '출석관리';
-	$rootScope.title_icon = 'ion-checkmark-round';
 	$rootScope.backdrop = 'backdrop';
 	
 	var init = function() {

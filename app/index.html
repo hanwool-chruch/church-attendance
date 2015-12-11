@@ -57,28 +57,19 @@
 						class="icon-bar"></span> <span class="icon-bar"></span> <span
 						class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="#/main"><i class="ion-android-cloud-done"></i> 시온 출석부</a>
+				<a class="navbar-brand" href="#/main"><i class="ion-android-cloud-done"></i> <span data-app-title></span></a>
 			</div>
 			<div id="navbar" class="collapse navbar-collapse">
 				<ul class="nav navbar-nav">
 					<li class="active"><a href="#/main"><i class="ion-home"></i>
 							Home</a></li>
-					<li><a href="#/member"><i class="ion-person"></i> 대원관리</a></li>
-					<li><a href="#/att"><i class="ion-checkmark-round"></i> 출석관리</a></li>
-					<li><a href="#/rank"><i class="ion-trophy"></i> 출석순위</a></li>
-					<!-- li><a href="#/doc"><i class="ion-easel"></i> 회의록</a></li -->
-					<!-- li><a href="#/login"><i class="ion-log-in"></i> 로그인</a></li -->
+					<li><a href="#/member" data-app-menu="member" data-app-icon="ion-person"></a></li>
+					<li><a href="#/att" data-app-menu="att" data-app-icon="ion-checkmark-round"></a></li>
+					<li><a href="#/rank" data-app-menu="rank" data-app-icon="ion-trophy"></a></li>
+					<!-- li><a href="#/doc" data-app-menu="doc" data-app-icon="ion-easel"></a></li -->
+					<!-- li><a href="#/login" data-app-menu="login" data-app-icon="ion-log-in"></a></li -->
 				</ul>
 			</div>
-		</div>
-	</nav>
-	<nav class="navbar title">
-		<div class="container" style="text-align: center;">
-			<ul class="pager">
-			    <li class="previous"></li>
-			    <li style="font-size:22px;"><i data-ng-class="title_icon"></i> <div style="display: inline-block;" data-ng-bind="title"></div></li>
-			    <li class="next"></li>
-			</ul>
 		</div>
 	</nav>
 
@@ -91,8 +82,7 @@
 	<footer class="footer">
 		<nav class="navbar navbar-default" style="margin-bottom:0px;">
 			<div class="container" style="text-align: center">
-				<p class="text-muted" style="margin: 20px 0;">Copyright © 2016
-					@yhzion All right reserved.</p>
+				<p class="text-muted" style="margin: 20px 0;" data-app-copyright></p>
 			</div>
 		</nav>
 	</footer>
@@ -108,12 +98,16 @@
 	<script src="view/member/member.js"></script>
 	<script src="view/att/att.js"></script>
 	<script src="view/rank/rank.js"></script>
-	<script src="view/doc/doc.js"></script>
-	<script src="view/login/login.js"></script>
 	
-	<script src="components/version/version.js"></script>
-	<script src="components/version/version-directive.js"></script>
-	<script src="components/version/interpolate-filter.js"></script>
+	<!-- script src="view/doc/doc.js"></script -->
+	<!-- script src="view/login/login.js"></script -->
+	
+	<script src="components/info/info.js"></script>
+	<script src="components/info/info-directive.js"></script>
+	
+	<!-- script src="components/version/version.js"></script -->
+	<!-- script src="components/version/version-directive.js"></script -->
+	<!-- script src="components/version/interpolate-filter.js"></script -->
 	
 	<!-- Web Socket -->
 	<script src='/socket.io/socket.io.js'></script>
