@@ -4,7 +4,7 @@
 
 ### 데모
 ```
-http://choirzion-demo.herokuapp.com/
+[http://choirzion-demo.herokuapp.com/](http://choirzion-demo.herokuapp.com/)
 ```
 
 ## 설치
