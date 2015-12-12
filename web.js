@@ -3,14 +3,16 @@ var port = Number(process.env.PORT || 8000);
 var express = require('express');
 
 var app = express()
-  , routes = require('./server/routes')
-  , http = require('http')
-  , path = require('path')
-  , socketio = require('socket.io')
-  , fs = require('fs')
-  , pkginfo = require('./package')
-  , passport = require('passport')
-  , bodyParser = require('body-parser');
+  , routes 		= require('./server/routes')
+  , http 		= require('http')
+  , path 		= require('path')
+  , socketio 	= require('socket.io')
+  , fs 			= require('fs')
+  , pkginfo 	= require('./package')
+  , passport 	= require('passport')		// O-Auth Login 관련 모듈(추후 오픈아이디 로그인을 염두해 놓음)
+  , bodyParser 	= require('body-parser')
+  , async 		= require('async')			// 콜백 지옥에서 벗어나기 위한 모듈
+  ;
 
 app.use(express.static(__dirname + '/app'));
 app.use(bodyParser.json());
