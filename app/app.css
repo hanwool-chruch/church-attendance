@@ -81,7 +81,7 @@ tr.att i.chk {
 	color: #10A000;
 }
 
-tr.att i.unchk {
+tr.ng-scope i.unchk {
 	color: #E6E6E6;
 }
 
