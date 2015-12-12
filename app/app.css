@@ -108,9 +108,11 @@ div.notify {
 .att-status span.danger {
 	color:#a94442;
 }
+
 .att-status span.success {
 	color:#3C763D;
 }
+
 .att-status span.info {
 	color:#31708F;
 }
