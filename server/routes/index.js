@@ -641,6 +641,7 @@ exports.insertMember = function(req, res) {
 		res.send({result : "success"});
 	});
 }
+
 /* 대원정보 저장 */
 exports.updateMember = function(req, res) {
 	
