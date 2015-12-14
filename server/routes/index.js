@@ -2,14 +2,13 @@ var db_config = {
 	host     : 'us-cdbr-iron-east-03.cleardb.net',
 	user     : 'b884ba11ab5f27',
 	password : '42d453a9',
-	database: "heroku_08834d64f8b1271"
+	database : "heroku_08834d64f8b1271"
 };
 
 var db;
 
-var mysql = require('mysql')
-  , async = require('async')			// 콜백 지옥에서 벗어나기 위한 모듈
-;
+var mysql = require('mysql'),
+    async = require('async');    // 콜백 지옥에서 벗어나기 위한 모듈
 
 /* 
 	Heroku 서비스 mysql 이용시 필수
@@ -32,10 +31,14 @@ function handleDisconnect() {
 	});
 }
 
-handleDisconnect();
+handleDisconnect();	//최초 DB 접속
 
-/* 장기 결석자 목록 (3주) */
-exports.index = function(req, res) {
+/*  
+	장기 결석자 목록 (3주)
+	지금은 사용하지 않음
+	나중에 사용할지도 몰라 쿼리는 남겨둠
+*/
+exports.absentMembers = function(req, res) {
 
 	var query = "SELECT C.MEMBER_ID memberId, C.MEMBER_NM memberNm, C.PART_CD partCd, (SELECT ORDERBY_NO FROM CHOIR_PART D WHERE D.PART_CD=C.PART_CD) ORDERBY_NO,C.PHONE_NO phoneNo  FROM CHOIR_MEMBER C WHERE STATUS_CD='O' AND PART_CD !='E' AND NOT EXISTS ( SELECT A.MEMBER_ID FROM (SELECT MEMBER_ID, PRACTICE_DT, PRACTICE_CD FROM CHOIR_ATTENDANCE) A, (SELECT PRACTICE_DT, PRACTICE_CD FROM CHOIR_PRACTICE_INFO WHERE PRACTICE_CD='AM' AND LOCK_YN='Y' ORDER BY PRACTICE_DT DESC LIMIT 3) B WHERE A.PRACTICE_DT = B.PRACTICE_DT AND A.PRACTICE_CD = B.PRACTICE_CD AND C.MEMBER_ID = A.MEMBER_ID) ORDER BY ORDERBY_NO ASC";
 	
@@ -442,7 +445,7 @@ exports.lockAtt = function(req, res) {
 	var practiceCd = req.params.practiceCd;
 
 	db.query("UPDATE CHOIR_PRACTICE_INFO SET LOCK_YN = 'Y' WHERE PRACTICE_DT = ? AND PRACTICE_CD = ? AND LOCK_YN = 'N'", [ practiceDt, practiceCd ], function() {
-		res.send({result:'success'});
+		res.send({ result: 'success' });
 	});
 }
 
@@ -453,7 +456,7 @@ exports.unlockAtt = function(req, res) {
 	var practiceCd = req.params.practiceCd;
 
 	db.query("UPDATE CHOIR_PRACTICE_INFO SET LOCK_YN = 'N' WHERE PRACTICE_DT = ? AND PRACTICE_CD = ? AND LOCK_YN = 'Y'", [ practiceDt, practiceCd ], function() {
-		res.send({result:'success'});
+		res.send({ result: 'success' });
 	});
 }
 
@@ -474,11 +477,11 @@ exports.select = function(req, res) {
 					callback(null, "done");
 				});	
 			} else {
-				callback(null, "done");
+				callback(null, 'done');
 			}
 		}
 	], function(err, result) {
-		res.send({result:'success'});
+		res.send({ result: 'success' });
 	});
 }
 
@@ -489,7 +492,7 @@ exports.deselect = function(req, res) {
 	var memberId = req.body.memberId;
 
 	db.query("DELETE FROM CHOIR_ATTENDANCE WHERE PRACTICE_DT = ? AND PRACTICE_CD = ? AND MEMBER_ID = ?", [ practiceDt, practiceCd, memberId ], function() {
-		res.send({result:'success'});
+		res.send({ result: 'success' });
 	});
 }
 
@@ -501,7 +504,7 @@ exports.saveMusicInfo = function(req, res) {
 	var musicInfo = req.body.musicInfo;
 
 	db.query("UPDATE CHOIR_PRACTICE_INFO SET MUSIC_INFO = ? WHERE PRACTICE_DT = ? AND PRACTICE_CD = ?", [ musicInfo,  practiceDt, practiceCd ], function() {
-		res.send({result : "success"});
+		res.send({ result: 'success' });
 	});
 }
 
@@ -513,7 +516,7 @@ exports.saveEtcMsg = function(req, res) {
 	var etcMsg = req.body.etcMsg;
 
 	db.query("UPDATE CHOIR_PRACTICE_INFO SET ETC_MSG = ? WHERE PRACTICE_DT = ? AND PRACTICE_CD = ?", [ etcMsg,  practiceDt, practiceCd ], function() {
-		res.send({result : "success"});
+		res.send({ result: 'success' });
 	});
 }
 
@@ -535,7 +538,7 @@ exports.removeAttInfo = function(req, res) {
 			});
 		}
 	], function(err, result) {
-		res.send({result : "success"});
+		res.send({ result: 'success' });
 	});
 }
 
@@ -563,7 +566,7 @@ exports.createPracticeInfo = function(req, res) {
 			}
 		}
 	], function(err, result) {
-		res.send({'result' : result});	
+		res.send({ result: result });	
 	});
 };
 
@@ -583,7 +586,7 @@ exports.createDoc = function(req, res) {
 
 	db.query("insert into MEETTING_DOC(MEET_DT, MEET_TITLE, MEET_CONTENTS, REG_DT, UPT_DT) values(?,?,?,current_timestamp,current_timestamp)", 
 		[ meetDt, meetTitle, meetContents], function() {
-		res.send({result:'success'});
+		res.send({ result: 'success' });
 	});
 };
 
@@ -605,14 +608,14 @@ exports.updateDoc = function(req, res) {
 
 	db.query("update MEETTING_DOC set MEET_DT = ?,MEET_TITLE = ?,MEET_CONTENTS = ?,UPT_DT = current_timestamp where MEET_SEQ = ?", 
 		[ meetDt, meetTitle, meetContents, meetSeq], function() {
-		res.send({result:'success'});	
+		res.send({ result: 'success' });	
 	});
 };
 
 /*회의록 제거*/
 exports.removeDoc = function(req, res) {
 	db.query("delete from MEETTING_DOC where MEET_SEQ = ?", [req.body.meetSeq], function() {
-		res.send({result:'success'});
+		res.send({ result: 'success' });
 	});
 };
 
@@ -620,7 +623,7 @@ exports.removeDoc = function(req, res) {
 exports.closeDoc = function(req, res) {
 
 	db.query("update MEETTING_DOC set LOCK_YN = 'Y' where MEET_SEQ = ?", [req.body.meetSeq], function() {
-		res.send({result:'success'});	
+		res.send({ result: 'success' });	
 	});
 };
 
@@ -638,7 +641,7 @@ exports.insertMember = function(req, res) {
 	var query = "insert into CHOIR_MEMBER(MEMBER_NM,PHONE_NO,PART_CD,POSITION_CD,C_POSITION_CD,STATUS_CD,ETC_MSG,REG_DT,MODIFY_DT) values(?,?,?,?,?,?,?,current_timestamp,current_timestamp)";
     
 	db.query(query, [ memberNm, phoneNo, partCd, positionCd, cPositionCd, statusCd, etcMsg ], function() {
-		res.send({result : "success"});
+		res.send({ result: 'success' });
 	});
 }
 
@@ -659,6 +662,6 @@ exports.updateMember = function(req, res) {
 		"   where MEMBER_ID=?";
 		
 	db.query(query, [ memberNm, cPositionCd, phoneNo, partCd, positionCd, statusCd, etcMsg, memberId ], function() {
-		res.send({result : "success"});
+		res.send({ result: 'success' });
 	});
 }
