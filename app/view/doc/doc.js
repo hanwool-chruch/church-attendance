@@ -12,7 +12,6 @@ angular.module('myApp.doc', ['ngRoute'])
             function($http , $rootScope) {
 	
 	return {
-		/* 출석순위 목록 */
 		getDocList : function() {
 			return $http.get('/rest/doc?t='+new Date());
 		}
