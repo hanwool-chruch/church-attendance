@@ -40,7 +40,30 @@ handleDisconnect();	//최초 DB 접속
 */
 exports.absentMembers = function(req, res) {
 
-	var query = "SELECT C.MEMBER_ID memberId, C.MEMBER_NM memberNm, C.PART_CD partCd, (SELECT ORDERBY_NO FROM CHOIR_PART D WHERE D.PART_CD=C.PART_CD) ORDERBY_NO,C.PHONE_NO phoneNo  FROM CHOIR_MEMBER C WHERE STATUS_CD='O' AND PART_CD !='E' AND NOT EXISTS ( SELECT A.MEMBER_ID FROM (SELECT MEMBER_ID, PRACTICE_DT, PRACTICE_CD FROM CHOIR_ATTENDANCE) A, (SELECT PRACTICE_DT, PRACTICE_CD FROM CHOIR_PRACTICE_INFO WHERE PRACTICE_CD='AM' AND LOCK_YN='Y' ORDER BY PRACTICE_DT DESC LIMIT 3) B WHERE A.PRACTICE_DT = B.PRACTICE_DT AND A.PRACTICE_CD = B.PRACTICE_CD AND C.MEMBER_ID = A.MEMBER_ID) ORDER BY ORDERBY_NO ASC";
+	var query =
+        "SELECT C.MEMBER_ID memberId, " +
+        "       C.MEMBER_NM memberNm, " +
+        "       C.PART_CD partCd, " +
+        "       (SELECT ORDERBY_NO FROM CHOIR_PART D WHERE D.PART_CD=C.PART_CD) ORDERBY_NO," +
+        "       C.PHONE_NO phoneNo  " +
+        "  FROM CHOIR_MEMBER C WHERE STATUS_CD='O' " +
+        "   AND PART_CD !='E' " +
+        "   AND NOT EXISTS ( " +
+        "                     SELECT A.MEMBER_ID " +
+        "                       FROM (SELECT MEMBER_ID, " +
+        "                                    PRACTICE_DT, " +
+        "                                    PRACTICE_CD " +
+        "                               FROM CHOIR_ATTENDANCE) A, " +
+        "                            (SELECT PRACTICE_DT, " +
+        "                                    PRACTICE_CD " +
+        "                               FROM CHOIR_PRACTICE_INFO " +
+        "                              WHERE PRACTICE_CD='AM' " +
+        "                                AND LOCK_YN='Y' " +
+        "                           ORDER BY PRACTICE_DT DESC LIMIT 3) B " +
+        "                      WHERE A.PRACTICE_DT = B.PRACTICE_DT " +
+        "                        AND A.PRACTICE_CD = B.PRACTICE_CD " +
+        "                        AND C.MEMBER_ID = A.MEMBER_ID ) " +
+        " ORDER BY ORDERBY_NO ASC";
 	
 	db.query(query, {}, function(err, rows){
 		res.send(rows);
@@ -72,24 +95,23 @@ exports.rank = function(req, res) {
 		endDt = (curYear) + "-11-30";
 	}
 
-	var query = "  select * from ( "+
-				"	select  "+
-				"		MEMBER_ID   memberId, "+
-				"		MEMBER_NM   memberNm, "+
-				"		PART_CD     partCd, "+
-				"		(SELECT POSITION_NM FROM CHOIR_POSITION CP WHERE CP.POSITION_CD = a.POSITION_CD) positionNm, "+
-				"		(SELECT C_POSITION_NM FROM CHOIR_C_POSITION CP WHERE CP.C_POSITION_CD = a.C_POSITION_CD) cPositionNm, "+
-				"		(select count(pi.PRACTICE_DT) sp from CHOIR_PRACTICE_INFO pi where pi.PRACTICE_DT between ? and ? and pi.PRACTICE_CD='AM' and pi.LOCK_YN='Y') amPracticeCnt, "+
-				"		(select count(c.PRACTICE_DT) am from CHOIR_PRACTICE_INFO pi, CHOIR_ATTENDANCE c where pi.PRACTICE_DT between ? and ? and pi.PRACTICE_DT=c.PRACTICE_DT and pi.PRACTICE_CD=c.PRACTICE_CD and c.PRACTICE_CD='AM' and c.MEMBER_ID=a.MEMBER_ID and pi.LOCK_YN='Y') amCnt, "+
-				"		(select count(pi.PRACTICE_DT) sp from CHOIR_PRACTICE_INFO pi where pi.PRACTICE_DT between ? and ? and pi.PRACTICE_CD='PM' and pi.LOCK_YN='Y') pmPracticeCnt, "+
-				"		(select count(c.PRACTICE_DT) pm from CHOIR_PRACTICE_INFO pi, CHOIR_ATTENDANCE c where pi.PRACTICE_DT between ? and ? and pi.PRACTICE_DT=c.PRACTICE_DT and pi.PRACTICE_CD=c.PRACTICE_CD and c.PRACTICE_CD='PM' and c.MEMBER_ID=a.MEMBER_ID and pi.LOCK_YN='Y') pmCnt, "+
-				"		(select count(pi.PRACTICE_DT) sp from CHOIR_PRACTICE_INFO pi where pi.PRACTICE_DT between ? and ? and pi.PRACTICE_CD='SP' and pi.LOCK_YN='Y') spPracticeCnt, "+
-				"		(select count(c.PRACTICE_DT) sp from CHOIR_PRACTICE_INFO pi, CHOIR_ATTENDANCE c where pi.PRACTICE_DT between ? and ? and pi.PRACTICE_DT=c.PRACTICE_DT and pi.PRACTICE_CD=c.PRACTICE_CD and c.PRACTICE_CD='SP' and c.MEMBER_ID=a.MEMBER_ID and pi.LOCK_YN='Y') spCnt "+
-				"	from "+
-				"		CHOIR_MEMBER a "+
-				"		where a.STATUS_CD='O' "+
-				"	) m "+
-				"	order by m.amCnt desc, m.pmCnt desc, m.spCnt desc, m.memberNm ";
+	var query =
+        "  SELECT * " +
+        "    FROM ( "+
+        "         SELECT MEMBER_ID   memberId, " +
+        "                  MEMBER_NM   memberNm, " +
+        "                  PART_CD     partCd, " +
+        "                  (SELECT POSITION_NM FROM CHOIR_POSITION CP WHERE CP.POSITION_CD = a.POSITION_CD) positionNm, " +
+        "                  (SELECT C_POSITION_NM FROM CHOIR_C_POSITION CP WHERE CP.C_POSITION_CD = a.C_POSITION_CD) cPositionNm, " +
+        "                  (SELECT COUNT(pi.PRACTICE_DT) sp FROM CHOIR_PRACTICE_INFO pi WHERE pi.PRACTICE_DT between ? AND ? AND pi.PRACTICE_CD='AM' AND pi.LOCK_YN='Y') amPracticeCnt, " +
+        "                  (SELECT COUNT(c.PRACTICE_DT) am FROM CHOIR_PRACTICE_INFO pi, CHOIR_ATTENDANCE c WHERE pi.PRACTICE_DT between ? AND ? AND pi.PRACTICE_DT=c.PRACTICE_DT AND pi.PRACTICE_CD=c.PRACTICE_CD AND c.PRACTICE_CD='AM' AND c.MEMBER_ID=a.MEMBER_ID AND pi.LOCK_YN='Y') amCnt, " +
+        "                  (SELECT COUNT(pi.PRACTICE_DT) sp FROM CHOIR_PRACTICE_INFO pi WHERE pi.PRACTICE_DT between ? AND ? AND pi.PRACTICE_CD='PM' AND pi.LOCK_YN='Y') pmPracticeCnt, " +
+        "                  (SELECT COUNT(c.PRACTICE_DT) pm FROM CHOIR_PRACTICE_INFO pi, CHOIR_ATTENDANCE c WHERE pi.PRACTICE_DT between ? AND ? AND pi.PRACTICE_DT=c.PRACTICE_DT AND pi.PRACTICE_CD=c.PRACTICE_CD AND c.PRACTICE_CD='PM' AND c.MEMBER_ID=a.MEMBER_ID AND pi.LOCK_YN='Y') pmCnt, " +
+        "                  (SELECT COUNT(pi.PRACTICE_DT) sp FROM CHOIR_PRACTICE_INFO pi WHERE pi.PRACTICE_DT between ? AND ? AND pi.PRACTICE_CD='SP' AND pi.LOCK_YN='Y') spPracticeCnt, " +
+        "                  (SELECT COUNT(c.PRACTICE_DT) sp FROM CHOIR_PRACTICE_INFO pi, CHOIR_ATTENDANCE c WHERE pi.PRACTICE_DT between ? AND ? AND pi.PRACTICE_DT=c.PRACTICE_DT AND pi.PRACTICE_CD=c.PRACTICE_CD AND c.PRACTICE_CD='SP' AND c.MEMBER_ID=a.MEMBER_ID AND pi.LOCK_YN='Y') spCnt " +
+        "             FROM CHOIR_MEMBER a " +
+        "            WHERE a.STATUS_CD='O' ) m " +
+        "   ORDER BY m.amCnt desc, m.pmCnt DESC, m.spCnt DESC, m.memberNm ";
 
 	db.query(query, [
 		startDt,
@@ -116,23 +138,24 @@ exports.attList = function(req, res) {
 	var size = 50;
 	var sRow = (page-1) * size;
 	
-	var query = "	   SELECT "+
-                "	    i.PRACTICE_DT practiceDt,  "+
-                "	    i.PRACTICE_CD practiceCd,  "+
-                "	    i.MUSIC_INFO musicInfo,  "+
-                "	    i.ETC_MSG etcMsg,  "+
-                "	    i.LOCK_YN lockYn,  "+
-                "	    IF(i.LOCK_YN='Y','마감',NULL) lockNm,  "+
-                "	    p.PRACTICE_NM practiceNm, "+
-		        "       (SELECT COUNT(*)  FROM CHOIR_ATTENDANCE ca, CHOIR_MEMBER cm WHERE     ca.MEMBER_ID = cm.MEMBER_ID and ca.PRACTICE_DT = i.PRACTICE_DT and ca.PRACTICE_CD = i.PRACTICE_CD and cm.PART_CD = 'S' ) s, "+
-                "       (SELECT COUNT(*)  FROM CHOIR_ATTENDANCE ca, CHOIR_MEMBER cm WHERE     ca.MEMBER_ID = cm.MEMBER_ID and ca.PRACTICE_DT = i.PRACTICE_DT and ca.PRACTICE_CD = i.PRACTICE_CD and cm.PART_CD = 'A' ) a, "+
-                "       (SELECT COUNT(*)  FROM CHOIR_ATTENDANCE ca, CHOIR_MEMBER cm WHERE     ca.MEMBER_ID = cm.MEMBER_ID and ca.PRACTICE_DT = i.PRACTICE_DT and ca.PRACTICE_CD = i.PRACTICE_CD and cm.PART_CD = 'T' ) t, "+
-                "       (SELECT COUNT(*)  FROM CHOIR_ATTENDANCE ca, CHOIR_MEMBER cm WHERE     ca.MEMBER_ID = cm.MEMBER_ID and ca.PRACTICE_DT = i.PRACTICE_DT and ca.PRACTICE_CD = i.PRACTICE_CD and cm.PART_CD = 'B' ) b, "+
-                "       (SELECT COUNT(*)  FROM CHOIR_ATTENDANCE ca, CHOIR_MEMBER cm WHERE     ca.MEMBER_ID = cm.MEMBER_ID and ca.PRACTICE_DT = i.PRACTICE_DT and ca.PRACTICE_CD = i.PRACTICE_CD and cm.PART_CD = 'E' ) e, "+
-                "	    (select count(*) from CHOIR_ATTENDANCE a WHERE a.PRACTICE_DT=i.PRACTICE_DT and a.PRACTICE_CD=i.PRACTICE_CD) attendanceCnt "+
-                "	  FROM CHOIR_PRACTICE_INFO i, CHOIR_PRACTICE p "+
-                "	 WHERE i.PRACTICE_CD = p.PRACTICE_CD "+
-                "	 ORDER BY i.PRACTICE_DT DESC , p.ORDERBY_NO DESC Limit ?,?";
+	var query =
+        "SELECT "+
+        "	    i.PRACTICE_DT practiceDt,  "+
+        "	    i.PRACTICE_CD practiceCd,  "+
+        "	    i.MUSIC_INFO musicInfo,  "+
+        "	    i.ETC_MSG etcMsg,  "+
+        "	    i.LOCK_YN lockYn,  "+
+        "	    IF(i.LOCK_YN='Y','마감',NULL) lockNm,  "+
+        "	    p.PRACTICE_NM practiceNm, "+
+		"       (SELECT COUNT(*)  FROM CHOIR_ATTENDANCE ca, CHOIR_MEMBER cm WHERE ca.MEMBER_ID = cm.MEMBER_ID AND ca.PRACTICE_DT = i.PRACTICE_DT AND ca.PRACTICE_CD = i.PRACTICE_CD AND cm.PART_CD = 'S' ) s, "+
+        "       (SELECT COUNT(*)  FROM CHOIR_ATTENDANCE ca, CHOIR_MEMBER cm WHERE ca.MEMBER_ID = cm.MEMBER_ID AND ca.PRACTICE_DT = i.PRACTICE_DT AND ca.PRACTICE_CD = i.PRACTICE_CD AND cm.PART_CD = 'A' ) a, "+
+        "       (SELECT COUNT(*)  FROM CHOIR_ATTENDANCE ca, CHOIR_MEMBER cm WHERE ca.MEMBER_ID = cm.MEMBER_ID AND ca.PRACTICE_DT = i.PRACTICE_DT AND ca.PRACTICE_CD = i.PRACTICE_CD AND cm.PART_CD = 'T' ) t, "+
+        "       (SELECT COUNT(*)  FROM CHOIR_ATTENDANCE ca, CHOIR_MEMBER cm WHERE ca.MEMBER_ID = cm.MEMBER_ID AND ca.PRACTICE_DT = i.PRACTICE_DT AND ca.PRACTICE_CD = i.PRACTICE_CD AND cm.PART_CD = 'B' ) b, "+
+        "       (SELECT COUNT(*)  FROM CHOIR_ATTENDANCE ca, CHOIR_MEMBER cm WHERE ca.MEMBER_ID = cm.MEMBER_ID AND ca.PRACTICE_DT = i.PRACTICE_DT AND ca.PRACTICE_CD = i.PRACTICE_CD AND cm.PART_CD = 'E' ) e, "+
+        "	    (SELECT COUNT(*) FROM CHOIR_ATTENDANCE a WHERE a.PRACTICE_DT=i.PRACTICE_DT AND a.PRACTICE_CD=i.PRACTICE_CD) attendanceCnt "+
+        "  FROM CHOIR_PRACTICE_INFO i, CHOIR_PRACTICE p "+
+        " WHERE i.PRACTICE_CD = p.PRACTICE_CD "+
+        " ORDER BY i.PRACTICE_DT DESC , p.ORDERBY_NO DESC Limit ?,?";
 
 	db.query(query, [sRow, size], function(err, rows){
 		res.send(rows);
@@ -145,54 +168,55 @@ exports.attInfoDetail = function(req, res) {
 	var practiceDt = req.params.practiceDt;
 	var practiceCd = req.params.practiceCd;
 
-	var query1 = " SELECT "+
-                "	    i.PRACTICE_DT practiceDt,  "+
-                "	    i.PRACTICE_CD practiceCd,  "+
-                "	    i.MUSIC_INFO musicInfo,  "+
-                "	    i.ETC_MSG etcMsg,  "+
-                "	    i.LOCK_YN lockYn, "+
-                "	    p.PRACTICE_NM practiceNm, "+
-                "	    (select count(*) from CHOIR_ATTENDANCE a WHERE a.PRACTICE_DT=i.PRACTICE_DT and a.PRACTICE_CD=i.PRACTICE_CD) attendanceCnt "+
-                "	  FROM CHOIR_PRACTICE_INFO i, CHOIR_PRACTICE p "+
-                "	 WHERE i.PRACTICE_CD = p.PRACTICE_CD "+
-                "	   and i.PRACTICE_DT = ? and i.PRACTICE_CD = ? ";
+	var query1 =
+        "SELECT "+
+        "	    i.PRACTICE_DT practiceDt,  "+
+        "	    i.PRACTICE_CD practiceCd,  "+
+        "	    i.MUSIC_INFO musicInfo,  "+
+        "	    i.ETC_MSG etcMsg,  "+
+        "	    i.LOCK_YN lockYn, "+
+        "	    p.PRACTICE_NM practiceNm, "+
+        "	    (SELECT COUNT(*) FROM CHOIR_ATTENDANCE a WHERE a.PRACTICE_DT=i.PRACTICE_DT AND a.PRACTICE_CD=i.PRACTICE_CD) attendanceCnt "+
+        "  FROM CHOIR_PRACTICE_INFO i, CHOIR_PRACTICE p "+
+        " WHERE i.PRACTICE_CD = p.PRACTICE_CD "+
+        "   AND i.PRACTICE_DT = ? AND i.PRACTICE_CD = ? ";
 
-    var query2 = " select * from ( "+
-                " 			select  "+
-                " 			    MEMBER_ID   memberId, "+
-                "                             (select IF(count(*)=0,'N','Y') from CHOIR_ATTENDANCE ca where ca.PRACTICE_DT=? and ca.PRACTICE_CD=? and ca.MEMBER_ID = a.MEMBER_ID) attYn, "+
-                " 			    MEMBER_NM   memberNm, "+
-                " 			    (SELECT C_POSITION_NM FROM CHOIR_C_POSITION CP WHERE CP.C_POSITION_CD = a.C_POSITION_CD) cPositionNm, "+
-                " 			    PHONE_NO    phoneNo, "+
-                " 			    PART_CD     partCd, "+
-                " 			    (SELECT POSITION_NM FROM CHOIR_POSITION CP WHERE CP.POSITION_CD = a.POSITION_CD) positionNm, "+
-                " 			    STATUS_CD   statusCd, "+
-                " 			    (SELECT STATUS_NM FROM CHOIR_STATUS CS WHERE CS.STATUS_CD = a.STATUS_CD) statusNm, "+
-                " 			    ETC_MSG     etcMsg "+
-                " 			from "+
-                " 			    CHOIR_MEMBER a "+
-                "       ) m "+
-                "         WHERE statusCd = ? "+
-                "         AND partCd = ? "+
-                "         order by memberNm ";
+    var query2 =
+        "SELECT * " +
+        "  FROM ( "+
+        "         SELECT  "+
+        " 			     MEMBER_ID   memberId, "+
+        "                (SELECT IF(COUNT(*)=0,'N','Y') FROM CHOIR_ATTENDANCE ca WHERE ca.PRACTICE_DT=? AND ca.PRACTICE_CD=? AND ca.MEMBER_ID = a.MEMBER_ID) attYn, "+
+        " 			     MEMBER_NM   memberNm, "+
+        " 			     (SELECT C_POSITION_NM FROM CHOIR_C_POSITION CP WHERE CP.C_POSITION_CD = a.C_POSITION_CD) cPositionNm, "+
+        " 			     PHONE_NO    phoneNo, "+
+        " 			     PART_CD     partCd, "+
+        " 			     (SELECT POSITION_NM FROM CHOIR_POSITION CP WHERE CP.POSITION_CD = a.POSITION_CD) positionNm, "+
+        " 			     STATUS_CD   statusCd, "+
+        " 			     (SELECT STATUS_NM FROM CHOIR_STATUS CS WHERE CS.STATUS_CD = a.STATUS_CD) statusNm, "+
+        " 			     ETC_MSG     etcMsg "+
+        " 			FROM CHOIR_MEMBER a ) m "+
+        " WHERE statusCd = ? "+
+        "   AND partCd = ? "+
+        " ORDER BY memberNm ";
 	
-	var query3 = " select * from ( "+
-				" 			select  "+
-				" 			    MEMBER_ID   memberId, "+
-				"                             (select IF(count(*)=0,'N','Y') from CHOIR_ATTENDANCE ca where ca.PRACTICE_DT=? and ca.PRACTICE_CD=? and ca.MEMBER_ID = a.MEMBER_ID) attYn, "+
-				" 			    MEMBER_NM   memberNm, "+
-				" 			    (SELECT C_POSITION_NM FROM CHOIR_C_POSITION CP WHERE CP.C_POSITION_CD = a.C_POSITION_CD) cPositionNm, "+
-				" 			    PHONE_NO    phoneNo, "+
-				" 			    PART_CD     partCd, "+
-				" 			    (SELECT POSITION_NM FROM CHOIR_POSITION CP WHERE CP.POSITION_CD = a.POSITION_CD) positionNm, "+
-				" 			    STATUS_CD   statusCd, "+
-				" 			    (SELECT STATUS_NM FROM CHOIR_STATUS CS WHERE CS.STATUS_CD = a.STATUS_CD) statusNm, "+
-				" 			    ETC_MSG     etcMsg "+
-				" 			from "+
-				" 			    CHOIR_MEMBER a "+
-				"       ) m "+
-				"         WHERE statusCd = ? "+
-				"         order by memberNm ";
+	var query3 =
+        "SELECT * " +
+        "  FROM ( "+
+		"         SELECT  "+
+		" 			     MEMBER_ID   memberId, "+
+		"                (SELECT IF(COUNT(*)=0,'N','Y') FROM CHOIR_ATTENDANCE ca WHERE ca.PRACTICE_DT=? AND ca.PRACTICE_CD=? AND ca.MEMBER_ID = a.MEMBER_ID) attYn, "+
+		" 			     MEMBER_NM   memberNm, "+
+		" 			     (SELECT C_POSITION_NM FROM CHOIR_C_POSITION CP WHERE CP.C_POSITION_CD = a.C_POSITION_CD) cPositionNm, "+
+		" 			     PHONE_NO    phoneNo, "+
+		" 			     PART_CD     partCd, "+
+		" 			     (SELECT POSITION_NM FROM CHOIR_POSITION CP WHERE CP.POSITION_CD = a.POSITION_CD) positionNm, "+
+		" 			     STATUS_CD   statusCd, "+
+		" 			     (SELECT STATUS_NM FROM CHOIR_STATUS CS WHERE CS.STATUS_CD = a.STATUS_CD) statusNm, "+
+		" 			     ETC_MSG     etcMsg "+
+		" 			FROM CHOIR_MEMBER a ) m "+
+		" WHERE statusCd = ? "+
+		" ORDER BY memberNm ";
 
     async.parallel({
     	attInfo : function(callback) {
@@ -252,33 +276,33 @@ exports.attInfoDetail = function(req, res) {
 /* 대원목록*/
 exports.memberList = function(req, res) {
 	var query1 = 
-                " 			SELECT  "+
-                " 			    MEMBER_ID   memberId, "+
-                " 			    MEMBER_NM   memberNm, "+
-                " 			    b.C_POSITION_NM cPositionNm, "+
-                " 			    c.POSITION_NM positionNm "+
-                " 			FROM "+
-                " 			    choir_member a, "+
-                " 			    CHOIR_C_POSITION b, "+
-                " 			    CHOIR_POSITION c "+
-                "         WHERE a.C_POSITION_CD = b.C_POSITION_CD AND a.POSITION_CD = c.POSITION_CD"+
-                "           AND a.STATUS_CD = ? "+
-                "           AND a.PART_CD = ? "+
-                "      ORDER BY a.MEMBER_NM ";
+        " 			SELECT  "+
+        " 			    MEMBER_ID   memberId, "+
+        " 			    MEMBER_NM   memberNm, "+
+        " 			    b.C_POSITION_NM cPositionNm, "+
+        " 			    c.POSITION_NM positionNm "+
+        " 			FROM "+
+        " 			    choir_member a, "+
+        " 			    CHOIR_C_POSITION b, "+
+        " 			    CHOIR_POSITION c "+
+        "         WHERE a.C_POSITION_CD = b.C_POSITION_CD AND a.POSITION_CD = c.POSITION_CD"+
+        "           AND a.STATUS_CD = ? "+
+        "           AND a.PART_CD = ? "+
+        "      ORDER BY a.MEMBER_NM ";
 
     var query2 = 
-				" 			SELECT  "+
-                " 			    MEMBER_ID   memberId, "+
-                " 			    MEMBER_NM   memberNm, "+
-                " 			    b.C_POSITION_NM cPositionNm, "+
-                " 			    c.POSITION_NM positionNm "+
-                " 			FROM "+
-                " 			    choir_member a, "+
-                " 			    CHOIR_C_POSITION b, "+
-                " 			    CHOIR_POSITION c "+
-                "         WHERE a.C_POSITION_CD = b.C_POSITION_CD AND a.POSITION_CD = c.POSITION_CD"+
-                "         AND a.STATUS_CD = ? "+
-                "         order by a.MEMBER_NM ";
+        " 			SELECT  "+
+        " 			    MEMBER_ID   memberId, "+
+        " 			    MEMBER_NM   memberNm, "+
+        " 			    b.C_POSITION_NM cPositionNm, "+
+        " 			    c.POSITION_NM positionNm "+
+        " 			FROM "+
+        " 			    choir_member a, "+
+        " 			    CHOIR_C_POSITION b, "+
+        " 			    CHOIR_POSITION c "+
+        "         WHERE a.C_POSITION_CD = b.C_POSITION_CD AND a.POSITION_CD = c.POSITION_CD"+
+        "         AND a.STATUS_CD = ? "+
+        "         ORDER BY a.MEMBER_NM ";
 
     async.parallel({
     	s: function(callback) {
@@ -333,37 +357,42 @@ exports.memberList = function(req, res) {
 /* 대원 상세정보 */
 exports.member = function(req, res) {
 	
-	var query1 =" select * from ( "+
-				" 			select  "+
-				" 			    MEMBER_ID   memberId, "+
-				" 			    MEMBER_NM   memberNm, "+
-				" 			    a.C_POSITION_CD   cPositionCd, "+
-				" 			    (SELECT C_POSITION_NM FROM CHOIR_C_POSITION CP WHERE CP.C_POSITION_CD = a.C_POSITION_CD) cPositionNm, "+
-				" 			    PHONE_NO    phoneNo, "+
-				" 			    PART_CD     partCd, "+
-				" 			    (SELECT PART_NM FROM CHOIR_PART CP WHERE CP.PART_CD = a.PART_CD) partNm, "+
-				" 			    a.POSITION_CD     positionCd, "+
-				" 			    (SELECT POSITION_NM FROM CHOIR_POSITION CP WHERE CP.POSITION_CD = a.POSITION_CD) positionNm, "+
-				" 			    STATUS_CD   statusCd, "+
-				" 			    (SELECT STATUS_NM FROM CHOIR_STATUS CS WHERE CS.STATUS_CD = a.STATUS_CD) statusNm, "+
-				" 			    ETC_MSG     etcMsg "+
-				" 			from "+
-				" 			    choir_member a "+
-				"       ) m "+
-				"         WHERE memberId = ? ";
-	var query2 ="select distinct left(a.practice_dt, 7) month, a.practice_dt, a.practice_cd, b.member_id from " +
-				"(select practice_dt, practice_cd from choir_practice_info) a left outer join  " +
-				"( " +
-				"select p.practice_dt, p.practice_cd, a.member_id " +
-				"  from  " +
-				"    choir_practice_info p inner join choir_attendance a " +
-				"    on p.practice_dt = a.practice_dt and p.practice_cd = a.practice_cd " +
-				"where  " +
-				"  member_id = ? " +
-				") b on a.practice_dt = b.practice_dt " +
-				"where left(a.practice_dt, 7) >= (select min(left(practice_dt, 7)) as mm from choir_attendance where member_id= ?) " +
-				"and left(a.practice_dt, 7) <= (select max(left(practice_dt, 7)) as mm from choir_attendance where member_id= ?) " +
-				"order by month desc, practice_dt asc, practice_cd";
+	var query1 =
+        " SELECT * " +
+        "   FROM ( "+
+        " 			SELECT "+
+        " 			       MEMBER_ID   memberId, "+
+        " 			       MEMBER_NM   memberNm, "+
+        " 			       a.C_POSITION_CD   cPositionCd, "+
+        " 			       (SELECT C_POSITION_NM FROM CHOIR_C_POSITION CP WHERE CP.C_POSITION_CD = a.C_POSITION_CD) cPositionNm, "+
+        " 			       PHONE_NO    phoneNo, "+
+        " 			       PART_CD     partCd, "+
+        " 			       (SELECT PART_NM FROM CHOIR_PART CP WHERE CP.PART_CD = a.PART_CD) partNm, "+
+        " 			       a.POSITION_CD     positionCd, "+
+        " 			       (SELECT POSITION_NM FROM CHOIR_POSITION CP WHERE CP.POSITION_CD = a.POSITION_CD) positionNm, "+
+        " 			       STATUS_CD   statusCd, "+
+        " 			       (SELECT STATUS_NM FROM CHOIR_STATUS CS WHERE CS.STATUS_CD = a.STATUS_CD) statusNm, "+
+        " 			       ETC_MSG     etcMsg "+
+        " 			  FROM choir_member a ) m "+
+        " WHERE memberId = ? ";
+
+	var query2 =
+        "SELECT " +
+        "       distinct left(a.practice_dt, 7) month, " +
+        "       a.practice_dt, a.practice_cd, " +
+        "       b.member_id " +
+        "  FROM " +
+        "       (SELECT practice_dt, practice_cd FROM choir_practice_info) a left outer join  " +
+        "       (SELECT p.practice_dt, p.practice_cd, a.member_id " +
+        "          FROM choir_practice_info p inner join " +
+        "               choir_attendance a " +
+        "            ON p.practice_dt = a.practice_dt " +
+        "           AND p.practice_cd = a.practice_cd " +
+        "         WHERE member_id = ?) b " +
+        "    ON a.practice_dt = b.practice_dt " +
+        " WHERE left(a.practice_dt, 7) >= (SELECT min(left(practice_dt, 7)) as mm FROM choir_attendance WHERE member_id= ?) " +
+        "   AND left(a.practice_dt, 7) <= (SELECT max(left(practice_dt, 7)) as mm FROM choir_attendance WHERE member_id= ?) " +
+		" ORDER BY month DESC, practice_dt ASC, practice_cd";
 	
 	async.parallel({
 		member : function(callback) {
@@ -395,11 +424,11 @@ exports.member = function(req, res) {
 /* 코드정보 */
 exports.codeList = function(req, res) {
 
-	var query1 = "SELECT * FROM choir_c_position 	order by orderby_no";
-	var query2 = "SELECT * FROM choir_position 		order by orderby_no";
-	var query3 = "SELECT * FROM choir_part 			order by orderby_no";
-	var query4 = "SELECT * FROM choir_practice 		order by orderby_no";
-	var query5 = "SELECT * FROM choir_status 		order by orderby_no";
+	var query1 = "SELECT * FROM choir_c_position 	ORDER BY orderby_no";
+	var query2 = "SELECT * FROM choir_position 		ORDER BY orderby_no";
+	var query3 = "SELECT * FROM choir_part 			ORDER BY orderby_no";
+	var query4 = "SELECT * FROM choir_practice 		ORDER BY orderby_no";
+	var query5 = "SELECT * FROM choir_status 		ORDER BY orderby_no";
 
 	async.parallel({
 		cPositionList : function(callback) {
@@ -468,7 +497,7 @@ exports.select = function(req, res) {
 
 	async.waterfall([
 		function(callback) {
-			db.query("SELECT count(*) cnt FROM choir_attendance i WHERE i.PRACTICE_DT = ? and i.PRACTICE_CD = ? AND i.MEMBER_ID = ? ", [ practiceDt, practiceCd, memberId ], function(err, rows){	
+			db.query("SELECT COUNT(*) cnt FROM choir_attendance i WHERE i.PRACTICE_DT = ? AND i.PRACTICE_CD = ? AND i.MEMBER_ID = ? ", [ practiceDt, practiceCd, memberId ], function(err, rows){	
 				callback(null, rows[0].cnt);
 			});
 		}, function(cnt, callback) {
@@ -480,9 +509,7 @@ exports.select = function(req, res) {
 				callback(null, 'done');
 			}
 		}
-	], function(err, result) {
-        console.log('err : ', err);
-        console.log('result : ', result);
+	], function() {
 		res.send({ result: 'success' });
 	});
 };
@@ -539,9 +566,7 @@ exports.removeAttInfo = function(req, res) {
 				callback(null, null);
 			});
 		}
-	], function(err, result) {
-        console.log('err : ', err);
-        console.log('result : ', result);
+	], function() {
 		res.send({ result: 'success' });
 	});
 };
@@ -556,15 +581,13 @@ exports.createPracticeInfo = function(req, res) {
 
 	async.waterfall([
 		function(callback) {
-			db.query("SELECT count(*) cnt FROM CHOIR_PRACTICE_INFO i WHERE i.PRACTICE_DT = ? and i.PRACTICE_CD = ?", [ practiceDt, practiceCd ], function(err, rows){
+			db.query("SELECT COUNT(*) cnt FROM CHOIR_PRACTICE_INFO i WHERE i.PRACTICE_DT = ? AND i.PRACTICE_CD = ?", [ practiceDt, practiceCd ], function(err, rows){
 				callback(null, rows[0].cnt);
 			});
 		},
 		function(cnt, callback) {
 			if(cnt == 0) {
-				db.query("insert into CHOIR_PRACTICE_INFO(PRACTICE_DT, PRACTICE_CD, MUSIC_INFO, ETC_MSG) values(?,?,?,?)", [ practiceDt, practiceCd, musicInfo, etgMsg ], function(err, row){
-                    console.log('err : ', err);
-                    console.log('row : ', row);
+				db.query("INSERT into CHOIR_PRACTICE_INFO(PRACTICE_DT, PRACTICE_CD, MUSIC_INFO, ETC_MSG) VALUES(?,?,?,?)", [ practiceDt, practiceCd, musicInfo, etgMsg ], function(){
 					callback(null, 'success');
 				});
 			} else {
@@ -578,7 +601,7 @@ exports.createPracticeInfo = function(req, res) {
 
 /* 회의록 목록*/
 exports.docList = function(req, res) {
-	var query = "select MEET_SEQ meetSeq,MEET_DT meetDt,MEET_TITLE meetTitle,REPLACE(MEET_CONTENTS,'\n','<br/>') meetContents,REG_DT regDt,UPT_DT uptDt,LOCK_YN lockYn from MEETTING_DOC order by MEET_DT DESC, MEET_SEQ DESC";
+	var query = "SELECT MEET_SEQ meetSeq,MEET_DT meetDt,MEET_TITLE meetTitle,REPLACE(MEET_CONTENTS,'\n','<br/>') meetContents,REG_DT regDt,UPT_DT uptDt,LOCK_YN lockYn FROM MEETTING_DOC ORDER BY MEET_DT DESC, MEET_SEQ DESC";
 	db.query(query, {}, function(err, rows){
 		res.send(rows);
 	});
@@ -590,7 +613,7 @@ exports.createDoc = function(req, res) {
 	var meetTitle = req.body.meetTitle;
 	var meetContents = req.body.meetContents;
 
-	db.query("insert into MEETTING_DOC(MEET_DT, MEET_TITLE, MEET_CONTENTS, REG_DT, UPT_DT) values(?,?,?,current_timestamp,current_timestamp)", 
+	db.query("INSERT into MEETTING_DOC(MEET_DT, MEET_TITLE, MEET_CONTENTS, REG_DT, UPT_DT) VALUES(?,?,?,current_timestamp,current_timestamp)",
 		[ meetDt, meetTitle, meetContents], function() {
 		res.send({ result: 'success' });
 	});
@@ -599,7 +622,7 @@ exports.createDoc = function(req, res) {
 /* 회의록 상세정보*/
 exports.modifyDoc = function(req, res) {	
 	var docId = req.params.docId;
-	db.query("select MEET_SEQ meetSeq,MEET_DT meetDt,MEET_TITLE meetTitle,MEET_CONTENTS meetContents,REG_DT regDt,UPT_DT uptDt,LOCK_YN lockYn from meetting_doc where MEET_SEQ = ?", [ docId ], function(err, row){
+	db.query("SELECT MEET_SEQ meetSeq,MEET_DT meetDt,MEET_TITLE meetTitle,MEET_CONTENTS meetContents,REG_DT regDt,UPT_DT uptDt,LOCK_YN lockYn FROM meetting_doc WHERE MEET_SEQ = ?", [ docId ], function(err, row){
 		res.send(row[0]);
 	});
 };
@@ -612,7 +635,7 @@ exports.updateDoc = function(req, res) {
 	var meetContents = req.body.meetContents;
 	var meetSeq = req.body.meetSeq;
 
-	db.query("update MEETTING_DOC set MEET_DT = ?,MEET_TITLE = ?,MEET_CONTENTS = ?,UPT_DT = current_timestamp where MEET_SEQ = ?", 
+	db.query("UPDATE MEETTING_DOC set MEET_DT = ?,MEET_TITLE = ?,MEET_CONTENTS = ?,UPT_DT = current_timestamp WHERE MEET_SEQ = ?",
 		[ meetDt, meetTitle, meetContents, meetSeq], function() {
 		res.send({ result: 'success' });	
 	});
@@ -620,7 +643,7 @@ exports.updateDoc = function(req, res) {
 
 /*회의록 제거*/
 exports.removeDoc = function(req, res) {
-	db.query("delete from MEETTING_DOC where MEET_SEQ = ?", [req.body.meetSeq], function() {
+	db.query("delete FROM MEETTING_DOC WHERE MEET_SEQ = ?", [req.body.meetSeq], function() {
 		res.send({ result: 'success' });
 	});
 };
@@ -628,7 +651,7 @@ exports.removeDoc = function(req, res) {
 /* 회의록 마감*/
 exports.closeDoc = function(req, res) {
 
-	db.query("update MEETTING_DOC set LOCK_YN = 'Y' where MEET_SEQ = ?", [req.body.meetSeq], function() {
+	db.query("UPDATE MEETTING_DOC set LOCK_YN = 'Y' WHERE MEET_SEQ = ?", [req.body.meetSeq], function() {
 		res.send({ result: 'success' });	
 	});
 };
@@ -644,7 +667,18 @@ exports.insertMember = function(req, res) {
 	var statusCd = req.body.statusCd;
 	var etcMsg = req.body.etcMsg;
 	
-	var query = "insert into CHOIR_MEMBER(MEMBER_NM,PHONE_NO,PART_CD,POSITION_CD,C_POSITION_CD,STATUS_CD,ETC_MSG,REG_DT,MODIFY_DT) values(?,?,?,?,?,?,?,current_timestamp,current_timestamp)";
+	var query =
+        "INSERT into CHOIR_MEMBER ( " +
+        "   MEMBER_NM," +
+        "   PHONE_NO," +
+        "   PART_CD," +
+        "   POSITION_CD," +
+        "   C_POSITION_CD," +
+        "   STATUS_CD," +
+        "   ETC_MSG," +
+        "   REG_DT," +
+        "   MODIFY_DT ) " +
+        "VALUES (?, ?, ?, ?, ?, ?, ?, current_timestamp, current_timestamp)";
     
 	db.query(query, [ memberNm, phoneNo, partCd, positionCd, cPositionCd, statusCd, etcMsg ], function() {
 		res.send({ result: 'success' });
@@ -663,9 +697,16 @@ exports.updateMember = function(req, res) {
 	var statusCd = req.body.statusCd;
 	var etcMsg = req.body.etcMsg;
 	
-	var	query = "update choir_member"+
-		"   set MEMBER_NM=?, C_POSITION_CD=?, PHONE_NO=?, PART_CD=?, POSITION_CD=?, STATUS_CD=?, ETC_MSG=?"+
-		"   where MEMBER_ID=?";
+	var	query =
+        "UPDATE choir_member"+
+		"   SET MEMBER_NM=?, " +
+        "       C_POSITION_CD=?, " +
+        "       PHONE_NO=?, " +
+        "       PART_CD=?, " +
+        "       POSITION_CD=?, " +
+        "       STATUS_CD=?, " +
+        "       ETC_MSG=?"+
+		" WHERE MEMBER_ID=?";
 		
 	db.query(query, [ memberNm, cPositionCd, phoneNo, partCd, positionCd, statusCd, etcMsg, memberId ], function() {
 		res.send({ result: 'success' });
