@@ -1,8 +1,8 @@
 var db_config = {
-	host     : 'us-cdbr-iron-east-03.cleardb.net',
-	user     : 'b884ba11ab5f27',
-	password : '42d453a9',
-	database : "heroku_08834d64f8b1271"
+    host     : process.env.MYSQL_URL  || 'us-cdbr-iron-east-03.cleardb.net',
+    user     : process.env.MYSQL_ID   || 'b884ba11ab5f27',
+    password : process.env.MYSQL_PASS || '42d453a9',
+    database : process.env.MYSQL_DB   || 'heroku_08834d64f8b1271'
 };
 
 var db;
@@ -315,7 +315,7 @@ exports.memberList = function(req, res) {
     		db.query(query2, ['X'], function(err, rows){
     			callback(null, rows);
     		});
-    	},
+    	}
     	
     }, function(err, results) {
     	res.send({
@@ -426,7 +426,7 @@ exports.codeList = function(req, res) {
 			db.query(query5, [], function(err, rows){
 				callback(null, rows);
 			});
-		},
+		}
 	}, function(err, results){
 		res.send({
 			cPositionList 	: results.cPositionList, 
@@ -447,7 +447,7 @@ exports.lockAtt = function(req, res) {
 	db.query("UPDATE CHOIR_PRACTICE_INFO SET LOCK_YN = 'Y' WHERE PRACTICE_DT = ? AND PRACTICE_CD = ? AND LOCK_YN = 'N'", [ practiceDt, practiceCd ], function() {
 		res.send({ result: 'success' });
 	});
-}
+};
 
 /* 마감 취소 처리*/
 exports.unlockAtt = function(req, res) {
@@ -458,7 +458,7 @@ exports.unlockAtt = function(req, res) {
 	db.query("UPDATE CHOIR_PRACTICE_INFO SET LOCK_YN = 'N' WHERE PRACTICE_DT = ? AND PRACTICE_CD = ? AND LOCK_YN = 'Y'", [ practiceDt, practiceCd ], function() {
 		res.send({ result: 'success' });
 	});
-}
+};
 
 /* 출석체크 */
 exports.select = function(req, res) {
@@ -481,9 +481,11 @@ exports.select = function(req, res) {
 			}
 		}
 	], function(err, result) {
+        console.log('err : ', err);
+        console.log('result : ', result);
 		res.send({ result: 'success' });
 	});
-}
+};
 
 /* 출석체크 해제 */
 exports.deselect = function(req, res) {
@@ -494,7 +496,7 @@ exports.deselect = function(req, res) {
 	db.query("DELETE FROM CHOIR_ATTENDANCE WHERE PRACTICE_DT = ? AND PRACTICE_CD = ? AND MEMBER_ID = ?", [ practiceDt, practiceCd, memberId ], function() {
 		res.send({ result: 'success' });
 	});
-}
+};
 
 /* 연습곡 갱신 */
 exports.saveMusicInfo = function(req, res) {
@@ -506,7 +508,7 @@ exports.saveMusicInfo = function(req, res) {
 	db.query("UPDATE CHOIR_PRACTICE_INFO SET MUSIC_INFO = ? WHERE PRACTICE_DT = ? AND PRACTICE_CD = ?", [ musicInfo,  practiceDt, practiceCd ], function() {
 		res.send({ result: 'success' });
 	});
-}
+};
 
 /* 메모 갱신 */
 exports.saveEtcMsg = function(req, res) {
@@ -518,7 +520,7 @@ exports.saveEtcMsg = function(req, res) {
 	db.query("UPDATE CHOIR_PRACTICE_INFO SET ETC_MSG = ? WHERE PRACTICE_DT = ? AND PRACTICE_CD = ?", [ etcMsg,  practiceDt, practiceCd ], function() {
 		res.send({ result: 'success' });
 	});
-}
+};
 
 /* 연습정보 제거 */
 exports.removeAttInfo = function(req, res) {
@@ -538,9 +540,11 @@ exports.removeAttInfo = function(req, res) {
 			});
 		}
 	], function(err, result) {
+        console.log('err : ', err);
+        console.log('result : ', result);
 		res.send({ result: 'success' });
 	});
-}
+};
 
 /* 연습정보 생성 */
 exports.createPracticeInfo = function(req, res) {
@@ -559,6 +563,8 @@ exports.createPracticeInfo = function(req, res) {
 		function(cnt, callback) {
 			if(cnt == 0) {
 				db.query("insert into CHOIR_PRACTICE_INFO(PRACTICE_DT, PRACTICE_CD, MUSIC_INFO, ETC_MSG) values(?,?,?,?)", [ practiceDt, practiceCd, musicInfo, etgMsg ], function(err, row){
+                    console.log('err : ', err);
+                    console.log('row : ', row);
 					callback(null, 'success');
 				});
 			} else {
@@ -643,7 +649,7 @@ exports.insertMember = function(req, res) {
 	db.query(query, [ memberNm, phoneNo, partCd, positionCd, cPositionCd, statusCd, etcMsg ], function() {
 		res.send({ result: 'success' });
 	});
-}
+};
 
 /* 대원정보 저장 */
 exports.updateMember = function(req, res) {
@@ -664,4 +670,4 @@ exports.updateMember = function(req, res) {
 	db.query(query, [ memberNm, cPositionCd, phoneNo, partCd, positionCd, statusCd, etcMsg, memberId ], function() {
 		res.send({ result: 'success' });
 	});
-}
+};
