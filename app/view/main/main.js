@@ -20,4 +20,4 @@ angular.module('myApp.main', [ 'ngRoute' ])
 	if(document) {
 		document.body.scrollTop = 0;
 	}
-} ]);
+}]);

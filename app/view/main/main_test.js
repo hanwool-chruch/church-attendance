@@ -18,6 +18,5 @@ describe('myApp.main module', function() {
 			var mainCtrl = $controller('MainCtrl', {$scope : scope, $rootScope : rootScope, $location : location});
 			expect(mainCtrl).toBeDefined();
 		}));
-
 	});
 });
