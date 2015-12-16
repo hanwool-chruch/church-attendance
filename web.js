@@ -51,7 +51,6 @@ app.get		('/rest/doc/:docId', routes.modifyDoc);
 
 /* 웹소켓 */
 var io = socketio.listen(server);
-
 io.on('connection',function(socket) {
 
 	/* 연습정보 상세정보 입장 */
