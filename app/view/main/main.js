@@ -7,9 +7,9 @@ angular.module('myApp.main', [ 'ngRoute' ])
 		templateUrl : 'view/main/main.html',
 		controller : 'MainCtrl'
 	});
-} ])
+}])
 
-.controller('MainCtrl', [ '$scope', '$rootScope', '$location', function($scope, $rootScope, $location) {
+.controller('MainCtrl', function() {
 	
 	var init = function() {
 		selectMenu(0); /* 메뉴 선택 */
@@ -20,4 +20,4 @@ angular.module('myApp.main', [ 'ngRoute' ])
 	if(document) {
 		document.body.scrollTop = 0;
 	}
-}]);
+});
