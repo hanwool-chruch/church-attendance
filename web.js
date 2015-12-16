@@ -8,7 +8,6 @@ var app = express()
   , path 		= require('path')
   , socketio 	= require('socket.io')
   , fs 			= require('fs')
-  , pkginfo 	= require('./package')
   , passport 	= require('passport')		// O-Auth Login 관련 모듈(추후 오픈아이디 로그인을 염두해 놓음)
   , bodyParser 	= require('body-parser')
   , async 		= require('async')			// 콜백 지옥에서 벗어나기 위한 모듈
@@ -79,24 +78,24 @@ io.on('connection',function(socket) {
 	});
 
 	/* 마감 (목록과 상세 두군데로 보내야 함) */
-	socket.on('closeAtt', function(data){
+	socket.on('closeAtt', function(){
 		io.sockets.in('hall').emit('refreshPage', "연습정보가 마감되었습니다.");
 		io.sockets.in(socket.room).emit('refreshPage', "연습정보가 마감되었습니다.");
 	});
 	
 	/* 마감 해제 (목록과 상세 두군데로 보내야 함) */
-	socket.on('uncloseAtt', function(data){
+	socket.on('uncloseAtt', function(){
 		io.sockets.in('hall').emit('refreshPage', "연습정보가 마감 해제 되었습니다.");
 		io.sockets.in(socket.room).emit('refreshPage', "연습정보가 마감 해제 되었습니다.");
 	});
 	
 	/* 연습정보 추가 */
-	socket.on('addAtt', function(data){
+	socket.on('addAtt', function(){
 		io.sockets.in('hall').emit('refreshPage', "새로운 연습정보가 추가되었습니다.");
 	});
 	
 	/* 연습정보 삭제 */
-	socket.on('removeAtt', function(data){
+	socket.on('removeAtt', function(){
 		io.sockets.in('hall').emit('refreshPage', "연습정보가 삭제되었습니다.");
 		io.sockets.in(socket.room).emit('backToList', "연습정보가 삭제되었습니다.");
 	});
