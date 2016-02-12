@@ -1,15 +1,15 @@
 modules = [
-   "myApp.main"
-  ,"myApp.member"
-  ,"myApp.att"
-  ,"myApp.rank"
-  ,"myApp.info"
-  ,"ngAnimate"
-  ,"ngRoute"
-  ,"ngResource"
- #,"ngVersion"
- #,"ngLogin"
- #,"ngDoc"
+  "myApp.main"
+,"myApp.member"
+,"myApp.att"
+,"myApp.rank"
+,"myApp.info"
+,"ngAnimate"
+,"ngRoute"
+,"ngResource"
+#,"ngVersion"
+#,"ngLogin"
+#,"ngDoc"
 ]
 
 angularModule = angular.module "myApp", modules
@@ -30,7 +30,7 @@ window.selectMenu = (i) ->
 
 # jQuery 준비 핸들러
 $ ->
-  # 선택된 메뉴 활성화
+# 선택된 메뉴 활성화
   $("#navbar li").click ->
     $("#navbar li").removeClass "active"
     $(this).addClass "active"
