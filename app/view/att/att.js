@@ -100,7 +100,7 @@
   });
 
   angularModule.controller("AttCtrl", [
-    '$scope', '$rootScope', 'AttSvc', '$location', 'socket', '$route', function($scope, $rootScope, AttSvc, $location, socket, $route) {
+    "$scope", "$rootScope", "AttSvc", "$location", "socket", "$route", function($scope, $rootScope, AttSvc, $location, socket, $route) {
       var init, p;
       $scope.$on("$destroy", function() {
         return socket.removeAllListeners();
@@ -111,14 +111,14 @@
         return $.notify(data);
       });
       $scope.mock = true;
-      $rootScope.backdrop = 'backdrop';
+      $rootScope.backdrop = "backdrop";
       init = function() {
         return selectMenu(2);
       };
       init();
       p = 2;
       $scope.more = function() {
-        $rootScope.backdrop = 'backdrop';
+        $rootScope.backdrop = "backdrop";
         return AttSvc.getAttList(p).success(function(data) {
           var i, j, len;
           if (data !== null && data.length > 0) {
@@ -156,12 +156,12 @@
   ]);
 
   angularModule.controller("AttRegistCtrl", [
-    '$scope', '$rootScope', 'AttSvc', '$location', 'CodeSvc', '$q', 'socket', function($scope, $rootScope, AttSvc, $location, CodeSvc, $q, socket) {
+    "$scope", "$rootScope", "AttSvc", "$location", "CodeSvc", "$q", "socket", function($scope, $rootScope, AttSvc, $location, CodeSvc, $q, socket) {
       var init;
       $scope.$on("$destroy", function() {
         return socket.removeAllListeners();
       });
-      $rootScope.backdrop = 'backdrop';
+      $rootScope.backdrop = "backdrop";
       init = function() {
         return selectMenu(2);
       };
@@ -172,7 +172,7 @@
             dow: 1
           }
         });
-        return $('#datetimepicker').datetimepicker({
+        return $("#datetimepicker").datetimepicker({
           format: "L"
         }).on("dp.change", function(e) {
           return $scope.$apply(function() {
@@ -198,20 +198,20 @@
         $scope.att.practiceDt = moment().format("YYYY-MM-DD");
         $rootScope.backdrop = void 0;
         $scope.gotoAttList = function() {
-          return $location.path('/att');
+          return $location.path("/att");
         };
         return $scope.save = function(pDt, pCd, musicInfo, etcMsg) {
           if ($scope.attForm.$invalid) {
             return $.notify("날짜를 형식(YYYY-MM-DD)에 맞게 선택/입력해주세요.");
           } else {
-            $rootScope.backdrop = 'backdrop';
+            $rootScope.backdrop = "backdrop";
             return AttSvc.save(pDt, pCd, musicInfo, etcMsg).success(function(data) {
-              if (data.result === 'success') {
-                socket.emit('addAtt');
-                $location.path('/att');
-              } else if (data.result === 'dup') {
-                $.notify('이미 생성된 연습정보가 있습니다.');
-                $location.path('/att');
+              if (data.result === "success") {
+                socket.emit("addAtt");
+                $location.path("/att");
+              } else if (data.result === "dup") {
+                $.notify("이미 생성된 연습정보가 있습니다.");
+                $location.path("/att");
               }
               return $rootScope.backdrop = void 0;
             });
@@ -222,14 +222,14 @@
   ]);
 
   angularModule.controller("AttDetailCtrl", [
-    '$scope', '$rootScope', 'AttSvc', '$location', 'CodeSvc', '$q', '$routeParams', 'socket', function($scope, $rootScope, AttSvc, $location, CodeSvc, $q, $routeParams, socket) {
+    "$scope", "$rootScope", "AttSvc", "$location", "CodeSvc", "$q", "$routeParams", "socket", function($scope, $rootScope, AttSvc, $location, CodeSvc, $q, $routeParams, socket) {
       var attDataLoad, init;
-      $rootScope.backdrop = 'backdrop';
+      $rootScope.backdrop = "backdrop";
       init = function() {
         return selectMenu(2);
       };
       init();
-      $scope.$on('$destroy', function() {
+      $scope.$on("$destroy", function() {
         return socket.removeAllListeners();
       });
       socket.emit("join", $routeParams.practiceDt + $routeParams.practiceCd);
@@ -253,7 +253,7 @@
       socket.on("select", function(data) {
         return $scope.sList.concat($scope.aList).concat($scope.tList).concat($scope.bList).concat($scope.eList).concat($scope.hList).concat($scope.xList).forEach(function(m) {
           if (m.memberId === data.memberId) {
-            if (data.attYn === 'Y') {
+            if (data.attYn === "Y") {
               m.attYn = "N";
             } else {
               m.attYn = "Y";
@@ -293,7 +293,7 @@
               label: "삭제",
               className: "btn-danger",
               callback: function() {
-                $rootScope.backdrop = 'backdrop';
+                $rootScope.backdrop = "backdrop";
                 return AttSvc.remove(pDt, pCd).success(function(data) {
                   $rootScope.backdrop = void 0;
                   $location.path("/att");
@@ -311,20 +311,20 @@
         return true;
       };
       $scope.saveMusicInfo = function(pDt, pCd, musicInfo) {
-        $rootScope.backdrop = 'backdrop';
+        $rootScope.backdrop = "backdrop";
         return AttSvc.saveMusicInfo(pDt, pCd, musicInfo).success(function(data) {
-          if (data.result === 'success') {
+          if (data.result === "success") {
             socket.emit("refreshMusicInfo", musicInfo);
           } else {
-            $.notify("'저장에 실패하였습니다.");
+            $.notify("저장에 실패하였습니다.");
           }
           return $rootScope.backdrop = void 0;
         });
       };
       $scope.saveEtcMsg = function(pDt, pCd, etcMsg) {
-        $rootScope.backdrop = 'backdrop';
+        $rootScope.backdrop = "backdrop";
         return AttSvc.saveEtcMsg(pDt, pCd, etcMsg).success(function(data) {
-          if (data.result === 'success') {
+          if (data.result === "success") {
             socket.emit("refreshEtcMsg", etcMsg);
           } else {
             $.notify("저장에 실패하였습니다.");
@@ -341,7 +341,7 @@
               label: "마감",
               className: "btn-success",
               callback: function() {
-                $rootScope.backdrop = 'backdrop';
+                $rootScope.backdrop = "backdrop";
                 return AttSvc.lockAtt(pDt, pCd).success(function(data) {
                   $rootScope.backdrop = void 0;
                   return socket.emit("closeAtt");
@@ -366,7 +366,7 @@
               label: "마감 해제",
               className: "btn-success",
               callback: function() {
-                $rootScope.backdrop = 'backdrop';
+                $rootScope.backdrop = "backdrop";
                 return AttSvc.unlockAtt(pDt, pCd).success(function(data) {
                   $rootScope.backdrop = void 0;
                   return socket.emit("uncloseAtt");
@@ -383,11 +383,11 @@
         return true;
       };
       return $scope.select = function(pDt, pCd, memberId, lockYn, attYn, partCd) {
-        if (lockYn === 'N') {
-          $rootScope.backdrop = 'backdrop';
+        if (lockYn === "N") {
+          $rootScope.backdrop = "backdrop";
           return AttSvc.select(pDt, pCd, memberId, attYn).success(function(data) {
             var params;
-            if (data.result === 'success') {
+            if (data.result === "success") {
               params = new Object();
               params.pDt = pDt;
               params.pCd = pCd;
@@ -395,7 +395,7 @@
               params.attYn = attYn;
               socket.emit("select", params);
             } else {
-              $.notify('서버 오류가 발생하였습니다. 잠시 후 다시 시도 해주시기바랍니다.');
+              $.notify("서버 오류가 발생하였습니다. 잠시 후 다시 시도 해주시기바랍니다.");
             }
             return $rootScope.backdrop = void 0;
           });

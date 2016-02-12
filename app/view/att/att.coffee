@@ -55,7 +55,7 @@ angularModule.factory "socket", ($rootScope) ->
     socket.removeAllListeners()
 
 angularModule.controller "AttCtrl",
-  ['$scope', '$rootScope', 'AttSvc', '$location', 'socket', '$route',
+  ["$scope", "$rootScope", "AttSvc", "$location", "socket", "$route",
     ( $scope ,  $rootScope ,  AttSvc ,  $location ,  socket ,  $route ) ->
 # socket - remove all listeners
       $scope.$on "$destroy", ->
@@ -72,7 +72,7 @@ angularModule.controller "AttCtrl",
       # Backdrop 적용시 레이아웃 깨짐 방지 목업 div 엘리먼트 show
       $scope.mock = true
 
-      $rootScope.backdrop = 'backdrop'
+      $rootScope.backdrop = "backdrop"
 
       init = ->
         selectMenu(2) # 메뉴 선택
@@ -83,7 +83,7 @@ angularModule.controller "AttCtrl",
 
       # 더보기
       $scope.more = ->
-        $rootScope.backdrop = 'backdrop'
+        $rootScope.backdrop = "backdrop"
 
         AttSvc.getAttList(p).success (data) ->
           if(data != null && data.length > 0)
@@ -115,12 +115,12 @@ angularModule.controller "AttCtrl",
   ]
 
 angularModule.controller "AttRegistCtrl",
-  ['$scope', '$rootScope', 'AttSvc', '$location', 'CodeSvc', '$q', 'socket',
+  ["$scope", "$rootScope", "AttSvc", "$location", "CodeSvc", "$q", "socket",
     ( $scope ,  $rootScope ,  AttSvc ,  $location ,  CodeSvc ,  $q ,  socket ) ->
 
 # socket - remove all listeners
       $scope.$on "$destroy", -> socket.removeAllListeners()
-      $rootScope.backdrop = 'backdrop'
+      $rootScope.backdrop = "backdrop"
 
       init = -> selectMenu(2) # 메뉴 선택
       init()
@@ -130,7 +130,7 @@ angularModule.controller "AttRegistCtrl",
           week:
             dow: 1
 
-        $('#datetimepicker').datetimepicker
+        $("#datetimepicker").datetimepicker
           format: "L"
         .on "dp.change", (e) ->
           $scope.$apply ->
@@ -157,36 +157,36 @@ angularModule.controller "AttRegistCtrl",
         $rootScope.backdrop = undefined
 
         # 연습일정 목록으로 이동 버튼*/
-        $scope.gotoAttList = -> $location.path('/att')
+        $scope.gotoAttList = -> $location.path("/att")
 
         # 저장 버튼
         $scope.save = (pDt, pCd, musicInfo, etcMsg) ->
           if($scope.attForm.$invalid)
             $.notify "날짜를 형식(YYYY-MM-DD)에 맞게 선택/입력해주세요."
           else
-            $rootScope.backdrop = 'backdrop'
+            $rootScope.backdrop = "backdrop"
             AttSvc.save(pDt, pCd, musicInfo, etcMsg).success (data) ->
-              if(data.result == 'success')
-                socket.emit('addAtt') # 소켓-연습정보 추가 알림
-                $location.path('/att')
-              else if(data.result == 'dup')
-                $.notify('이미 생성된 연습정보가 있습니다.')
-                $location.path('/att')
+              if(data.result == "success")
+                socket.emit("addAtt") # 소켓-연습정보 추가 알림
+                $location.path("/att")
+              else if(data.result == "dup")
+                $.notify("이미 생성된 연습정보가 있습니다.")
+                $location.path("/att")
 
               $rootScope.backdrop = undefined
   ]
 
 angularModule.controller "AttDetailCtrl",
-  ['$scope', '$rootScope', 'AttSvc', '$location', 'CodeSvc', '$q', '$routeParams', 'socket',
+  ["$scope", "$rootScope", "AttSvc", "$location", "CodeSvc", "$q", "$routeParams", "socket",
     ( $scope ,  $rootScope ,  AttSvc ,  $location ,  CodeSvc ,  $q ,  $routeParams ,  socket ) ->
 
-      $rootScope.backdrop = 'backdrop'
+      $rootScope.backdrop = "backdrop"
 
       init = -> selectMenu(2) # 메뉴 선택
       init()
 
       # socket - remove all listeners
-      $scope.$on '$destroy', ->
+      $scope.$on "$destroy", ->
         socket.removeAllListeners()
 
       # 소켓-연습 상세정보 입장
@@ -222,7 +222,7 @@ angularModule.controller "AttDetailCtrl",
           $scope.eList).concat(
           $scope.hList).concat(
           $scope.xList).forEach (m) -> if(m.memberId == data.memberId)
-            if(data.attYn == 'Y')
+            if(data.attYn == "Y")
               m.attYn = "N"
             else
               m.attYn = "Y"
@@ -263,7 +263,7 @@ angularModule.controller "AttDetailCtrl",
               label: "삭제",
               className: "btn-danger",
               callback: ->
-                $rootScope.backdrop = 'backdrop'
+                $rootScope.backdrop = "backdrop"
                 AttSvc.remove(pDt, pCd).success (data) ->
                   $rootScope.backdrop = undefined
                   $location.path "/att"
@@ -279,20 +279,20 @@ angularModule.controller "AttDetailCtrl",
 
       # 연습곡 저장
       $scope.saveMusicInfo = (pDt, pCd, musicInfo) ->
-        $rootScope.backdrop = 'backdrop'
+        $rootScope.backdrop = "backdrop"
         AttSvc.saveMusicInfo(pDt, pCd, musicInfo).success (data) ->
-          if(data.result == 'success')
+          if(data.result == "success")
             socket.emit "refreshMusicInfo", musicInfo
           else
-            $.notify "'저장에 실패하였습니다."
+            $.notify "저장에 실패하였습니다."
 
           $rootScope.backdrop = undefined
 
       # 메모 저장
       $scope.saveEtcMsg = (pDt, pCd, etcMsg) ->
-        $rootScope.backdrop = 'backdrop'
+        $rootScope.backdrop = "backdrop"
         AttSvc.saveEtcMsg(pDt, pCd, etcMsg).success (data) ->
-          if(data.result == 'success')
+          if(data.result == "success")
             socket.emit "refreshEtcMsg", etcMsg
           else
             $.notify "저장에 실패하였습니다."
@@ -309,7 +309,7 @@ angularModule.controller "AttDetailCtrl",
               label: "마감",
               className: "btn-success",
               callback: ->
-                $rootScope.backdrop = 'backdrop'
+                $rootScope.backdrop = "backdrop"
                 AttSvc.lockAtt(pDt, pCd).success (data) ->
                   $rootScope.backdrop = undefined
                   # 소켓-마감 알림
@@ -331,7 +331,7 @@ angularModule.controller "AttDetailCtrl",
               label: "마감 해제",
               className: "btn-success",
               callback: ->
-                $rootScope.backdrop = 'backdrop'
+                $rootScope.backdrop = "backdrop"
                 AttSvc.unlockAtt(pDt, pCd).success (data) ->
                   $rootScope.backdrop = undefined
                   # 소켓-마감 해제 알림
@@ -345,10 +345,10 @@ angularModule.controller "AttDetailCtrl",
 
       # 출석체크/해제
       $scope.select = (pDt, pCd, memberId, lockYn, attYn, partCd) ->
-        if(lockYn == 'N')
-          $rootScope.backdrop = 'backdrop'
+        if(lockYn == "N")
+          $rootScope.backdrop = "backdrop"
           AttSvc.select(pDt, pCd, memberId, attYn).success (data) ->
-            if(data.result == 'success')
+            if(data.result == "success")
               params = new Object()
               params.pDt = pDt
               params.pCd = pCd
@@ -357,7 +357,7 @@ angularModule.controller "AttDetailCtrl",
 
               socket.emit "select", params
             else
-              $.notify('서버 오류가 발생하였습니다. 잠시 후 다시 시도 해주시기바랍니다.')
+              $.notify "서버 오류가 발생하였습니다. 잠시 후 다시 시도 해주시기바랍니다."
 
             $rootScope.backdrop = undefined
   ]
