@@ -32,10 +32,6 @@
 		"passport-facebook": "~0.1.5",
 		"async": "*"
 	},
-	"engines": {
-		"node": "4.8.4",
-		"npm": "2.15.11"
-	},
 	"scripts": {
 		"postinstall": "bower install",
 		
