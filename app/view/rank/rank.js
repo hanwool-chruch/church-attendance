@@ -69,5 +69,3 @@
   ]);
 
 }).call(this);
-
-//# sourceMappingURL=rank.js.map

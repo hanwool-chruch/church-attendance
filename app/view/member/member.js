@@ -74,21 +74,56 @@
   ]);
 
   angularModule.controller("MemberCtrl", [
-    "$scope", "$rootScope", "$window", "$location", "MemberSvc", function($scope, $rootScope, $window, $location, MemberSvc) {
+    "$scope", "$rootScope", "$window", "$location", "MemberSvc", "CodeSvc", "$q", function($scope, $rootScope, $window, $location, MemberSvc, CodeSvc, $q) {
       var init;
       $rootScope.backdrop = "backdrop";
       init = function() {
         return selectMenu(1);
       };
       init();
-      MemberSvc.getMemberList().success(function(data) {
-        $scope.memberList = data;
+
+	  $q.all([MemberSvc.getMemberList(), CodeSvc.getCodeList()]).then(function(resultArray) {
+	
+		db_memberList = resultArray[0].data;
+        $scope.code = resultArray[1].data;
+		partList = $scope.code.partList;
+		
+		partList.map(item => {
+			item.memberList = [];
+		});
+
+		db_memberList.map(member => {			
+			index = -1;
+
+			if(member.PHONE_NO == "" || member.PHONE_NO == null)
+				member.PHONE_NO = "010-0000-0000"
+			if(member.BIRTHDAY == "" || member.BIRTHDAY == null)
+				member.BIRTHDAY = "0000-00-00"
+
+			for(i=0; i < partList.length; i++ ){
+				if(member.PART_CD == partList[i].PART_CD)
+					index = i; 
+			}
+
+			if(index > -1) partList[index].memberList.push(member);
+		});
+
+		$scope.partList = partList;
         return $rootScope.backdrop = void 0;
       });
+
+      /*MemberSvc.getMemberList().success(function(data) {
+		console.log(data);
+        $scope.memberList = data;
+        return $rootScope.backdrop = void 0;
+      });*/
+
       $scope.detail = function(memberId) {
         return $location.path("/member/view/" + memberId).search({});
       };
-      return $scope.regist = function() {
+
+      
+	  return $scope.regist = function() {
         return $location.path("/member/regist");
       };
     }
@@ -139,6 +174,8 @@
       init();
       $q.all([CodeSvc.getCodeList()]).then(function(resultArray) {
         $scope.code = resultArray[0].data;
+
+		console.log($scope.code);
         $rootScope.backdrop = void 0;
         $scope.member = new Object();
         $scope.member.cPositionCd = $scope.code.cPositionList[0].C_POSITION_CD;
@@ -193,5 +230,3 @@
   };
 
 }).call(this);
-
-//# sourceMappingURL=member.js.map

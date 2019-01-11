@@ -10,84 +10,24 @@
 <div class="container">
 	<div class="btn-group btn-group-justified" role="group" aria-label="저장" style="margin-bottom:20px;">
 		<div class="btn-group" role="group">
-			<button type="button" class="btn btn-success btn-md" data-ng-click="regist()"><i class='ion-person-add'></i> 새 찬양대원 등록</button>
+			<button type="button" class="btn btn-success btn-md" data-ng-click="regist()"><i class='ion-person-add'></i> 신규 학생 등록</button>
 		</div>
 	</div>
-	<div class="panel panel-default">
-		<div class="panel-heading" data-ng-click="sView =! sView" style="cursor: pointer;">소프라노 <span class="badge" data-ng-bind="memberList.s.length"></span><span style="float: right;"><i data-ng-class="sView?'ion-chevron-up':'ion-chevron-down'"></i></span></div>
+
+	<div class="panel panel-default"  ng-repeat="part in partList">
+		<div class="panel-heading" data-ng-click="sView =! sView" style="cursor: pointer;">{{part.PART_NM}} 
+			<span class="badge" data-ng-bind="part.memberList.length"></span><span style="float: right;">
+			<i data-ng-class="sView?'ion-chevron-up':'ion-chevron-down'"></i>
+			</span>
+		</div>
 		<table class="table" data-ng-show="sView">
-			<tr data-ng-repeat="m in memberList.s">
-				<td data-ng-bind="m.memberNm" class="text-center"></td>
-				<td data-ng-bind="m.cPositionNm" class="text-center"></td>
-				<td data-ng-bind="m.positionNm" class="text-center"></td>
-				<td class="text-center"><a href="javascript:;" data-ng-click="detail(m.memberId);"><i class='ion-edit'></i> 상세보기</a></td>
+			<tr data-ng-repeat="m in part.memberList">
+				<td data-ng-bind="m.MEMBER_NM" class="text-center"></td>
+				<td data-ng-bind="m.PHONE_NO" class="text-center"></td>
+				<td data-ng-bind="m.BIRTHDAY" class="text-center"></td>
+				<td class="text-center"><a href="javascript:;" data-ng-click="detail(m.MEMBER_ID);"><i class='ion-edit'></i> 상세보기</a></td>
 			</tr>
 		</table>
 	</div>
-	<div class="panel panel-default">
-		<div class="panel-heading" data-ng-click="aView =! aView" style="cursor: pointer;">알토 <span class="badge" data-ng-bind="memberList.a.length"></span><span style="float: right;"><i data-ng-class="aView?'ion-chevron-up':'ion-chevron-down'"></i></span></div>
-		<table class="table" data-ng-show="aView">
-			<tr data-ng-repeat="m in memberList.a">
-				<td data-ng-bind="m.memberNm" class="text-center"></td>
-				<td data-ng-bind="m.cPositionNm" class="text-center"></td>
-				<td data-ng-bind="m.positionNm" class="text-center"></td>
-				<td class="text-center"><a href="javascript:;" data-ng-click="detail(m.memberId);"><i class='ion-edit'></i> 상세보기</a></td>
-			</tr>
-		</table>
-	</div>
-	<div class="panel panel-default">
-		<div class="panel-heading" data-ng-click="tView =! tView" style="cursor: pointer;">테너 <span class="badge" data-ng-bind="memberList.t.length"></span><span style="float: right;"><i data-ng-class="tView?'ion-chevron-up':'ion-chevron-down'"></i></span></div>
-		<table class="table" data-ng-show="tView">
-			<tr data-ng-repeat="m in memberList.t">
-				<td data-ng-bind="m.memberNm" class="text-center"></td>
-				<td data-ng-bind="m.cPositionNm" class="text-center"></td>
-				<td data-ng-bind="m.positionNm" class="text-center"></td>
-				<td class="text-center"><a href="javascript:;" data-ng-click="detail(m.memberId);"><i class='ion-edit'></i> 상세보기</a></td>
-			</tr>
-		</table>
-	</div>
-	<div class="panel panel-default">
-		<div class="panel-heading" data-ng-click="bView =! bView" style="cursor: pointer;">베이스 <span class="badge" data-ng-bind="memberList.b.length"></span><span style="float: right;"><i data-ng-class="bView?'ion-chevron-up':'ion-chevron-down'"></i></span></div>
-		<table class="table" data-ng-show="bView">
-			<tr data-ng-repeat="m in memberList.b">
-				<td data-ng-bind="m.memberNm" class="text-center"></td>
-				<td data-ng-bind="m.cPositionNm" class="text-center"></td>
-				<td data-ng-bind="m.positionNm" class="text-center"></td>
-				<td class="text-center"><a href="javascript:;" data-ng-click="detail(m.memberId);"><i class='ion-edit'></i> 상세보기</a></td>
-			</tr>
-		</table>
-	</div>
-	<div class="panel panel-default">
-		<div class="panel-heading" data-ng-click="eView =! eView" style="cursor: pointer;">기타 <span class="badge" data-ng-bind="memberList.e.length"></span><span style="float: right;"><i data-ng-class="eView?'ion-chevron-up':'ion-chevron-down'"></i></span></div>
-		<table class="table" data-ng-show="eView">
-			<tr data-ng-repeat="m in memberList.e">
-				<td data-ng-bind="m.memberNm" class="text-center"></td>
-				<td data-ng-bind="m.cPositionNm" class="text-center"></td>
-				<td data-ng-bind="m.positionNm" class="text-center"></td>
-				<td class="text-center"><a href="javascript:;" data-ng-click="detail(m.memberId);"><i class='ion-edit'></i> 상세보기</a></td>
-			</tr>
-		</table>
-	</div>
-	<div class="panel panel-default">
-		<div class="panel-heading" data-ng-click="hView =! hView" style="cursor: pointer;">휴직 <span class="badge" data-ng-bind="memberList.h.length"></span><span style="float: right;"><i data-ng-class="hView?'ion-chevron-up':'ion-chevron-down'"></i></span></div>
-		<table class="table" data-ng-show="hView">
-			<tr data-ng-repeat="m in memberList.h">
-				<td data-ng-bind="m.memberNm" class="text-center"></td>
-				<td data-ng-bind="m.cPositionNm" class="text-center"></td>
-				<td data-ng-bind="m.positionNm" class="text-center"></td>
-				<td class="text-center"><a href="javascript:;" data-ng-click="detail(m.memberId);"><i class='ion-edit'></i> 상세보기</a></td>
-			</tr>
-		</table>
-	</div>
-	<div class="panel panel-default">
-		<div class="panel-heading" data-ng-click="xView =! xView" style="cursor: pointer;">탈단 <span class="badge" data-ng-bind="memberList.x.length"></span><span style="float: right;"><i data-ng-class="xView?'ion-chevron-up':'ion-chevron-down'"></i></span></div>
-		<table class="table" data-ng-show="xView">
-			<tr data-ng-repeat="m in memberList.x">
-				<td data-ng-bind="m.memberNm" class="text-center"></td>
-				<td data-ng-bind="m.cPositionNm" class="text-center"></td>
-				<td data-ng-bind="m.positionNm" class="text-center"></td>
-				<td class="text-center"><a href="javascript:;" data-ng-click="detail(m.memberId);"><i class='ion-edit'></i> 상세보기</a></td>
-			</tr>
-		</table>
-	</div>
+
 </div>

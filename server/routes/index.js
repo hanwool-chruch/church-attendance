@@ -1,8 +1,8 @@
 var db_config = {
-    host     : process.env.MYSQL_URL  || 'us-cdbr-iron-east-03.cleardb.net',
-    user     : process.env.MYSQL_ID   || 'b884ba11ab5f27',
-    password : process.env.MYSQL_PASS || '42d453a9',
-    database : process.env.MYSQL_DB   || 'heroku_08834d64f8b1271'
+    host     : process.env.MYSQL_URL  || 'church-department-infant.cwfhoavfyutf.ap-northeast-2.rds.amazonaws.com',
+    user     : process.env.MYSQL_ID   || 'woong',
+    password : process.env.MYSQL_PASS || 'gksksla1004',
+    database : process.env.MYSQL_DB   || 'db_infant'
 };
 
 var db;
@@ -275,82 +275,27 @@ exports.attInfoDetail = function(req, res) {
 
 /* 대원목록*/
 exports.memberList = function(req, res) {
-	var query1 = 
-        " 			SELECT  "+
-        " 			    MEMBER_ID   memberId, "+
-        " 			    MEMBER_NM   memberNm, "+
-        " 			    b.C_POSITION_NM cPositionNm, "+
-        " 			    c.POSITION_NM positionNm "+
-        " 			FROM "+
-        " 			    choir_member a, "+
-        " 			    CHOIR_C_POSITION b, "+
-        " 			    CHOIR_POSITION c "+
-        "         WHERE a.C_POSITION_CD = b.C_POSITION_CD AND a.POSITION_CD = c.POSITION_CD"+
-        "           AND a.STATUS_CD = ? "+
-        "           AND a.PART_CD = ? "+
-        "      ORDER BY a.MEMBER_NM ";
+	var query1 = " SELECT MEMBER_NM, MEMBER_ID, PHONE_NO, BIRTHDAY, PART_CD, STATUS_CD " +
+		         " FROM CHOIR_MEMBER a ORDER BY a.PART_CD";
 
-    var query2 = 
+	/*var query2 = 
         " 			SELECT  "+
-        " 			    MEMBER_ID   memberId, "+
-        " 			    MEMBER_NM   memberNm, "+
-        " 			    b.C_POSITION_NM cPositionNm, "+
-        " 			    c.POSITION_NM positionNm "+
+        " 			    * 
         " 			FROM "+
-        " 			    choir_member a, "+
-        " 			    CHOIR_C_POSITION b, "+
-        " 			    CHOIR_POSITION c "+
-        "         WHERE a.C_POSITION_CD = b.C_POSITION_CD AND a.POSITION_CD = c.POSITION_CD"+
-        "         AND a.STATUS_CD = ? "+
-        "         ORDER BY a.MEMBER_NM ";
+        " 			    CHOIR_MEMBER a "+
+        "         WHERE a.STATUS_CD = ? "+
+        "           AND a.PART_CD = ? "+
+        "      ORDER BY a.MEMBER_NM ";*/
 
     async.parallel({
-    	s: function(callback) {
-    		db.query(query1, ['O', 'S'], function(err, rows){
+    	memberList: function(callback) {
+    		db.query(query1, [], function(err, rows){
     			callback(null, rows);
     		});
-    	},
-    	a: function(callback) {
-    		db.query(query1, ['O', 'A'], function(err, rows){
-    			callback(null, rows);
-    		});
-    	},
-    	t: function(callback) {
-    		db.query(query1, ['O', 'T'], function(err, rows){
-    			callback(null, rows);
-    		});
-    	},
-    	b: function(callback) {
-    		db.query(query1, ['O', 'B'], function(err, rows){
-    			callback(null, rows);
-    		});
-    	},
-    	e: function(callback) {
-    		db.query(query1, ['O', 'E'], function(err, rows){
-    			callback(null, rows);
-    		});
-    	},
-    	h: function(callback) {
-    		db.query(query2, ['H'], function(err, rows){
-    			callback(null, rows);
-    		});
-    	},
-    	x: function(callback) {
-    		db.query(query2, ['X'], function(err, rows){
-    			callback(null, rows);
-    		});
-    	}
-    	
+    	}    	
     }, function(err, results) {
-    	res.send({
-    		s : results.s, 
-    		a : results.a, 
-    		t : results.t, 
-    		b : results.b, 
-    		e : results.e, 
-    		h : results.h, 
-    		x : results.x
-    	});
+
+    	res.send(results.memberList);
     });
 };
 
@@ -373,7 +318,7 @@ exports.member = function(req, res) {
         " 			       STATUS_CD   statusCd, "+
         " 			       (SELECT STATUS_NM FROM CHOIR_STATUS CS WHERE CS.STATUS_CD = a.STATUS_CD) statusNm, "+
         " 			       ETC_MSG     etcMsg "+
-        " 			  FROM choir_member a ) m "+
+        " 			  FROM CHOIR_MEMBER a ) m "+
         " WHERE memberId = ? ";
 
 	var query2 =
@@ -382,10 +327,10 @@ exports.member = function(req, res) {
         "       a.practice_dt, a.practice_cd, " +
         "       b.member_id " +
         "  FROM " +
-        "       (SELECT practice_dt, practice_cd FROM choir_practice_info) a left outer join  " +
+        "       (SELECT practice_dt, practice_cd FROM CHOIR_PRACTICE_INFO) a left outer join  " +
         "       (SELECT p.practice_dt, p.practice_cd, a.member_id " +
-        "          FROM choir_practice_info p inner join " +
-        "               choir_attendance a " +
+        "          FROM CHOIR_PRACTICE_INFO p inner join " +
+        "               CHOIR_ATTENDANCE a " +
         "            ON p.practice_dt = a.practice_dt " +
         "           AND p.practice_cd = a.practice_cd " +
         "         WHERE member_id = ?) b " +
@@ -424,11 +369,11 @@ exports.member = function(req, res) {
 /* 코드정보 */
 exports.codeList = function(req, res) {
 
-	var query1 = "SELECT * FROM choir_c_position 	ORDER BY orderby_no";
-	var query2 = "SELECT * FROM choir_position 		ORDER BY orderby_no";
-	var query3 = "SELECT * FROM choir_part 			ORDER BY orderby_no";
-	var query4 = "SELECT * FROM choir_practice 		ORDER BY orderby_no";
-	var query5 = "SELECT * FROM choir_status 		ORDER BY orderby_no";
+	var query1 = "SELECT * FROM CHOIR_C_POSITION 	ORDER BY orderby_no";
+	var query2 = "SELECT * FROM CHOIR_POSITION 		ORDER BY orderby_no";
+	var query3 = "SELECT * FROM CHOIR_PART 			ORDER BY orderby_no";
+	var query4 = "SELECT * FROM CHOIR_PRACTICE 		ORDER BY orderby_no";
+	var query5 = "SELECT * FROM CHOIR_STATUS 		ORDER BY orderby_no";
 
 	async.parallel({
 		cPositionList : function(callback) {
@@ -497,12 +442,12 @@ exports.select = function(req, res) {
 
 	async.waterfall([
 		function(callback) {
-			db.query("SELECT COUNT(*) cnt FROM choir_attendance i WHERE i.PRACTICE_DT = ? AND i.PRACTICE_CD = ? AND i.MEMBER_ID = ? ", [ practiceDt, practiceCd, memberId ], function(err, rows){	
+			db.query("SELECT COUNT(*) cnt FROM CHOIR_ATTENDANCE i WHERE i.PRACTICE_DT = ? AND i.PRACTICE_CD = ? AND i.MEMBER_ID = ? ", [ practiceDt, practiceCd, memberId ], function(err, rows){	
 				callback(null, rows[0].cnt);
 			});
 		}, function(cnt, callback) {
 			if(cnt == 0) {
-				db.query("INSERT INTO choir_attendance VALUES (?,?,?)", [ practiceDt, practiceCd, memberId ], function() {
+				db.query("INSERT INTO CHOIR_ATTENDANCE VALUES (?,?,?)", [ practiceDt, practiceCd, memberId ], function() {
 					callback(null, "done");
 				});	
 			} else {
@@ -698,7 +643,7 @@ exports.updateMember = function(req, res) {
 	var etcMsg = req.body.etcMsg;
 	
 	var	query =
-        "UPDATE choir_member"+
+        "UPDATE CHOIR_MEMBER"+
 		"   SET MEMBER_NM=?, " +
         "       C_POSITION_CD=?, " +
         "       PHONE_NO=?, " +

@@ -14,5 +14,5 @@ angular.module('myApp.login', ['ngRoute'])
 		selectMenu(5); /* 메뉴 선택 */
 	};
 	
-	init();
+
 }]);
