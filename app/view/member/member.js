@@ -2,7 +2,7 @@
 (function() {
   var angularModule;
 
-  angularModule = angular.module("myApp.member", ["ngRoute", "ngResource"]);
+  angularModule = angular.module("myApp.member", ["ngRoute", "ngResource","ngFileUpload"]);
 
   angularModule.config([
     "$routeProvider", function($routeProvider) {
@@ -15,6 +15,9 @@
       }).when("/member/regist", {
         templateUrl: "view/member/memberDetail.html",
         controller: "MemberRegistCtrl"
+      }).when("/member_kind", {
+        templateUrl: "view/member/memberKind.html",
+        controller: "memberKindCtrl"
       });
     }
   ]);
@@ -32,6 +35,56 @@
             method: "GET"
           });
         },
+				getLongAbsenteeList: function() {
+          return $http({
+            cache: false,
+            url: "/rest/longabsentee",
+            data: {
+              t: new Date().getMilliseconds()
+            },
+            method: "GET"
+          });
+        },
+				getLatestAbsenteeList: function() {
+          return $http({
+            cache: false,
+            url: "/rest/latestabsentee",
+            data: {
+              t: new Date().getMilliseconds()
+            },
+            method: "GET"
+					})
+				},
+				getBaptismList: function() {
+          return $http({
+            cache: false,
+            url: "/rest/baptism",
+            data: {
+              t: new Date().getMilliseconds()
+            },
+            method: "GET"
+					})
+				},
+				getNameSortedMemberList: function() {
+          return $http({
+            cache: false,
+            url: "/rest/sortedmember",
+            data: {
+              t: new Date().getMilliseconds()
+            },
+            method: "GET"
+					})
+				},
+				getBirthDayMemberList: function() {
+          return $http({
+            cache: false,
+            url: "/rest/birthdaymember",
+            data: {
+              t: new Date().getMilliseconds()
+            },
+            method: "GET"
+					})
+				},
         getDetail: function(id) {
           return $http({
             cache: false,
@@ -42,15 +95,21 @@
             method: "GET"
           });
         },
+				deleteMember: function(id) {
+					console.log("ID" + id);
+				 return $http.delete("/rest/member/" + id);
+        },
         save: function(method, member) {
           switch (method) {
             case "insert":
-              $http.post("/rest/member", member);
+              $http.post("/rest/member", member);		
               break;
             case "update":
               $http.put("/rest/member", member);
-          }
-          return $http.post("/rest/member", member);
+							break;
+					}
+         
+				 return $http.get("/rest/member", member);
         }
       };
     }
@@ -73,7 +132,7 @@
     }
   ]);
 
-  angularModule.controller("MemberCtrl", [
+	angularModule.controller("MemberCtrl", [
     "$scope", "$rootScope", "$window", "$location", "MemberSvc", "CodeSvc", "$q", function($scope, $rootScope, $window, $location, MemberSvc, CodeSvc, $q) {
       var init;
       $rootScope.backdrop = "backdrop";
@@ -82,55 +141,120 @@
       };
       init();
 
-	  $q.all([MemberSvc.getMemberList(), CodeSvc.getCodeList()]).then(function(resultArray) {
+			$q.all([MemberSvc.getMemberList(), CodeSvc.getCodeList()]).then(function(resultArray) {
 	
-		db_memberList = resultArray[0].data;
-        $scope.code = resultArray[1].data;
-		partList = $scope.code.partList;
-		
-		partList.map(item => {
-			item.memberList = [];
-		});
+				db_memberList = resultArray[0].data;
+				$scope.code = resultArray[1].data;
+				partList = $scope.code.partList;
+				
+				partList.map(function(item){
+					item.memberList = [];
+				});
 
-		db_memberList.map(member => {			
-			index = -1;
+				db_memberList.map(function(member){			
+					index = -1;
 
-			if(member.PHONE_NO == "" || member.PHONE_NO == null)
-				member.PHONE_NO = "010-0000-0000"
-			if(member.BIRTHDAY == "" || member.BIRTHDAY == null)
-				member.BIRTHDAY = "0000-00-00"
+					if(member.PHONE_NO == "" || member.PHONE_NO == null)
+						member.PHONE_NO = "010-0000-0000"
+					if(member.BIRTHDAY == "" || member.BIRTHDAY == null)
+						member.BIRTHDAY = "0000-00-00"
 
-			for(i=0; i < partList.length; i++ ){
-				if(member.PART_CD == partList[i].PART_CD)
-					index = i; 
-			}
+					member.BIRTHDAY = member.BIRTHDAY.substr(2)
 
-			if(index > -1) partList[index].memberList.push(member);
-		});
+					for(i=0; i < partList.length; i++ ){
+						if(member.PART_CD == partList[i].PART_CD)
+							index = i; 
+					}
 
-		$scope.partList = partList;
-        return $rootScope.backdrop = void 0;
-      });
+					if(index > -1) partList[index].memberList.push(member);
+				});
 
-      /*MemberSvc.getMemberList().success(function(data) {
-		console.log(data);
-        $scope.memberList = data;
-        return $rootScope.backdrop = void 0;
-      });*/
+				$scope.partList = partList;
+				return $rootScope.backdrop = void 0;
+			});	
 
       $scope.detail = function(memberId) {
         return $location.path("/member/view/" + memberId).search({});
       };
-
       
-	  return $scope.regist = function() {
+			return $scope.regist = function() {
+        return $location.path("/member/regist");
+      };
+    }
+  ]);
+
+angularModule.controller("memberKindCtrl", [
+    "$scope", "$rootScope", "$window", "$location", "MemberSvc", "CodeSvc", "$q", function($scope, $rootScope, $window, $location, MemberSvc, CodeSvc, $q) {
+      var init;
+      $rootScope.backdrop = "backdrop";
+      init = function() {
+        return selectMenu(2);
+      };
+      init();
+
+			dataTypes=["이번달 생일자",
+			           "장기 결석자", 
+			           "최근 결석자",
+			           "세례 대상자",
+			           "이름순 전체명단"
+				        ]
+	
+
+			$q.all([CodeSvc.getCodeList(), MemberSvc.getBirthDayMemberList(), MemberSvc.getLatestAbsenteeList(), MemberSvc.getLongAbsenteeList(), MemberSvc.getBaptismList(),  MemberSvc.getNameSortedMemberList()])
+				.then(function(resultArray) {			
+
+				dataList = [];
+				code = resultArray[0].data;
+
+				console.log(code);
+
+				index = 0;
+
+				dataTypes.map(function(dataType){
+
+					data = {};
+					data.title = dataType;
+					list = resultArray[index+1].data;
+					
+					data.list = list.map(function(member){			
+						if(member.PHONE_NO == "" || member.PHONE_NO == null)
+							member.PHONE_NO = "010-0000-0000"
+						if(member.BIRTHDAY == "" || member.BIRTHDAY == null)
+							member.BIRTHDAY = "0000-00-00"
+
+						member.BIRTHDAY = member.BIRTHDAY.substr(2)
+						if(index==3){
+								code.baptismList.forEach(function(code) {					
+								if(member.BAPTISM_CD == code.CMN_CD)
+									member.BIRTHDAY = code.CMN_NM;
+								})
+						}
+						return member;
+					});
+					
+					dataList[index] = data;
+					index++;
+				});
+					
+
+				console.log(dataList);
+
+				$scope.dataList = dataList;
+				return $rootScope.backdrop = void 0;
+			});	
+
+      $scope.detail = function(memberId) {
+        return $location.path("/member/view/" + memberId).search({});
+      };
+      
+			return $scope.regist = function() {
         return $location.path("/member/regist");
       };
     }
   ]);
 
   angularModule.controller("MemberDetailCtrl", [
-    "$scope", "$rootScope", "$window", "$routeParams", "MemberSvc", "$location", "CodeSvc", "$q", function($scope, $rootScope, $window, $routeParams, MemberSvc, $location, CodeSvc, $q) {
+    "$scope", "$rootScope", "$window", "$routeParams", "MemberSvc", "$location", "CodeSvc", "$q", "Upload", function($scope, $rootScope, $window, $routeParams, MemberSvc, $location, CodeSvc, $q, Upload) {
       var init;
       $rootScope.backdrop = "backdrop";
       init = function() {
@@ -138,25 +262,96 @@
       };
       init();
       $q.all([MemberSvc.getDetail($routeParams.memberId), CodeSvc.getCodeList()]).then(function(resultArray) {
-        $scope.member = resultArray[0].data.member;
+        member = resultArray[0].data.member;
         $scope.attMonthList = getAttMonthList(resultArray[0].data.attMonthList);
         $scope.code = resultArray[1].data;
+
+				$scope.code.partList.forEach(function(part) {					
+					if(member.PART_CD == part.PART_CD)
+						member.PART_NM = part.PART_NM;
+				})
+
+				$scope.code.baptismList.forEach(function(code) {					
+					if(member.BAPTISM_CD == code.CMN_CD)
+						member.BAPTISM_NM = code.CMN_NM;
+				})
+
+				$scope.code.genderList.forEach(function(code) {					
+					if(member.GENDER_CD == code.CMN_CD)
+						member.GENDER_NM = code.CMN_NM;
+				})
+
+				$scope.code.statusList.forEach(function(code) {					
+					if(member.STATUS_CD == code.CMN_CD)
+						member.STATUS_NM = code.CMN_NM;
+				})
+				
+				$scope.enableDelete = 0
+				
+
+				if($rootScope && $rootScope.globals && $rootScope.globals.currentUser && $rootScope.globals.currentUser.authtype == "admin"){
+					$scope.enableDelete = 1
+				}
+				if($rootScope && $rootScope.globals && $rootScope.globals.currentUser){
+					$scope.part_type = $rootScope.globals.currentUser.username;
+				}
+					
+				$("#BIRTHDAY").datetimepicker({format: 'YYYY-MM-DD'}).data('DateTimePicker').date(new Date(2002,6,1));
+				$("#BIRTHDAY").on("dp.change", function() {
+						$scope.member.BIRTHDAY = $("#BIRTHDAY").val();
+				});
+
+				$scope.member = member;
+
         if (!$scope.member) {
           $location.path("/member");
         }
+
         return $rootScope.backdrop = void 0;
       });
+
+			$scope.resize = resize;
       $scope.gotoMemberList = function() {
         return $location.path("/member");
       };
-      return $scope.save = function() {
+
+			// upload on file select or drop
+			$scope.upload = function (file) {
+					Upload.upload({
+							url: '/rest/member/uploadPhoto/' + $routeParams.memberId,
+							data: {file: file}
+					}).then(function (resp) {
+							console.log('Success upload images') 
+							console.log(resp.data);
+							document.getElementById('member_photo').src = "/photo/"+$scope.part_type+"/"+resp.data+"?" + (+new Date());
+							$scope.member.PHOTO = resp.data;
+							console.log($scope.member.PHOTO);
+					
+					}, function (resp) {
+							console.log('Error status: ' + resp.status);
+					}, function (evt) {
+							var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+							console.log('progress: ' + progressPercentage + '% ');
+					});
+			};
+
+			$scope.delete = function() {
+				 return MemberSvc.deleteMember($routeParams.memberId).success(function(data) {
+					 console.log(data);
+            $rootScope.backdrop = void 0;
+		        //$location.path("/member");
+            return $.notify("삭제되었습니다.");
+         });
+			}
+      
+			$scope.save = function() {
         if ($scope.memberForm.$invalid) {
-          return $.notify("이름 혹은 핸드폰 전화번호를 형식에 맞게 입력해주세요.");
+          return $.notify("이름 / 성별 / 소속반");
         } else {
           $rootScope.backdrop = "backdrop";
           return MemberSvc.save("update", $scope.member).success(function(data) {
             $rootScope.backdrop = void 0;
-            $location.path("/member");
+		        $location.path("/member");
             return $.notify("저장되었습니다.");
           });
         }
@@ -175,24 +370,26 @@
       $q.all([CodeSvc.getCodeList()]).then(function(resultArray) {
         $scope.code = resultArray[0].data;
 
-		console.log($scope.code);
         $rootScope.backdrop = void 0;
         $scope.member = new Object();
-        $scope.member.cPositionCd = $scope.code.cPositionList[0].C_POSITION_CD;
-        $scope.member.cPositionNm = $scope.code.cPositionList[0].C_POSITION_NM;
-        $scope.member.positionCd = $scope.code.positionList[$scope.code.positionList.length - 1].POSITION_CD;
-        $scope.member.positionNm = $scope.code.positionList[$scope.code.positionList.length - 1].POSITION_NM;
-        $scope.member.statusNm = $scope.code.statusList[0].STATUS_NM;
-        $scope.member.statusCd = $scope.code.statusList[0].STATUS_CD;
-        $scope.member.partNm = $scope.code.partList[0].PART_NM;
+				$scope.member.GENDER_CD = "M";
+				$scope.member.GENDER_NM = "남";
+
         return $scope.member.partCd = $scope.code.partList[0].PART_CD;
       });
+
+			$("#BIRTHDAY").datetimepicker({format: 'YYYY-MM-DD'}).data('DateTimePicker').date(new Date(2002,6,1));
+			$("#BIRTHDAY").on("dp.change", function() {
+					$scope.member.BIRTHDAY = $("#BIRTHDAY").val();
+			});
+
+			$scope.resize = resize;
       $scope.gotoMemberList = function() {
         return $location.path("/member");
       };
       return $scope.save = function() {
         if ($scope.memberForm.$invalid) {
-          return $.notify("이름 혹은 핸드폰 전화번호를 형식에 맞게 입력해주세요.");
+          return $.notify("이름 / 성별 / 소속반 / 출석여부를 입력해주세요.");
         } else {
           $rootScope.backdrop = "backdrop";
           return MemberSvc.save("insert", $scope.member).success(function(data) {
@@ -204,6 +401,14 @@
       };
     }
   ]);
+
+
+	function resize(obj, bsize) {
+		var sTextarea = document.getElementById(obj);
+    var csize = (sTextarea.scrollHeight >= bsize) ? sTextarea.scrollHeight+"px" : bsize+"px";
+    sTextarea.style.height = bsize+"px"; 
+    sTextarea.style.height = csize;
+	}
 
   window.getAttMonthList = function(list) {
     var elm, j, len, month, o, preMonth, result;

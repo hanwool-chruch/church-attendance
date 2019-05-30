@@ -6,3 +6,4 @@ tmp
 .DS_Store
 .idea
 choirzion-demo.iml
+app/photo/*

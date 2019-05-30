@@ -116,3 +116,21 @@ div.notify {
 .att-status span.info {
 	color:#31708F;
 }
+
+.panel > .panel-body {
+    background-image: none;
+	padding: 12px
+
+}
+
+.form-control > .name {
+    background-color: red;
+	padding: 12px
+
+}
+
+#calendar h2{
+	font-size: 20px;
+}
+
+textarea { height: auto; }

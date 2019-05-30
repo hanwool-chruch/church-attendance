@@ -11,107 +11,73 @@
 <input type="hidden" data-ng-model="att.practiceDt"/>
 <input type="hidden" data-ng-model="att.practiceCd"/>
 <div class="container" style="margin-bottom:20px;">
-	<div class="panel" data-ng-class="att.practiceCd=='AM'?'panel-success':att.practiceCd=='PM'?'panel-info':att.practiceCd=='SP'?'panel-danger':'panel-default'">
-		<div class="panel-heading"><i data-ng-class="att.lockYn=='Y'?'ion-locked':'ion-calendar'"></i> <strong data-ng-bind="att.practiceDt"></strong> <span class="badge" data-ng-bind="att.practiceNm"></span> <span class="badge" data-ng-bind="(sList | filter:'Y').length + (aList | filter:'Y').length + (tList | filter:'Y').length + (bList | filter:'Y').length + (eList | filter:'Y').length + (hList | filter:'Y').length + (xList | filter:'Y').length"></span> <span class="badge" data-ng-show="att.lockYn=='Y'">마감</span></div>
+	<div class="panel" data-ng-class="att.practiceCd=='WORSHIP'?'panel-success':att.practiceCd=='CAMP'?'panel-info':att.practiceCd=='SP'?'panel-danger':'panel-default'">
+		<div class="panel-heading"><i data-ng-class="att.lockYn=='Y'?'ion-locked':'ion-calendar'"></i> 
+			<strong data-ng-bind="att.practiceDt"></strong> 
+			<span class="badge" data-ng-bind="att.practiceNm"></span> 
+			<span class="badge" data-ng-bind="att.attendanceCnt"></span> 
+		</div>
 		<ul class="list-group" style="font-size:90%;">
 			<li class="list-group-item">
 				<div class="input-group">
-					<span class="input-group-addon" id="sizing-addon3"><i class="ion-music-note"></i></span>
-					<input type="text" class="form-control" name="musicInfo" data-ng-model="att.musicInfo" aria-label="연습곡" placeholder="연습곡">
-					<span class="input-group-addon" id="sizing-addon3" style="cursor: pointer;" data-ng-click="saveMusicInfo(att.practiceDt, att.practiceCd, att.musicInfo);"><i class="ion-archive"></i> 저장</span>
+					<span class="input-group-addon"><i class="ion-android-document"></i></span>
+					<input type="text" class="form-control" name="info" data-ng-show="true" data-ng-model="att.info" aria-label="행사요약" placeholder="행사요약">
+					<span class="input-group-addon" style="cursor: pointer;" data-ng-click="saveInfo(att.practiceDt, att.practiceCd, att.info);">저장</span>
 				</div>
-			</li>
-			<li class="list-group-item">
-				<div class="input-group">
-					<span class="input-group-addon" id="sizing-addon3"><i class="ion-android-document"></i></span>
-					<input type="text" class="form-control" name="etcMsg" data-ng-model="att.etcMsg" aria-label="메모" placeholder="메모">
-					<span class="input-group-addon" id="sizing-addon3" style="cursor: pointer;" data-ng-click="saveEtcMsg(att.practiceDt, att.practiceCd, att.etcMsg);"><i class="ion-archive"></i> 저장</span>
-				</div>
+				<BR>
+				  <div class="panel panel-primary">
+					<div class="panel-heading">공지사항</div>
+					<div class="panel-body">
+						<div class="input-group">
+							<textarea rows="6" name="etcMsg" class="form-control" aria-label="공지사항" placeholder="모두에게 전달해야 하는 내용을 적어주세요" data-ng-model="att.etcMsg">
+							</textarea>
+							<span class="input-group-addon" style="cursor: pointer;" data-ng-click="saveEtcMsg(att.practiceDt, att.practiceCd, att.etcMsg);">저장</span>
+						</div>
+					</div>
+				  </div>
 			</li>
 		</ul>
 	</div>
-	<div class="panel panel-default" data-ng-class="att.practiceCd=='AM'?'panel-success':att.practiceCd=='PM'?'panel-info':att.practiceCd=='SP'?'panel-danger':'panel-default'">
-		<div class="panel-heading" data-ng-click="sView =! sView" style="cursor: pointer;">소프라노 <span class="badge" data-ng-bind="(sList | filter:'Y').length"></span><span style="float: right;"><i data-ng-class="sView?'ion-chevron-up':'ion-chevron-down'"></i></span></div>
-		<table class="table att" data-ng-show="sView">
-			<tr data-ng-repeat="m in sList" data-ng-class="m.attYn=='Y'?'att':''" data-ng-click="select(att.practiceDt, att.practiceCd, m.memberId, att.lockYn, m.attYn, 'S');">
-				<td class="text-center"><i class='ion-checkmark-round' data-ng-class="m.attYn=='Y'?'chk':m.attYn=='N'?'unchk':''"></i></td>
-				<td data-ng-bind="m.memberNm" class="text-center"></td>
-				<td data-ng-bind="m.cPositionNm" class="text-center"></td>
-				<td data-ng-bind="m.positionNm" class="text-center"></td>
-			</tr>
-		</table>
+
+	<div ng-repeat="part in partList" class="panel panel-default" data-ng-class="att.practiceCd=='WORSHIP'?'panel-success':att.practiceCd=='PM'?'panel-info':att.practiceCd=='SP'?'panel-danger':'panel-default'">		
+		<div  class="panel-heading" data-ng-click="sView =! sView" style="cursor: pointer;">
+			<span class="text-success font-weight-bold">{{part.PART_NM}} </span>	
+			<span class="text-info font-weight-bold">{{part.TEACHER_NM}} </span>
+			<span class="badge" data-ng-bind="(part.memberList | filter:'Y').length"></span>
+			<span style="float: right;"><i data-ng-class="sView?'ion-chevron-up':'ion-chevron-down'"></i></span>
+		</div>
+		<div class="panel-group" data-ng-show="sView" style="padding: 10px">
+		  <div class="panel panel-primary">
+			<div class="panel-heading">출석명단</div>
+			<div class="panel-body">
+				<table class="table" >
+					<tr data-ng-repeat="m in part.memberList" data-ng-class="m.attYn=='Y'?'att':''" data-ng-click="select(att.practiceDt, m.memberId, m.attYn);">
+						<td class="text-center"><i class='ion-checkmark-round' data-ng-class="m.attYn=='Y'?'chk':m.attYn=='N'?'unchk':''"></i></td>
+						<td data-ng-bind="m.MEMBER_NM" class="text-center"></td>
+					</tr>
+				</table>
+			</div>
+		  </div>
+		  <div class="panel panel-info">
+			<div class="panel-heading">교사보고서</div>
+			<div class="panel-body">
+				<div class="input-group">
+				<textarea rows="4" name="MEMBER_REPORT_{{part.PART_CD}}" class="form-control" aria-label="교사보고서" placeholder="교사보고서를 작성해 주세요" data-ng-model="part.MEMBER_REPORT">
+				</textarea>
+				<span class="input-group-addon" style="cursor: pointer;" data-ng-click="saveReport(att.practiceDt, part.PART_CD, part.MEMBER_REPORT);">저장</span>
+				<div>
+			</div>
+		  </div>
+		</div>
 	</div>
-	<div class="panel panel-default" data-ng-class="att.practiceCd=='AM'?'panel-success':att.practiceCd=='PM'?'panel-info':att.practiceCd=='SP'?'panel-danger':'panel-default'">
-		<div class="panel-heading" data-ng-click="aView =! aView" style="cursor: pointer;">알토 <span class="badge" data-ng-bind="(aList | filter:'Y').length"></span><span style="float: right;"><i data-ng-class="aView?'ion-chevron-up':'ion-chevron-down'"></i></span></div>
-		<table class="table att" data-ng-show="aView" style="cursor: pointer;">
-			<tr data-ng-repeat="m in aList" data-ng-class="m.attYn=='Y'?'att':''" data-ng-click="select(att.practiceDt, att.practiceCd, m.memberId, att.lockYn, m.attYn, 'A');">
-				<td class="text-center"><i class='ion-checkmark-round' data-ng-class="m.attYn=='Y'?'chk':'unchk'"></i></td>
-				<td data-ng-bind="m.memberNm" class="text-center"></td>
-				<td data-ng-bind="m.cPositionNm" class="text-center"></td>
-				<td data-ng-bind="m.positionNm" class="text-center"></td>
-			</tr>
-		</table>
-	</div>
-	<div class="panel panel-default" data-ng-class="att.practiceCd=='AM'?'panel-success':att.practiceCd=='PM'?'panel-info':att.practiceCd=='SP'?'panel-danger':'panel-default'">
-		<div class="panel-heading" data-ng-click="tView =! tView" style="cursor: pointer;">테너 <span class="badge" data-ng-bind="(tList | filter:'Y').length"></span><span style="float: right;"><i data-ng-class="tView?'ion-chevron-up':'ion-chevron-down'"></i></span></div>
-		<table class="table att" data-ng-show="tView" style="cursor: pointer;">
-			<tr data-ng-repeat="m in tList" data-ng-class="m.attYn=='Y'?'att':''" data-ng-click="select(att.practiceDt, att.practiceCd, m.memberId, att.lockYn, m.attYn, 'T');">
-				<td class="text-center"><i class='ion-checkmark-round' data-ng-class="m.attYn=='Y'?'chk':'unchk'"></i></td>
-				<td data-ng-bind="m.memberNm" class="text-center"></td>
-				<td data-ng-bind="m.cPositionNm" class="text-center"></td>
-				<td data-ng-bind="m.positionNm" class="text-center"></td>
-			</tr>
-		</table>
-	</div>
-	<div class="panel panel-default" data-ng-class="att.practiceCd=='AM'?'panel-success':att.practiceCd=='PM'?'panel-info':att.practiceCd=='SP'?'panel-danger':'panel-default'">
-		<div class="panel-heading" data-ng-click="bView =! bView" style="cursor: pointer;">베이스 <span class="badge" data-ng-bind="(bList | filter:'Y').length"></span><span style="float: right;"><i data-ng-class="bView?'ion-chevron-up':'ion-chevron-down'"></i></span></div>
-		<table class="table att" data-ng-show="bView" style="cursor: pointer;">
-			<tr data-ng-repeat="m in bList" data-ng-class="m.attYn=='Y'?'att':''" data-ng-click="select(att.practiceDt, att.practiceCd, m.memberId, att.lockYn, m.attYn, 'B');">
-				<td class="text-center"><i class='ion-checkmark-round' data-ng-class="m.attYn=='Y'?'chk':'unchk'"></i></td>
-				<td data-ng-bind="m.memberNm" class="text-center"></td>
-				<td data-ng-bind="m.cPositionNm" class="text-center"></td>
-				<td data-ng-bind="m.positionNm" class="text-center"></td>
-			</tr>
-		</table>
-	</div>
-	<div class="panel panel-default" data-ng-class="att.practiceCd=='AM'?'panel-success':att.practiceCd=='PM'?'panel-info':att.practiceCd=='SP'?'panel-danger':'panel-default'">
-		<div class="panel-heading" data-ng-click="eView =! eView" style="cursor: pointer;">기타 <span class="badge" data-ng-bind="(eList | filter:'Y').length"></span><span style="float: right;"><i data-ng-class="eView?'ion-chevron-up':'ion-chevron-down'"></i></span></div>
-		<table class="table att" data-ng-show="eView" style="cursor: pointer;">
-			<tr data-ng-repeat="m in eList" data-ng-class="m.attYn=='Y'?'att':''" data-ng-click="select(att.practiceDt, att.practiceCd, m.memberId, att.lockYn, m.attYn, 'E');">
-				<td class="text-center"><i class='ion-checkmark-round' data-ng-class="m.attYn=='Y'?'chk':'unchk'"></i></td>
-				<td data-ng-bind="m.memberNm" class="text-center"></td>
-				<td data-ng-bind="m.cPositionNm" class="text-center"></td>
-				<td data-ng-bind="m.positionNm" class="text-center"></td>
-			</tr>
-		</table>
-	</div>
-	<div class="panel panel-default" data-ng-class="att.practiceCd=='AM'?'panel-success':att.practiceCd=='PM'?'panel-info':att.practiceCd=='SP'?'panel-danger':'panel-default'">
-		<div class="panel-heading" data-ng-click="hView =! hView" style="cursor: pointer;">휴직 <span class="badge" data-ng-bind="(hList | filter:'Y').length"></span><span style="float: right;"><i data-ng-class="hView?'ion-chevron-up':'ion-chevron-down'"></i></span></div>
-		<table class="table att" data-ng-show="hView" style="cursor: pointer;">
-			<tr data-ng-repeat="m in hList" data-ng-class="m.attYn=='Y'?'att':''" data-ng-click="select(att.practiceDt, att.practiceCd, m.memberId, att.lockYn, m.attYn, 'H');">
-				<td class="text-center"><i class='ion-checkmark-round' data-ng-class="m.attYn=='Y'?'chk':'unchk'"></i></td>
-				<td data-ng-bind="m.memberNm" class="text-center"></td>
-				<td data-ng-bind="m.cPositionNm" class="text-center"></td>
-				<td data-ng-bind="m.positionNm" class="text-center"></td>
-			</tr>
-		</table>
-	</div>
-	<div class="panel panel-default" data-ng-class="att.practiceCd=='AM'?'panel-success':att.practiceCd=='PM'?'panel-info':att.practiceCd=='SP'?'panel-danger':'panel-default'">
-		<div class="panel-heading" data-ng-click="xView =! xView" style="cursor: pointer;">탈단 <span class="badge" data-ng-bind="(xList | filter:'Y').length"></span><span style="float: right;"><i data-ng-class="xView?'ion-chevron-up':'ion-chevron-down'"></i></span></div>
-		<table class="table att" data-ng-show="xView" style="cursor: pointer;">
-			<tr data-ng-repeat="m in xList" data-ng-class="m.attYn=='Y'?'att':''" data-ng-click="select(att.practiceDt, att.practiceCd, m.memberId, att.lockYn, m.attYn, 'X');">
-				<td class="text-center"><i class='ion-checkmark-round' data-ng-class="m.attYn=='Y'?'chk':'unchk'"></i></td>
-				<td data-ng-bind="m.memberNm" class="text-center"></td>
-				<td data-ng-bind="m.cPositionNm" class="text-center"></td>
-				<td data-ng-bind="m.positionNm" class="text-center"></td>
-			</tr>
-		</table>
-	</div>
+</div>
+
+</div>
 	<div class="btn-group btn-group-justified" role="group" aria-label="저장">
 		<div class="btn-group" role="group">
 			<button type="button" class="btn btn-default" data-ng-click="gotoAttList();"><i class='ion-calendar'></i> 목록</button>
 		</div>
-		<div class="btn-group" role="group" data-ng-show="att.lockYn == 'N'">
+		<!--<div class="btn-group" role="group" data-ng-show="att.lockYn == 'N'">
 			<button type="button" class="btn btn-success" data-ng-click="lockAtt(att.practiceDt, att.practiceCd);"><i class='ion-locked'></i> 마감</button>
 		</div>
 		<div class="btn-group" role="group" data-ng-show="att.lockYn == 'Y'">
@@ -119,7 +85,6 @@
 		</div>
 		<div class="btn-group" role="group" data-ng-show="att.lockYn == 'N'">
 			<button type="button" class="btn btn-danger" data-ng-click="remove(att.practiceDt, att.practiceCd);"><i class='ion-trash-a'></i> 삭제</button>
-		</div>
+		</div>-->
 	</div>
-</div>
 </form>

@@ -6,11 +6,22 @@
 <html lang="ko" data-ng-app="myApp" class="no-js">
 <!--<![endif]-->
 <head>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-132827597-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-132827597-1');
+</script>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title data-app-title></title>
 <meta name="description" content="한울교회 주일학교 출석관리">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
 
 <meta name="msapplication-TileColor" content="#ffffff" />
 <meta name="msapplication-TileImage" content="favicon/cloud-144-193455.png">
@@ -34,6 +45,8 @@
 <link rel="stylesheet" href="bower_components/components-font-awesome/css/font-awesome.min.css">
 <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/d2626984ecd61c5739c44657c8bfd9c78a0f4113/build/css/bootstrap-datetimepicker.css" />
+<link rel="stylesheet" href="bower_components/fullcalendar/dist/fullcalendar.min.css" />
+
 
 <!-- Javascript -->
 <script type="text/javascript" src="bower_components/moment/min/moment.min.js"></script>
@@ -44,6 +57,8 @@
 <script type="text/javascript" src="https://cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/d2626984ecd61c5739c44657c8bfd9c78a0f4113/src/js/bootstrap-datetimepicker.js"></script>
 <script type="text/javascript" src="bower_components/bootbox/bootbox.js"></script>
 
+<script type="text/javascript" src="bower_components/fullcalendar/dist/fullcalendar.min.js"></script>
+<script type="text/javascript" src="bower_components/fullcalendar/dist/locale/ko.js"></script>
 </head>
 
 <body data-ng-class="backdrop">
@@ -53,9 +68,10 @@
 				<button type="button" class="navbar-toggle collapsed"
 					data-toggle="collapse" data-target="#navbar" aria-expanded="false"
 					aria-controls="navbar">
-					<span class="sr-only">Toggle navigation</span> <span
-						class="icon-bar"></span> <span class="icon-bar"></span> <span
-						class="icon-bar"></span>
+					<span class="sr-only">Toggle navigation</span> 
+					<span class="icon-bar"></span> 
+					<span class="icon-bar"></span> 
+					<span class="icon-bar"></span>
 				</button>
 				<a class="navbar-brand" href="#/main"><i class="ion-android-cloud-done"></i> <span data-app-title></span></a>
 			</div>
@@ -64,10 +80,12 @@
 					<li class="active"><a href="#/main"><i class="ion-home"></i>
 							Home</a></li>
 					<li><a href="#/member" data-app-menu="member" data-app-icon="ion-person"></a></li>
+					<li><a href="#/member_kind" data-app-menu="member_kind" data-app-icon="ion-person"></a></li>
 					<li><a href="#/att" data-app-menu="att" data-app-icon="ion-checkmark-round"></a></li>
 					<li><a href="#/rank" data-app-menu="rank" data-app-icon="ion-trophy"></a></li>
-					<!-- li><a href="#/doc" data-app-menu="doc" data-app-icon="ion-easel"></a></li -->
-					<!-- li><a href="#/login" data-app-menu="login" data-app-icon="ion-log-in"></a></li -->
+					<!-- li><a href="#/doc" data-app-menu="doc" data-app-icon="ion-easel"></a></li -->					
+					<li><a href="#/calendar" data-app-menu="calendar" data-app-icon="ion-calendar"></a></li>
+					<li><a href="#/login" data-app-menu="login" data-app-icon="ion-log-in"></a></li>
 				</ul>
 			</div>
 		</div>
@@ -82,7 +100,7 @@
 	<footer class="footer">
 		<nav class="navbar navbar-default" style="margin-bottom:0px;">
 			<div class="container" style="text-align: center">
-				<p class="text-muted" style="margin: 20px 0;" data-app-copyright></p>
+				<p class="text-muted" style="margin: 10px;" data-app-copyright></p>
 			</div>
 		</nav>
 	</footer>
@@ -92,23 +110,33 @@
 	<script src="bower_components/angular-route/angular-route.min.js"></script>
 	<script src="bower_components/angular-resource/angular-resource.min.js"></script>
 	<script src="bower_components/angular-animate/angular-animate.min.js"></script>
+	<script src="bower_components/angular-cookies/angular-cookies.min.js"></script>
+	<script src="bower_components/ng-file-upload/ng-file-upload.js"></script>
+
 	<script src="app.js"></script>
-	
+
+	<script src="components/info/info.js"></script>
+	<script src="components/info/info-directive.js"></script>
+	<script src="components/login-service/authentication.service.js"></script>
+	<script src="components/login-service/flash.service.js"></script>
+    <script src="components/login-service/user.service.js"></script>
+
+
+
 	<script src="view/main/main.js"></script>
 	<script src="view/member/member.js"></script>
 	<script src="view/att/att.js"></script>
+	<script src="view/login/login.controller.js"></script>
+	<script src="view/register/register.controller.js"></script>
 	<script src="view/rank/rank.js"></script>
-	
-	<!-- script src="view/doc/doc.js"></script -->
-	<!-- script src="view/login/login.js"></script -->
-	
-	<script src="components/info/info.js"></script>
-	<script src="components/info/info-directive.js"></script>
-	
+	<script src="view/calendar/calendar.js"></script>
+
 	<!-- script src="components/version/version.js"></script -->
 	<!-- script src="components/version/version-directive.js"></script -->
 	<!-- script src="components/version/interpolate-filter.js"></script -->
-	
+	<script src="https://www.chartjs.org/dist/2.7.3/Chart.bundle.js"></script>
+	<script src="https://www.chartjs.org/samples/latest/utils.js"></script>
+
 	<!-- Web Socket -->
 	<script src='/socket.io/socket.io.js'></script>
 </body>

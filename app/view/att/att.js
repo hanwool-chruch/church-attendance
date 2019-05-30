@@ -23,7 +23,7 @@
     "$http", function($http) {
       return {
         getAttList: function(page) {
-          return $http.get(("/rest/att/list/" + page + "?t=") + new Date());
+          return $http.get("/rest/att/list/" + page);
         },
         save: function(pDt, pCd, musicInfo, etcMsg) {
           return $http.post("/rest/att/" + pDt + "/" + pCd, {
@@ -37,7 +37,7 @@
         getDetail: function(pDt, pCd) {
           return $http.get(("/rest/att/" + pDt + "/" + pCd + "?t=") + new Date());
         },
-        saveMusicInfo: function(pDt, pCd, musicInfo) {
+        saveInfo: function(pDt, pCd, musicInfo) {
           return $http.put("/rest/att/" + pDt + "/" + pCd + "/musicInfo", {
             musicInfo: musicInfo
           });
@@ -47,8 +47,15 @@
             etcMsg: etcMsg
           });
         },
-        select: function(pDt, pCd, memberId, attYn) {
-          switch (attYn) {
+				saveReport: function(pDt, pCd, etcMsg) {
+          return $http.put("/rest/att/" + pDt + "/" + pCd + "/report", {
+            etcMsg: etcMsg
+          });
+        },
+        select: function(pDt, memberId, attYn) {
+				pCd = "WORSHIP"
+
+	         switch (attYn) {
             case "Y":
               return $http.post("/rest/att/" + pDt + "/" + pCd + "/deselect", {
                 memberId: memberId
@@ -98,11 +105,12 @@
       }
     };
   });
-
+	
   angularModule.controller("AttCtrl", [
-    "$scope", "$rootScope", "AttSvc", "$location", "socket", "$route", function($scope, $rootScope, AttSvc, $location, socket, $route) {
+    "$scope", "$rootScope", "AttSvc", "$location", "CodeSvc", "socket", "$route", function($scope, $rootScope, AttSvc, $location, CodeSvc, socket, $route) {
       var init, p;
-      $scope.$on("$destroy", function() {
+
+	    $scope.$on("$destroy", function() {
         return socket.removeAllListeners();
       });
       socket.emit("hallJoin");
@@ -117,9 +125,10 @@
       };
       init();
       p = 2;
+
       $scope.more = function() {
         $rootScope.backdrop = "backdrop";
-        return AttSvc.getAttList(p).success(function(data) {
+        return AttSvc.getAttList(p).success(function(data) {	
           var i, j, len;
           if (data !== null && data.length > 0) {
             if ((data.length === 50)($scope.needMoreButton = true)) {
@@ -140,15 +149,24 @@
         return $location.path("/att/regist");
       };
       AttSvc.getAttList(1).success(function(data) {
-        if (data.length === 50) {
-          $scope.needMoreButton = true;
-        } else {
-          $scope.needMoreButton = false;
-        }
-        $scope.attList = data;
-        $scope.mock = false;
-        return $rootScope.backdrop = void 0;
-      });
+				
+				console.log(data);
+				if (data.length === 50) {
+					$scope.needMoreButton = true;
+				} else {
+					$scope.needMoreButton = false;
+				}
+
+				$scope.attList = data;
+				$scope.mock = false;
+
+				CodeSvc.getCodeList().success(function(result) {
+					$scope.code = result;
+					$scope.partList = $scope.code.partList;
+							return $rootScope.backdrop = void 0;
+				})
+
+     });
       return $scope.detail = function(att) {
         return $location.path("/att/" + att.practiceDt + "/" + att.practiceCd);
       };
@@ -163,7 +181,7 @@
       });
       $rootScope.backdrop = "backdrop";
       init = function() {
-        return selectMenu(2);
+        return selectMenu(3);
       };
       init();
       $(function() {
@@ -226,7 +244,7 @@
       var attDataLoad, init;
       $rootScope.backdrop = "backdrop";
       init = function() {
-        return selectMenu(2);
+        return selectMenu(3);
       };
       init();
       $scope.$on("$destroy", function() {
@@ -251,68 +269,110 @@
         return $.notify("메모가 갱신되었습니다.");
       });
       socket.on("select", function(data) {
-        return $scope.sList.concat($scope.aList).concat($scope.tList).concat($scope.bList).concat($scope.eList).concat($scope.hList).concat($scope.xList).forEach(function(m) {
-          if (m.memberId === data.memberId) {
-            if (data.attYn === "Y") {
-              m.attYn = "N";
-            } else {
-              m.attYn = "Y";
-            }
-            return false;
-          }
-        });
+
+        return $scope.partList.forEach(function(part) {
+					part.memberList.forEach(function(m){
+						if (m.memberId === data.memberId) {
+						if (data.attYn === "Y") {
+							m.attYn = "N";
+						} else {
+							m.attYn = "Y";
+						}
+						}
+					});
+
+				});
+		
       });
       attDataLoad = function() {
         return $q.all([CodeSvc.getCodeList(), AttSvc.getDetail($routeParams.practiceDt, $routeParams.practiceCd)]).then(function(resultArray) {
-          $scope.code = resultArray[0].data;
-          $scope.att = resultArray[1].data.attInfo;
-          $scope.sList = resultArray[1].data.s;
-          $scope.aList = resultArray[1].data.a;
-          $scope.tList = resultArray[1].data.t;
-          $scope.bList = resultArray[1].data.b;
-          $scope.eList = resultArray[1].data.e;
-          $scope.hList = resultArray[1].data.h;
-          $scope.xList = resultArray[1].data.x;
-          if (!$scope.att) {
-            $.notify("존재하지 않는 연습정보입니다.");
-            $location.path("/att");
-          }
-          return $rootScope.backdrop = void 0;
-        });
-      };
-      attDataLoad();
-      $scope.gotoAttList = function() {
-        return $location.path("/att");
-      };
-      $scope.remove = function(pDt, pCd) {
-        bootbox.dialog({
-          message: "연습정보 및 출석정보를 정말로 삭제하시겠습니까?",
-          title: "<i class='ion-android-alert'></i> 삭제 확인",
-          buttons: {
-            danger: {
-              label: "삭제",
-              className: "btn-danger",
-              callback: function() {
-                $rootScope.backdrop = "backdrop";
-                return AttSvc.remove(pDt, pCd).success(function(data) {
-                  $rootScope.backdrop = void 0;
-                  $location.path("/att");
-                  return socket.emit("removeAtt");
-                });
-              }
-            },
-            main: {
-              label: "취소",
-              className: "btn-default",
-              callback: function() {}
-            }
-          }
-        });
-        return true;
-      };
-      $scope.saveMusicInfo = function(pDt, pCd, musicInfo) {
+        $scope.code = resultArray[0].data;
+        $scope.att = resultArray[1].data.attInfo;
+				attList = resultArray[1].data.attList;
+				db_memberList = resultArray[1].data.memberList;
+				reportList = resultArray[1].data.reportList;
+				partList = $scope.code.partList;
+
+				partList.map(function(item){
+					item.memberList = [];
+				});
+
+				
+				reportList.map(function(item){
+					index = -1;
+
+					for(i=0; i < partList.length; i++ ){
+
+						if(item.PART_CD == partList[i].PART_CD){
+							index = i;
+						}
+
+						if(index > -1) partList[index].MEMBER_REPORT = item.REPORT;
+					}
+
+				});
+
+				db_memberList.map(function(member){			
+					index = -1;
+
+					for(i=0; i < partList.length; i++ ){
+						if(member.PART_CD == partList[i].PART_CD)
+							index = i;
+					}
+
+					member.attYn = 'N';
+
+					for(i=0; i < attList.length; i++ ){
+						if(member.memberId == attList[i].memberId)
+							member.attYn = 'Y';
+					}
+
+					if(index > -1) partList[index].memberList.push(member);
+
+				});
+
+				$scope.partList = partList;
+						if (!$scope.att) {
+							$.notify("존재하지 않는 연습정보입니다.");
+							$location.path("/att");
+						}
+						return $rootScope.backdrop = void 0;
+					});
+				};
+				attDataLoad();
+				$scope.gotoAttList = function() {
+					return $location.path("/att");
+				};
+
+				$scope.remove = function(pDt, pCd) {
+					bootbox.dialog({
+						message: "연습정보 및 출석정보를 정말로 삭제하시겠습니까?",
+						title: "<i class='ion-android-alert'></i> 삭제 확인",
+						buttons: {
+							danger: {
+								label: "삭제",
+								className: "btn-danger",
+								callback: function() {
+									$rootScope.backdrop = "backdrop";
+									return AttSvc.remove(pDt, pCd).success(function(data) {
+										$rootScope.backdrop = void 0;
+										$location.path("/att");
+										return socket.emit("removeAtt");
+									});
+								}
+							},
+							main: {
+								label: "취소",
+								className: "btn-default",
+								callback: function() {}
+							}
+						}
+					});
+					return true;
+				};
+      $scope.saveInfo = function(pDt, pCd, musicInfo) {
         $rootScope.backdrop = "backdrop";
-        return AttSvc.saveMusicInfo(pDt, pCd, musicInfo).success(function(data) {
+        return AttSvc.saveInfo(pDt, pCd, musicInfo).success(function(data) {
           if (data.result === "success") {
             socket.emit("refreshMusicInfo", musicInfo);
           } else {
@@ -326,6 +386,17 @@
         return AttSvc.saveEtcMsg(pDt, pCd, etcMsg).success(function(data) {
           if (data.result === "success") {
             socket.emit("refreshEtcMsg", etcMsg);
+          } else {
+            $.notify("저장에 실패하였습니다.");
+          }
+          return $rootScope.backdrop = void 0;
+        });
+      };
+      $scope.saveReport = function(pDt, partCd, message) {
+        $rootScope.backdrop = "backdrop";
+        return AttSvc.saveReport(pDt, partCd, message).success(function(data) {
+          if (data.result === "success") {
+            socket.emit("refreshReport", message);
           } else {
             $.notify("저장에 실패하였습니다.");
           }
@@ -382,24 +453,24 @@
         });
         return true;
       };
-      return $scope.select = function(pDt, pCd, memberId, lockYn, attYn, partCd) {
-        if (lockYn === "N") {
-          $rootScope.backdrop = "backdrop";
-          return AttSvc.select(pDt, pCd, memberId, attYn).success(function(data) {
-            var params;
-            if (data.result === "success") {
-              params = new Object();
-              params.pDt = pDt;
-              params.pCd = pCd;
-              params.memberId = memberId;
-              params.attYn = attYn;
-              socket.emit("select", params);
-            } else {
-              $.notify("서버 오류가 발생하였습니다. 잠시 후 다시 시도 해주시기바랍니다.");
-            }
-            return $rootScope.backdrop = void 0;
-          });
-        }
+      $scope.select = function(pDt, memberId, attYn) {
+
+		  $rootScope.backdrop = "backdrop";
+
+		  return AttSvc.select(pDt, memberId, attYn).success(function(data) {
+			var params;
+			if (data.result === "success") {
+			  params = new Object();
+			  params.pDt = pDt;
+			  params.memberId = memberId;
+			  params.attYn = attYn;
+			  socket.emit("select", params);
+			} else {
+			  $.notify("서버 오류가 발생하였습니다. 잠시 후 다시 시도 해주시기바랍니다.");
+			}
+			return $rootScope.backdrop = void 0;
+		  });
+
       };
     }
   ]);

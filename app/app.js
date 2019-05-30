@@ -2,30 +2,56 @@
 (function() {
   var angularModule, modules;
 
-  modules = ["myApp.main", "myApp.member", "myApp.att", "myApp.rank", "myApp.info", "ngAnimate", "ngRoute", "ngResource"];
+  modules = ["myApp.main", "myApp.member", "myApp.att", "myApp.rank", "myApp.calendar", "myApp.info", "ngAnimate", "ngRoute", "ngResource", "ngCookies"];
 
-  angularModule = angular.module("myApp", modules);
+  angularModule = angular.module("myApp", modules).config(config).run(run);
 
-  angularModule.run(function($rootScope) {
-    return $rootScope.$on("$routeChangeStart", function() {
+
+	config.$inject = ['$routeProvider'];
+	function config($routeProvider) {
+		$routeProvider
+			.when('/login', {
+				controller: 'LoginController',
+				templateUrl: 'view/login/login.view.html',
+				controllerAs: 'vm'
+			})
+
+			.otherwise({ redirectTo: '/login' });
+	}
+
+	run.$inject = ['$rootScope', '$location', '$cookies', '$http'];
+
+
+	function run($rootScope, $location, $cookies, $http) {
+	
+		// keep user logged in after page refresh
+		$rootScope.globals = $cookies.getObject('globals') || {};
+
+		if ($rootScope.globals.currentUser) {
+				$http.defaults.headers.common['Authorization'] = 'Basic ' + $rootScope.globals.currentUser.authdata;
+				$location.path('/main');
+		}
+
+		$rootScope.$on('$locationChangeStart', function (event, next, current) {
+				// redirect to login page if not logged in and trying to access a restricted page
+				var restrictedPage = $.inArray($location.path(), ['/login', '/register']) === -1;
+				var loggedIn = $rootScope.globals.currentUser;
+				if (restrictedPage && !loggedIn) {
+						$location.path('/login');
+				}
+		});
+
+		$rootScope.$on("$routeChangeStart", function() {
       $rootScope.backdrop = void 0;
       if (document) {
         return document.body.scrollTop = 52;
       }
     });
-  });
+  }
 
   angularModule.config([
     "$resourceProvider", function($resourceProvider) {
       return $resourceProvider.defaults.stripTrailingSlashes = false;
-    }
-  ]);
-
-  angularModule.config([
-    "$routeProvider", function($routeProvider) {
-      return $routeProvider.otherwise({
-        redirectTo: "/main"
-      });
     }
   ]);
 

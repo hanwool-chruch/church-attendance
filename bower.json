@@ -1,23 +1,26 @@
 {
-	"name": "angular-seed",
-	"description": "A starter project for AngularJS",
-	"version": "0.0.0",
-	"homepage": "https://github.com/angular/angular-seed",
-	"license": "MIT",
-	"private": true,
-	"dependencies": {
-		"angular": "1.4.8",
-		"angular-route": "1.4.8",
-		"angular-resource": "1.4.8",
-		"angular-animate": "1.4.8",
-		"angular-loader": "1.4.8",
-		"angular-mocks": "1.4.8",
-		"angular-socket-io": "*",
-		"socket.io-client": "*",
-		"html5-boilerplate": "~5.2.0",
-		"eonasdan-bootstrap-datetimepicker":"4.17.37",
-		"bootbox":"4.4.0",
-		"components-font-awesome":"^4.5.0",
-		"ionicons":"^2.0.1"
-	}
+  "name": "angular-seed",
+  "description": "A starter project for AngularJS",
+  "version": "0.0.0",
+  "homepage": "https://github.com/angular/angular-seed",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "angular": "1.4.8",
+    "angular-route": "1.4.8",
+    "angular-resource": "1.4.8",
+    "angular-animate": "1.4.8",
+    "angular-loader": "1.4.8",
+    "angular-mocks": "1.4.8",
+    "angular-cookies": "1.4.8",
+    "angular-socket-io": "*",
+    "socket.io-client": "*",
+    "html5-boilerplate": "~5.2.0",
+    "eonasdan-bootstrap-datetimepicker": "4.17.37",
+    "bootbox": "4.4.0",
+    "components-font-awesome": "^4.5.0",
+    "ionicons": "^2.0.1",
+    "angular-chart.js": "^1.1.1",
+    "fullcalendar": "^3.10.0"
+  }
 }
