@@ -10,33 +10,11 @@ const Sharp = require('sharp');
 
 
 db_config.infant = {
-    host     : process.env.MYSQL_URL  || 'church-department-infant.cwfhoavfyutf.ap-northeast-2.rds.amazonaws.com',
-    user     : process.env.MYSQL_ID   || 'woong',
-    password : process.env.MYSQL_PASS || 'gksksla1004',
-    database : process.env.MYSQL_DB   || 'db_infant'
+    host     : process.env.MYSQL_URL,
+    user     : process.env.MYSQL_ID,
+    password : process.env.MYSQL_PASS,
+    database : process.env.MYSQL_DB
 };
-
-db_config.high = {
-    host     : process.env.MYSQL_URL  || 'church-department-infant.cwfhoavfyutf.ap-northeast-2.rds.amazonaws.com',
-    user     : process.env.MYSQL_ID   || 'woong',
-    password : process.env.MYSQL_PASS || 'gksksla1004',
-    database : process.env.MYSQL_DB   || 'db_high'
-};
-
-db_config.middle = {
-    host     : process.env.MYSQL_URL  || 'church-department-infant.cwfhoavfyutf.ap-northeast-2.rds.amazonaws.com',
-    user     : process.env.MYSQL_ID   || 'woong',
-    password : process.env.MYSQL_PASS || 'gksksla1004',
-    database : process.env.MYSQL_DB   || 'db_middle'
-};
-
-db_config.kindergarten = {
-    host     : process.env.MYSQL_URL  || 'church-department-infant.cwfhoavfyutf.ap-northeast-2.rds.amazonaws.com',
-    user     : process.env.MYSQL_ID   || 'woong',
-    password : process.env.MYSQL_PASS || 'gksksla1004',
-    database : process.env.MYSQL_DB   || 'db_kindergarten'
-};
-
 
 var db = {};
 
