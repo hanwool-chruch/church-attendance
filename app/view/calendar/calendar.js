@@ -56,7 +56,7 @@
 				weekends: true,
 				fixedWeekCount: false,
 				businessHours: false, // display business hours
-				defaultDate: '2019-01-12',
+				defaultDate: new Date(),
 				navLinks: false, // can click day/week names to navigate views
 				editable: true,
 				eventLimit: true, // allow "more" link when too many events
