@@ -76,6 +76,12 @@
 	app.get("/rest/birthdaymember", routes.birthDayMemberList);
 
   app.get("/rest/member/:memberId", routes.member);
+  app.get('/photo/:uid/:file', function(req, res){
+    var uid = req.params.uid
+      , file = req.params.file;
+
+    res.sendfile('/home/ubuntu/church-management/app/photo/' + uid + '/' + file);
+  });
 
   app["delete"]("/rest/member/:memberId", routes.deleteMember);
 	
