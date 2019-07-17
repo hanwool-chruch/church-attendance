@@ -5,20 +5,14 @@ module.exports = function(sequelize, DataTypes) {
         autoIncrement: true,
         primaryKey: true
     },
-    MEMBER_NM: {
+    MEMBER_NAME: {
         type : DataTypes.STRING(20),
         allowNull: false
     },
     BIRTHDAY: DataTypes.STRING(20),
     PHONE_NO: DataTypes.STRING(20),
-    ORDERBY_NO: DataTypes.INTEGER,
     E_MAIL: DataTypes.STRING(50),
     ADDRESS: DataTypes.STRING(255),
-    FATHER_NAME: DataTypes.STRING(20),
-    FATHER_PHONE: DataTypes.STRING(20),
-    MOTHER_NAME: DataTypes.STRING(20),
-    MOTHER_PHONE: DataTypes.STRING(20),
-    SCHOOL: DataTypes.STRING(20),
     PART_CD: {
         type: DataTypes.STRING(20),
         defaultValue: 100,
@@ -43,7 +37,13 @@ module.exports = function(sequelize, DataTypes) {
         type: DataTypes.TEXT,
         defaultValue: 'ATTENDENCE',
         allowNull: false
-    }
+    },
+		FATHER_NAME: DataTypes.STRING(20),
+    FATHER_PHONE: DataTypes.STRING(20),
+    MOTHER_NAME: DataTypes.STRING(20),
+    MOTHER_PHONE: DataTypes.STRING(20),
+    SCHOOL: DataTypes.STRING(20),
+		PHOTO: DataTypes.STRING(45)
   },{
     freezeTableName: true
   });

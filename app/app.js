@@ -18,7 +18,7 @@
 
 			.otherwise({ redirectTo: '/login' });
 	}
-
+ 
 	run.$inject = ['$rootScope', '$location', '$cookies', '$http'];
 
 
@@ -80,3 +80,4 @@
 
 }).call(this);
 
+ 

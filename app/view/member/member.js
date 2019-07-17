@@ -28,7 +28,7 @@
         getMemberList: function() {
           return $http({
             cache: false,
-            url: "/rest/member",
+            url: "/api/member",
             data: {
               t: new Date().getMilliseconds()
             },
@@ -38,7 +38,7 @@
 				getLongAbsenteeList: function() {
           return $http({
             cache: false,
-            url: "/rest/longabsentee",
+            url: "/api/longabsentee",
             data: {
               t: new Date().getMilliseconds()
             },
@@ -48,7 +48,7 @@
 				getLatestAbsenteeList: function() {
           return $http({
             cache: false,
-            url: "/rest/latestabsentee",
+            url: "/api/latestabsentee",
             data: {
               t: new Date().getMilliseconds()
             },
@@ -58,7 +58,7 @@
 				getBaptismList: function() {
           return $http({
             cache: false,
-            url: "/rest/baptism",
+            url: "/api/baptism",
             data: {
               t: new Date().getMilliseconds()
             },
@@ -68,7 +68,7 @@
 				getNameSortedMemberList: function() {
           return $http({
             cache: false,
-            url: "/rest/sortedmember",
+            url: "/api/sortedmember",
             data: {
               t: new Date().getMilliseconds()
             },
@@ -78,7 +78,7 @@
 				getBirthDayMemberList: function() {
           return $http({
             cache: false,
-            url: "/rest/birthdaymember",
+            url: "/api/birthdaymember",
             data: {
               t: new Date().getMilliseconds()
             },
@@ -88,7 +88,7 @@
         getDetail: function(id) {
           return $http({
             cache: false,
-            url: "/rest/member/" + id,
+            url: "/api/member/" + id,
             data: {
               t: new Date().getMilliseconds()
             },
@@ -97,19 +97,19 @@
         },
 				deleteMember: function(id) {
 					console.log("ID" + id);
-				 return $http.delete("/rest/member/" + id);
+				 return $http.delete("/api/member/" + id);
         },
         save: function(method, member) {
           switch (method) {
             case "insert":
-              $http.post("/rest/member", member);		
+              $http.post("/api/member", member);		
               break;
             case "update":
-              $http.put("/rest/member", member);
+              $http.put("/api/member", member);
 							break;
 					}
          
-				 return $http.get("/rest/member", member);
+				 return $http.get("/api/member", member);
         }
       };
     }
@@ -121,7 +121,7 @@
         getCodeList: function() {
           return $http({
             cache: true,
-            url: "/rest/codeList",
+            url: "/api/codeList",
             data: {
               t: new Date().getMilliseconds()
             },
@@ -141,9 +141,10 @@
       };
       init();
 
-			$q.all([MemberSvc.getMemberList(), CodeSvc.getCodeList()]).then(function(resultArray) {
-	
-				db_memberList = resultArray[0].data;
+			$q.all([MemberSvc.getMemberList()]).then(function(resultArray) {
+
+			console.log(resultArray);
+		/*		db_memberList = resultArray[0].data;
 				$scope.code = resultArray[1].data;
 				partList = $scope.code.partList;
 				
@@ -168,6 +169,7 @@
 
 					if(index > -1) partList[index].memberList.push(member);
 				});
+			*/
 
 				$scope.partList = partList;
 				return $rootScope.backdrop = void 0;
@@ -318,7 +320,7 @@ angularModule.controller("memberKindCtrl", [
 			// upload on file select or drop
 			$scope.upload = function (file) {
 					Upload.upload({
-							url: '/rest/member/uploadPhoto/' + $routeParams.memberId,
+							url: '/api/member/uploadPhoto/' + $routeParams.memberId,
 							data: {file: file}
 					}).then(function (resp) {
 							console.log('Success upload images') 

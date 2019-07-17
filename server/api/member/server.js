@@ -3,7 +3,16 @@
 
 
 
-/* 대원목록*/
+
+
+
+
+
+
+
+/*
+
+
 exports.memberList = function(req, res) {
 
 	var db = getDBConnector(req.db_type);
@@ -22,7 +31,7 @@ exports.memberList = function(req, res) {
 	});
 };
 
-/* 대원목록*/
+
 exports.memberList = function(req, res) {
 
 	var db = getDBConnector(req.db_type);
@@ -41,7 +50,7 @@ exports.memberList = function(req, res) {
 	});
 };
 
-/* 대원목록-이름순*/
+
 exports.sortedMemberList = function(req, res) {
 
 	var db = getDBConnector(req.db_type);
@@ -65,7 +74,7 @@ exports.sortedMemberList = function(req, res) {
 };
 
 
-/* 대원정보 저장 */
+
 exports.insertMember = function(req, res) {
 
 	var db = getDBConnector(req.db_type);
@@ -112,7 +121,7 @@ exports.insertMember = function(req, res) {
 	});
 };
 
-/* 대원정보 저장 */
+
 exports.updateMember = function(req, res) {
 
 	var db = getDBConnector(req.db_type);
@@ -170,7 +179,7 @@ exports.deleteMember = function(req, res) {
 }
 
 
-/* 대원 상세정보 */
+
 exports.member = function(req, res) {
 	
 	var db = getDBConnector(req.db_type);
@@ -221,3 +230,5 @@ exports.member = function(req, res) {
 		}
 	});
 };
+
+*/
