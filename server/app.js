@@ -4,6 +4,14 @@ const port = 8080
 const bodyParser = require("body-parser")
 const cookieParser = require('cookie-parser')
 
+
+require('@google-cloud/debug-agent').start({
+  serviceContext: {
+    service: 'WOONG',
+    version: 'v1.0'
+  }
+});
+
 app.use(bodyParser.json())
 app.use(cookieParser())
 

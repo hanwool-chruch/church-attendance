@@ -67,39 +67,6 @@ function getDBConnector(db_type)
 	지금은 사용하지 않음
 	나중에 사용할지도 몰라 쿼리는 남겨둠
 */
-exports.absentMembers = function(req, res) {
-
-	var db = getDBConnector(req.db_type);
-
-	var query =
-        "SELECT C.MEMBER_ID memberId, " +
-        "       C.MEMBER_NM memberNm, " +
-        "       C.PART_CD partCd, " +
-        "       (SELECT ORDERBY_NO FROM CHOIR_PART D WHERE D.PART_CD=C.PART_CD) ORDERBY_NO," +
-        "       C.PHONE_NO phoneNo  " +
-        "  FROM CHOIR_MEMBER C WHERE STATUS_CD='O' " +
-        "   AND PART_CD !='E' " +
-        "   AND NOT EXISTS ( " +
-        "                     SELECT A.MEMBER_ID " +
-        "                       FROM (SELECT MEMBER_ID, " +
-        "                                    WORSHIP_DT, " +
-        "                                    WORSHIP_CD " +
-        "                               FROM CHOIR_ATTENDANCE) A, " +
-        "                            (SELECT WORSHIP_DT, " +
-        "                                    WORSHIP_CD " +
-        "                               FROM CHOIR_WORSHIP " +
-        "                              WHERE WORSHIP_CD='AM' " +
-        "                                AND LOCK_YN='Y' " +
-        "                           ORDER BY WORSHIP_DT DESC LIMIT 3) B " +
-        "                      WHERE A.WORSHIP_DT = B.WORSHIP_DT " +
-        "                        AND A.WORSHIP_CD = B.WORSHIP_CD " +
-        "                        AND C.MEMBER_ID = A.MEMBER_ID ) " +
-        " ORDER BY ORDERBY_NO ASC";
-	
-	db.query(query, {}, function(err, rows){
-		res.send(rows);
-	});
-};
 
 
 exports.calendar = function(req, res) {
@@ -315,102 +282,6 @@ exports.attInfoDetail = function(req, res) {
 
 
 
-/* 대원목록-장결자*/
-exports.longAbsentee = function(req, res) {
-	var db = getDBConnector(req.db_type);
-	var query1 = "SELECT M.MEMBER_NM, M.MEMBER_ID, M.PHONE_NO, M.BIRTHDAY, M.PART_CD, STATUS_CD, count(A.MEMBER_ID)  "
-		         + " FROM CHOIR_MEMBER M left join (select * from CHOIR_ATTENDANCE WHERE WORSHIP_DT BETWEEN DATE_ADD(NOW(),INTERVAL-3 MONTH ) AND NOW()) A "
-	           + " on M.MEMBER_ID = A.MEMBER_ID "
-						 + " group by M.MEMBER_ID "
-						 + " HAVING count(A.MEMBER_ID) = 0 ";
-
-	async.parallel({
-		memberList: function(callback) {
-			db.query(query1, [], function(err, rows){
-				callback(null, rows);
-			});
-		}    	
-	}, function(err, results) {
-		res.send(results.memberList);
-	});
-};
-
-/* 대원목록-최근 결석자*/
-exports.latestAbsentee = function(req, res) {
-
-	var db = getDBConnector(req.db_type);
-	var query1 = "SELECT M.MEMBER_NM, M.MEMBER_ID, M.PHONE_NO, M.BIRTHDAY, M.PART_CD, STATUS_CD, count(A.MEMBER_ID)  "
-		         + " FROM CHOIR_MEMBER M left join (select * from CHOIR_ATTENDANCE WHERE WORSHIP_DT BETWEEN DATE_ADD(NOW(),INTERVAL-1 MONTH ) AND NOW()) A "
-	           + " on M.MEMBER_ID = A.MEMBER_ID "
-						 + " group by M.MEMBER_ID "
-						 + " HAVING count(A.MEMBER_ID) = 0 ";
-
-	async.parallel({
-		memberList: function(callback) {
-			db.query(query1, [], function(err, rows){
-				callback(null, rows);
-			});
-		}    	
-	}, function(err, results) {
-
-		res.send(results.memberList);
-	});
-};
-
-/* 대원목록- 셰례*/
-exports.baptism = function(req, res) {
-
-	var db = getDBConnector(req.db_type);
-
-	if(req.db_type == "infant")
-		checkBaptism = "INFANT";
-	else
-		checkBaptism = "BAPTISM";
-
-	var query1 = " SELECT MEMBER_NM, MEMBER_ID, PHONE_NO, BIRTHDAY, PART_CD, STATUS_CD, BAPTISM_CD " +
-		         " FROM CHOIR_MEMBER a where BAPTISM_CD != ? ORDER BY a.MEMBER_NM";
-		
-	console.log(query1);
-	async.parallel({
-		memberList: function(callback) {
-			db.query(query1, [checkBaptism], function(err, rows){				
-				console.log(rows); 
-				callback(null, rows);
-			});
-		}    	
-	}, function(err, results) {
-
-		res.send(results.memberList);
-	});
-};
-
-/* 대원목록 - 이번달 생일*/
-exports.birthDayMemberList = function(req, res) {
-
-	var db = getDBConnector(req.db_type);
-
-	if(req.db_type == "infant")
-		checkBaptism = "INFANT";
-	else
-		checkBaptism = "BAPTISM";
-
-	var query1 = " SELECT MEMBER_NM, MEMBER_ID, PHONE_NO, BIRTHDAY, PART_CD, STATUS_CD, BAPTISM_CD " +
-		         " FROM CHOIR_MEMBER a where MONTH(BIRTHDAY) = MONTH(NOW())";
-
-	async.parallel({
-		memberList: function(callback) {
-			db.query(query1, [checkBaptism], function(err, rows){				
-				callback(null, rows);
-			});
-		}    	
-	}, function(err, results) {
-
-		res.send(results.memberList);
-	});
-};
-
-
-
 
 /* 코드정보 */
 exports.codeList = function(req, res) {
@@ -448,29 +319,6 @@ exports.codeList = function(req, res) {
 		});		
 	})
 }
-/* 마감처리 */
-exports.lockAtt = function(req, res) {
-	
-	var db = getDBConnector(req.db_type);
-	var practiceDt = req.params.practiceDt;
-	var practiceCd = req.params.practiceCd;
-
-	db.query("UPDATE CHOIR_WORSHIP SET LOCK_YN = 'Y' WHERE WORSHIP_DT = ? AND WORSHIP_CD = ? AND LOCK_YN = 'N'", [ practiceDt, practiceCd ], function() {
-		res.send({ result: 'success' });
-	});
-};
-
-/* 마감 취소 처리*/
-exports.unlockAtt = function(req, res) {
-	
-	var db = getDBConnector(req.db_type);
-	var practiceDt = req.params.practiceDt;
-	var practiceCd = req.params.practiceCd;
-
-	db.query("UPDATE CHOIR_WORSHIP SET LOCK_YN = 'N' WHERE WORSHIP_DT = ? AND WORSHIP_CD = ? AND LOCK_YN = 'Y'", [ practiceDt, practiceCd ], function() {
-		res.send({ result: 'success' });
-	});
-};
 
 /* 출석체크 */
 exports.select = function(req, res) {
@@ -623,73 +471,6 @@ exports.createPracticeInfo = function(req, res) {
 	});
 };
 
-/* 회의록 목록*/
-exports.docList = function(req, res) {
-
-	var db = getDBConnector(req.db_type);
-	var query = "SELECT MEET_SEQ meetSeq,MEET_DT meetDt,MEET_TITLE meetTitle,REPLACE(MEET_CONTENTS,'\n','<br/>') meetContents,REG_DT regDt,UPT_DT uptDt,LOCK_YN lockYn FROM MEETTING_DOC ORDER BY MEET_DT DESC, MEET_SEQ DESC";
-	db.query(query, {}, function(err, rows){
-		res.send(rows);
-	});
-};
-
-/* 회의록 생성 */
-exports.createDoc = function(req, res) {
-
-	var db = getDBConnector(req.db_type);
-	var meetDt = req.body.meetDt;
-	var meetTitle = req.body.meetTitle;
-	var meetContents = req.body.meetContents;
-
-	db.query("INSERT into MEETTING_DOC(MEET_DT, MEET_TITLE, MEET_CONTENTS, REG_DT, UPT_DT) VALUES(?,?,?,current_timestamp,current_timestamp)",
-		[ meetDt, meetTitle, meetContents], function() {
-		res.send({ result: 'success' });
-	});
-};
-
-/* 회의록 상세정보*/
-exports.modifyDoc = function(req, res) {
-
-	var db = getDBConnector(req.db_type);
-	var docId = req.params.docId;
-	db.query("SELECT MEET_SEQ meetSeq,MEET_DT meetDt,MEET_TITLE meetTitle,MEET_CONTENTS meetContents,REG_DT regDt,UPT_DT uptDt,LOCK_YN lockYn FROM meetting_doc WHERE MEET_SEQ = ?", [ docId ], function(err, row){
-		res.send(row[0]);
-	});
-};
-
-/* 회의록 수정 */
-exports.updateDoc = function(req, res) {
-	
-	var db = getDBConnector(req.db_type);
-	var meetDt = req.body.meetDt;
-	var meetTitle = req.body.meetTitle;
-	var meetContents = req.body.meetContents;
-	var meetSeq = req.body.meetSeq;
-
-	db.query("UPDATE MEETTING_DOC set MEET_DT = ?,MEET_TITLE = ?,MEET_CONTENTS = ?,UPT_DT = current_timestamp WHERE MEET_SEQ = ?",
-		[ meetDt, meetTitle, meetContents, meetSeq], function() {
-		res.send({ result: 'success' });	
-	});
-};
-
-/*회의록 제거*/
-exports.removeDoc = function(req, res) {
-	
-	var db = getDBConnector(req.db_type);
-
-	db.query("delete FROM MEETTING_DOC WHERE MEET_SEQ = ?", [req.body.meetSeq], function() {
-		res.send({ result: 'success' });
-	});
-};
-
-/* 회의록 마감*/
-exports.closeDoc = function(req, res) {
-	var db = getDBConnector(req.db_type);
-
-	db.query("UPDATE MEETTING_DOC set LOCK_YN = 'Y' WHERE MEET_SEQ = ?", [req.body.meetSeq], function() {
-		res.send({ result: 'success' });	
-	});
-};
 
 exports.uploadPhoto = function(req, res) {
   upload(req, res).then(function (file) {

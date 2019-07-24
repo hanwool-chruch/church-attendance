@@ -124,7 +124,9 @@
 				<tr data-ng-repeat="attMonth in attMonthList">
 					<td class="text-center" data-ng-bind="attMonth.month" style="vertical-align: middle;"></td>
 					<td>
-						<span data-ng-repeat="att in attMonth.data" style="margin-right:3px;" data-ng-class="att.practice_cd=='ATTENDENCE'?'success':att.practice_cd=='PART'?'info':att.practice_cd=='ABSENCE'?'danger':''"><i data-ng-class="att.member_id ? 'ion-ios-checkmark' : 'ion-ios-circle-outline'"></i></span>
+                        <span data-ng-repeat="att in attMonth.data" style="margin-right:3px;" data-ng-class="att.practice_cd=='ATTENDENCE'?'success':att.practice_cd=='PART'?'info':att.practice_cd=='ABSENCE'?'danger':''">
+                            <i data-ng-class="att.member_id ? 'ion-ios-checkmark' : 'ion-ios-circle-outline'"></i>
+                        </span>
 					</td>
 				</tr>
 			</tbody>

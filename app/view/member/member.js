@@ -28,14 +28,14 @@
         getMemberList: function() {
           return $http({
             cache: false,
-            url: "/api/member",
+            url: "/api/member/list/withpart",
             data: {
               t: new Date().getMilliseconds()
             },
             method: "GET"
           });
         },
-				getLongAbsenteeList: function() {
+		getLongAbsenteeList: function() {
           return $http({
             cache: false,
             url: "/api/longabsentee",
@@ -143,34 +143,9 @@
 
 			$q.all([MemberSvc.getMemberList()]).then(function(resultArray) {
 
-			console.log(resultArray);
-		/*		db_memberList = resultArray[0].data;
-				$scope.code = resultArray[1].data;
-				partList = $scope.code.partList;
-				
-				partList.map(function(item){
-					item.memberList = [];
-				});
-
-				db_memberList.map(function(member){			
-					index = -1;
-
-					if(member.PHONE_NO == "" || member.PHONE_NO == null)
-						member.PHONE_NO = "010-0000-0000"
-					if(member.BIRTHDAY == "" || member.BIRTHDAY == null)
-						member.BIRTHDAY = "0000-00-00"
-
-					member.BIRTHDAY = member.BIRTHDAY.substr(2)
-
-					for(i=0; i < partList.length; i++ ){
-						if(member.PART_CD == partList[i].PART_CD)
-							index = i; 
-					}
-
-					if(index > -1) partList[index].memberList.push(member);
-				});
-			*/
-
+            console.log(resultArray);
+            partList = resultArray[0].data
+            
 				$scope.partList = partList;
 				return $rootScope.backdrop = void 0;
 			});	
