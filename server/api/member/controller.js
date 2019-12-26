@@ -4,15 +4,16 @@ const Sequelize = MODELS.Sequelize
 
 const ruleLongAbsentee = '3 MONTH'
 const ruleLatestAbsentee = '1 MONTH'
+const Op = Sequelize.Op;
 
 var _ = {};
 
 const ATTRIBUTE = {
-	MEMBER_LIST : ['MEMBER_ID', 'MEMBER_NAME', 'PHONE_NO', 'BIRTHDAY', 'PART_CD', 'STATUS_CD', 'BAPTISM_CD']
+  MEMBER_LIST : ['MEMBER_ID', 'MEMBER_NAME', 'PHONE_NO', 'BIRTHDAY', 'PART_CD', 'STATUS_CD', 'BAPTISM_CD']
 }
 
 const covertMemberList = (member) => {
-    
+
     if(member.PHONE_NO === "" || member.PHONE_NO === null || member.PHONE_NO == undefined)
         member.PHONE_NO = "010-0000-0000"
     if(member.BIRTHDAY === "" || member.BIRTHDAY === null || member.BIRTHDAY == undefined)
@@ -23,158 +24,178 @@ const covertMemberList = (member) => {
     return member
 }
 
-_.memberListWithPart = async () => {
-	const PARTS = await MODELS.PARTS.findAll({raw: true});
-	const members = await _.sortedNameList();
-	
-    let partList = PARTS.map(function(part){
-        part.memberList = [];
-        return part
-    })
+_.memberListWithPart = async (req) => {
 
-	members
-	.map(covertMemberList)
-	.map((member) => {
-		index = -1;
+  const depart = req.depart
+  const PARTS = await MODELS.PARTS.findAll(
+    {
+      raw: true,
+      where: {
+       DEPART_CD: depart
+    }
+  });
 
-		for(i=0; i < partList.length; i++ ){
-			if(member.PART_CD == partList[i].PART_CD)
-				index = i; 
-		}
+  const members = await _.sortedNameList(req)
 
-		if(index > -1) partList[index].memberList.push(member);
-	})
+  let partList = PARTS.map(function(part){
+    part.memberList = [];
+    return part
+  })
 
-	return partList
+  members
+  .map(covertMemberList)
+  .map((member) => {
+    index = -1;
+
+    for(i=0; i < partList.length; i++ ){
+      if(member.PART_CD == partList[i].PART_CD)
+        index = i;
+    }
+
+    if(index > -1) partList[index].memberList.push(member);
+  })
+
+  return partList
 }
 
-_.sortedNameList = async () => {
-	return await MODELS.MEMBERS.findAll(
-	{
-		raw: true,
-		order: [
-			['MEMBER_NAME', 'ASC']
-		],
-		attributes: ATTRIBUTE.MEMBER_LIST
-	})
+_.sortedNameList = async (req) => {
+  const depart = req.depart
+  return await MODELS.MEMBERS.findAll(
+  {
+    raw: true,
+    where: {
+       DEPART_CD: depart
+    },
+    order: [
+      ['MEMBER_NAME', 'ASC']
+    ],
+    attributes: ATTRIBUTE.MEMBER_LIST
+  })
 }
 
-_.birthDayMemberList = async () => {
-	return await MODELS.MEMBERS.findAll(
-	{
-		raw: true,
-		order: [
-			['MEMBER_NAME', 'ASC']
-		],
-		where: Sequelize.where(
-			Sequelize.fn("MONTH", Sequelize.col("BIRTHDAY")),
-			Sequelize.fn("MONTH", Sequelize.fn("NOW"))
-		),
-		attributes: ATTRIBUTE.MEMBER_LIST
-	})
+_.birthDayMemberList = async (req) => {
+  const depart = req.depart
+  return await MODELS.MEMBERS.findAll(
+  {
+    raw: true,
+    order: [
+      ['MEMBER_NAME', 'ASC']
+    ],
+    where: {
+      [Op.and]: [{DEPART_CD: depart}, Sequelize.where(
+        Sequelize.fn("MONTH", Sequelize.col("BIRTHDAY")),
+        Sequelize.fn("MONTH", Sequelize.fn("NOW"))
+    )]
+    },
+    attributes: ATTRIBUTE.MEMBER_LIST
+  })
 }
 
 /* 장기 결석자 리스트 */
-_.longAbsenteeList = async () => {
-	var query = [  
-	'SELECT M.MEMBER_ID, MEMBER_NAME, PHONE_NO, BIRTHDAY, PART_CD, STATUS_CD, BAPTISM_CD',
-	'  FROM MEMBERS M',
-	'  LEFT JOIN (', 
-	'    SELECT * from ATTENDANCES ',
-	'     WHERE WORSHIP_DT BETWEEN DATE_ADD(NOW(),INTERVAL-'+ ruleLongAbsentee +' ) AND NOW()) A',
-	'        ON M.MEMBER_ID = A.MEMBER_ID',
-	'    GROUP BY M.MEMBER_ID',
-	'    HAVING count(A.MEMBER_ID) = 0'
-	].join('')
+_.longAbsenteeList = async (req) => {
+  const depart = req.depart
+  var query = [
+  'SELECT * FROM ( ' +
+  ' SELECT M.MEMBER_NAME, M.MEMBER_ID, M.PHONE_NO, M.BIRTHDAY, M.PART_CD, STATUS_CD, M.DEPART_CD, count(A.MEMBER_ID) cnt FROM members M ',
+  ' LEFT JOIN',
+  ' (SELECT MEMBER_ID from attendances WHERE DEPART_CD = :depart AND WORSHIP_DT BETWEEN DATE_ADD(NOW(),INTERVAL-3 MONTH ) AND NOW()) A ',
+  ' ON M.MEMBER_ID = A.MEMBER_ID  group by M.MEMBER_ID HAVING count(A.MEMBER_ID) = 0) J',
+  ' WHERE J.DEPART_CD = :depart'
+  ].join('')
 
-	return await MODELS.sequelize.query(query)
+  return await MODELS.sequelize.query(query, { raw: true, replacements: { depart: depart }, type: Sequelize.QueryTypes.SELECT})
 }
 
 /* 최근 결석자 리스트 */
-_.latestAbsenteeList = async () => {
-	var query = [  
-	'SELECT M.MEMBER_ID, MEMBER_NAME, PHONE_NO, BIRTHDAY, PART_CD, STATUS_CD, BAPTISM_CD',
-	'  FROM MEMBERS M',
-	'  LEFT JOIN (', 
-	'    SELECT * from ATTENDANCES ',
-	'     WHERE WORSHIP_DT BETWEEN DATE_ADD(NOW(),INTERVAL-'+ ruleLatestAbsentee +' ) AND NOW()) A',
-	'        ON M.MEMBER_ID = A.MEMBER_ID',
-	'    GROUP BY M.MEMBER_ID',
-	'    HAVING count(A.MEMBER_ID) = 0'
-	].join('')
-	
-	return await MODELS.sequelize.query(query)
+_.latestAbsenteeList = async (req) => {
+  const depart = req.depart
+  var query = [
+  'SELECT * FROM ( ' +
+  ' SELECT M.MEMBER_NAME, M.MEMBER_ID, M.PHONE_NO, M.BIRTHDAY, M.PART_CD, STATUS_CD, M.DEPART_CD, count(A.MEMBER_ID) cnt FROM members M ',
+  ' LEFT JOIN',
+  ' (SELECT MEMBER_ID from attendances WHERE DEPART_CD = :depart AND WORSHIP_DT BETWEEN DATE_ADD(NOW(),INTERVAL-1 MONTH ) AND NOW()) A ',
+  ' ON M.MEMBER_ID = A.MEMBER_ID  group by M.MEMBER_ID HAVING count(A.MEMBER_ID) = 0) J',
+  ' WHERE J.DEPART_CD = :depart',
+  ].join('')
+
+  return await MODELS.sequelize.query(query, { raw: true, replacements: { depart: depart }, type: Sequelize.QueryTypes.SELECT})
 }
 
 /* 셰례 대상자 리스트 */
-_.baptismList = async () => {
+_.baptismList = async (req) => {
 
-	const overMiddle = ["middle", "high"]
+  const overMiddle = ["middle", "high"]
+  const depart = req.depart
 
-	db_type = "INFANT"
+  if( overMiddle.includes(depart) ) {
+    checkBaptism = "BAPTISM"
+  }
+  else {
+    checkBaptism = "INFANT"
+  }
 
-	if( overMiddle.includes(db_type) ) {
-		checkBaptism = "BAPTISM" 
-	}
-	else {
-		checkBaptism = "INFANT"
-	}
-		
-	return await MODELS.MEMBERS.findAll(
-	{
-		raw: true,
-		order: [
-			['MEMBER_NAME', 'ASC']
-		],
-		where: {
-			BAPTISM_CD: {
-				[Sequelize.Op.ne]: checkBaptism
-			}
-		},
-		attributes: ATTRIBUTE.MEMBER_LIST
-	})
+  return await MODELS.MEMBERS.findAll(
+  {
+    raw: true,
+    order: [
+      ['MEMBER_NAME', 'ASC']
+    ],
+    where: {
+      DEPART_CD: depart,
+      BAPTISM_CD: {
+        [Sequelize.Op.ne]: checkBaptism
+      }
+    },
+    attributes: ATTRIBUTE.MEMBER_LIST
+  })
 }
 
 _.insertMember = async (req) => {
-	const member = req.body.member
 
-	return await MODELS.MEMBERS.create(
-		member,
-	{
-		returning: true
-	})
+  console.log("INSERT")
+  const member = req.body.member
+  console.log(member)
+
+  return await MODELS.MEMBERS.create(
+    member,
+  {
+    returning: true
+  })
 }
 
 _.updateMember = async (req) => {
-	const member = req.body.member
 
-	return await MODELS.MEMBERS.update(
-		member,
-	{
-		where: { MEMBER_ID : member.MEMBER_ID }, 
-		returning: true
-	})
+  console.log("UPDATE")
+
+  const member = req.body
+  console.log(member)
+  return await MODELS.MEMBERS.update(
+    member,
+  {
+    where: { MEMBER_ID : member.MEMBER_ID },
+    returning: true
+  })
 }
 
 _.deleteMember = async (req) => {
-	const memberID = req.params.mermberID
-
-	return await MODELS.MEMBERS.destroy(
-	{
-		where: { MEMBER_ID : memberID }, 
-		returning: true
-	})
+  const memberID = req.params.mermberID
+  return await MODELS.MEMBERS.destroy(
+  {
+    where: { MEMBER_ID : memberID },
+    returning: true
+  })
 }
 
 _.detailMember = async (req) => {
-	const memberID = req.params.mermberID
+  const memberID = req.params.mermberID
+  const member = await MODELS.MEMBERS.findOne(
+  {
+    where: { MEMBER_ID : memberID }
+  })
 
-	const member = await MODELS.MEMBERS.findOne(
-	{
-		where: { MEMBER_ID : memberID }
-	})
-	
-	return member
+  console.log(member)
+
+  return member
 };
 
 module.exports = _

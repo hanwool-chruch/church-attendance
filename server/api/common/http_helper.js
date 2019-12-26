@@ -7,10 +7,10 @@ _.createResponseFn = (_fn) => {
 
     return async (req, res) => {
       try{
-        HTTP.response200(res, await fn(req))
+        _.response200(res, await fn(req))
       }
       catch(error){
-        HTTP.response500(error)
+        _.response500(res, error)
       }
     }
 }
@@ -22,6 +22,7 @@ _.response200 = (response, data) => {
 }
 
 _.response500 = (response, error) => {
+  console.log(error);
     response
     .status(HttpStatus.INTERNAL_SERVER_ERROR)
     .send({
