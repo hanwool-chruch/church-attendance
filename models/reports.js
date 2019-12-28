@@ -1,5 +1,5 @@
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('REPORTS', {
+  return sequelize.define('reports', {
     WORSHIP_DT: {
         type : DataTypes.STRING(10),
         primaryKey: true
@@ -8,9 +8,18 @@ module.exports = function(sequelize, DataTypes) {
         type : DataTypes.STRING(10),
         primaryKey: true
     },
-    REPORT: DataTypes.TEXT
+    REPORT: DataTypes.TEXT,
+    DEPART_CD: DataTypes.STRING(10),
   },{
-    timestamps: false,
-    freezeTableName: true
+    freezeTableName: true,
+    indexes:[
+    {
+      unique: false,
+      fields:['DEPART_CD']
+    },
+    {
+      unique: false,
+      fields:['PART_CD']
+    }]
   });
 };

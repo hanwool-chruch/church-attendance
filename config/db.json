@@ -1,0 +1,31 @@
+{
+  "development": {
+    "username": "woong",
+    "password": "gksksladmlwksu!",
+    "database": "church_school",
+    "host": "34.85.14.32",
+    "dialect": "mysql",
+    "operatorsAliases": false,
+    "dialectOptions": {
+        "useUTC": false
+    },
+    "timezone": "+08:00"
+  },
+  "test": {
+    "username": "root",
+    "password": null,
+    "database": "database_test",
+    "host": "127.0.0.1",
+    "dialect": "mysql",
+    "operatorsAliases": false
+  },
+  "production": {
+    "username": "root",
+    "password": null,
+    "database": "database_production",
+    "host": "127.0.0.1",
+    "dialect": "mysql",
+    "operatorsAliases": false
+  }
+}
+

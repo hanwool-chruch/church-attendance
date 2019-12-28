@@ -1,14 +1,18 @@
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('WORSHIPS', {
+  return sequelize.define('worships', {
     WORSHIP_DT: {
         type : DataTypes.STRING(10),
         primaryKey: true
     },
-    WORSHIP_CD: DataTypes.STRING(10),
     TITLE: DataTypes.STRING(50),
-    MSG: DataTypes.TEXT
+    MESSAGE: DataTypes.TEXT,
+    DEPART_CD: DataTypes.STRING(10),
   },{
-    timestamps: false,
-    freezeTableName: true
+    freezeTableName: true,
+    indexes:[
+    {
+      unique: false,
+      fields:['DEPART_CD']
+    }]
   });
 };

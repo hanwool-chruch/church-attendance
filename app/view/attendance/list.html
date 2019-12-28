@@ -1,0 +1,20 @@
+<nav class="navbar title">
+	<div class="container" style="text-align: center;">
+		<ul class="pager">
+			<li class="previous"></li>
+			<li style="font-size:22px;" data-app-menu="attendance" data-app-icon="ion-checkmark-round"></li>
+			<li class="next"></li>
+		</ul>
+	</div>
+</nav>
+<div class="container">
+	<div data-ng-click="detail(worship);"  style="cursor: pointer;" class="panel" data-ng-repeat="worship in worships" data-ng-class="'panel-success'">
+		<div class="panel-heading" >
+			<strong data-ng-bind="worship.WORSHIP_DT"></strong> 
+			<span class="badge" data-ng-bind="worship.attendanceCnt"></span>
+		</div>
+		<ul class="list-group" style="font-size:90%;">
+			<li class="list-group-item" data-ng-show="worship.TITLE"><i class="ion-android-document"></i> <span data-ng-bind="worship.TITLE"></span></li>
+		</ul>
+	</div>
+</div>

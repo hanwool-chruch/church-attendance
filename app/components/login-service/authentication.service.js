@@ -32,13 +32,13 @@
                     });
             }, 1000);*/
 
-						if(username=="infant" && password=="godlove"){
+						if(username=="S1" && password=="godlove"){
 							callback({success:true});
 						}
 						else if(username=="high" && password=="godlove"){
 							callback({success:true});
 						}
-						else if(username=="infant" && password=="0103"){
+						else if(username=="S1" && password=="0103"){
 							callback({success:true});
 						}
 						else if(username=="high" && password=="1619"){
@@ -81,9 +81,7 @@
                 }
             };
 						
-						console.log($rootScope.globals);
-
-            // set default auth header for http requests
+		         // set default auth header for http requests
             //$http.defaults.headers.common['Authorization'] = 'Basic ' + authdata;
 
             // store user details in globals cookie that keeps user logged in for 1 week (or until they logout)

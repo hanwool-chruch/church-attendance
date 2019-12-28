@@ -8,8 +8,6 @@ const env = process.env.NODE_ENV || 'development';
 const config = require(__dirname + '/../config/db.json')[env];
 const db = {};
 
-console.log(config);
-
 let sequelize;
 if (config.use_env_variable) {
   sequelize = new Sequelize(process.env[config.use_env_variable], config);
@@ -24,7 +22,8 @@ fs
   })
   .forEach(file => {
     const model = sequelize['import'](path.join(__dirname, file));
-    db[model.name] = model;
+    db[model.name.toUpperCase()] = model;
+    model.sync();
   });
 
 Object.keys(db).forEach(modelName => {
@@ -35,5 +34,6 @@ Object.keys(db).forEach(modelName => {
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
+db.Op = Sequelize.Op;
 
 module.exports = db;

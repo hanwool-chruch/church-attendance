@@ -18,10 +18,11 @@ angular.module('myApp.info', [
 	main   : '주일학교 출석관리',
 	member : '반별 학생관리',
 	member_kind : '전체 학생정보',
-	att    : '출석관리',
+	attendance    : '출석관리',
 	rank   : '출석통계',
 	doc    : '회의록',
 	login  : '로그인',
-	calendar : '교회일정'
+	calendar : '교회일정',
+	part : '부서관리'
 })
 ;

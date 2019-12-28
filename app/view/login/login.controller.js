@@ -11,10 +11,13 @@
 			var vm = this;
 			vm.login = login;
 			vm.departments = [
-				{text:'영아부', value:'infant'},
-				{text:'유년부', value:'kindergarten'},
-				{text:'중등부', value:'middle'},
-				{text:'고등부', value:'high'}
+				{text:'영아부', value:'S1'},
+				{text:'유아부', value:'S2'},
+				{text:'유치부', value:'S3'},
+				{text:'유년부', value:'S4'},
+				{text:'초등부', value:'S5'},
+				{text:'중등부', value:'S6'},
+				{text:'고등부', value:'S7'}
 			];
 
 			vm.authtypes = [

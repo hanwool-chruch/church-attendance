@@ -1,0 +1,80 @@
+<nav class="navbar title">
+	<div class="container" style="text-align: center;">
+		<ul class="pager">
+			<li class="previous"></li>
+			<li style="font-size:22px;" data-app-menu="attendance" data-app-icon="ion-checkmark-round"></li>
+			<li class="next"></li>
+		</ul>
+	</div>
+</nav>
+<form name="attForm">
+<input type="hidden" data-ng-model="worship.WORSHIP_DT"/>
+<div class="container" style="margin-bottom:20px;">
+	<div class="panel" data-ng-class="'panel-success'">
+		<div class="panel-heading"><i data-ng-class="worship.lockYn=='Y'?'ion-locked':'ion-calendar'"></i> 
+			<strong data-ng-bind="worship.WORSHIP_DT"></strong> 
+			<span class="badge" data-ng-bind="worship.TITLE"></span> 
+			<span class="badge" data-ng-bind="worship.attendanceCnt"></span> 
+		</div>
+		<ul class="list-group" style="font-size:90%;">
+			<li class="list-group-item">
+				<div class="input-group">
+					<span class="input-group-addon"><i class="ion-android-document"></i></span>
+					<input type="text" class="form-control" name="title" data-ng-show="true" data-ng-model="worship.TITLE" aria-label="주일예배" placeholder="주일예배">
+					<span class="input-group-addon" style="cursor: pointer;" data-ng-click="saveTitle(worship.WORSHIP_DT, worship.TITLE);">저장</span>
+				</div>
+				<BR>
+				  <div class="panel panel-primary">
+					<div class="panel-heading">공지사항</div>
+					<div class="panel-body">
+						<div class="input-group">
+							<textarea rows="6" name="message" class="form-control" aria-label="공지사항" placeholder="모두에게 전달해야 하는 내용을 적어주세요" data-ng-model="worship.MESSAGE">
+							</textarea>
+							<span class="input-group-addon" style="cursor: pointer;" data-ng-click="saveMessage(worship.WORSHIP_DT, worship.MESSAGE);">저장</span>
+						</div>
+					</div>
+				  </div>
+			</li>
+		</ul>
+	</div>
+
+	<div ng-repeat="part in partList" class="panel panel-default" data-ng-class="'panel-success'">		
+		<div  class="panel-heading" data-ng-click="sView =! sView" style="cursor: pointer;">
+			<span class="text-success font-weight-bold">{{part.PART_NAME}} </span>	
+			<span class="text-info font-weight-bold">{{part.TEACHER_NAME}} </span>
+			<span class="badge" data-ng-bind="(part.memberList | filter:'Y').length"></span>
+			<span style="float: right;"><i data-ng-class="sView?'ion-chevron-up':'ion-chevron-down'"></i></span>
+		</div>
+		<div class="panel-group" data-ng-show="sView" style="padding: 10px">
+		  <div class="panel panel-primary">
+			<div class="panel-heading">출석명단</div>
+			<div class="panel-body">
+				<table class="table" >
+					<tr data-ng-repeat="m in part.memberList" data-ng-class="m.attYn=='Y'?'att':''" data-ng-click="select(worship.WORSHIP_DT, m.MEMBER_ID, m.attYn);">
+						<td class="text-center"><i class='ion-checkmark-round' data-ng-class="m.attYn=='Y'?'chk':m.attYn=='N'?'unchk':''"></i></td>
+						<td data-ng-bind="m.MEMBER_NAME" class="text-center"></td>
+					</tr>
+				</table>
+			</div>
+		  </div>
+		  <div class="panel panel-info">
+			<div class="panel-heading">교사보고서</div>
+			<div class="panel-body">
+				<div class="input-group">
+				<textarea rows="4" name="MEMBER_REPORT_{{part.PART_CD}}" class="form-control" aria-label="교사보고서" placeholder="교사보고서를 작성해 주세요" data-ng-model="part.REPORT">
+				</textarea>
+				<span class="input-group-addon" style="cursor: pointer;" data-ng-click="saveReport(worship.WORSHIP_DT, part.PART_CD, part.REPORT);">저장</span>
+				<div>
+			</div>
+		  </div>
+		</div>
+	</div>
+</div>
+
+</div>
+	<div class="btn-group btn-group-justified" role="group" aria-label="저장">
+		<div class="btn-group" role="group">
+			<button type="button" class="btn btn-default" data-ng-click="gotoAttList();"><i class='ion-calendar'></i> 목록</button>
+		</div>
+	</div>
+</form>

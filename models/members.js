@@ -1,5 +1,5 @@
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('MEMBERS', {
+  let model = sequelize.define('members', {
     MEMBER_ID: {
         type: DataTypes.INTEGER, 
         autoIncrement: true,
@@ -38,13 +38,21 @@ module.exports = function(sequelize, DataTypes) {
         defaultValue: 'ATTENDENCE',
         allowNull: false
     },
-		FATHER_NAME: DataTypes.STRING(20),
+    FATHER_NAME: DataTypes.STRING(20),
     FATHER_PHONE: DataTypes.STRING(20),
     MOTHER_NAME: DataTypes.STRING(20),
     MOTHER_PHONE: DataTypes.STRING(20),
     SCHOOL: DataTypes.STRING(20),
-		PHOTO: DataTypes.STRING(45)
+    PHOTO: DataTypes.STRING(45),
+    DEPART_CD: DataTypes.STRING(10),
   },{
-    freezeTableName: true
+    freezeTableName: true,
+    indexes:[
+    {
+      unique: false,
+      fields:['DEPART_CD']
+    }]
   });
+
+  return model
 };

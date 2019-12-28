@@ -1,8 +1,4 @@
 <!DOCTYPE html>
-<!--[if lt IE 7]>      <html lang="ko" ng-app="myApp" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html lang="ko" ng-app="myApp" class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html lang="ko" ng-app="myApp" class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!-->
 <html lang="ko" data-ng-app="myApp" class="no-js">
 <!--<![endif]-->
 <head>
@@ -12,7 +8,6 @@
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-
   gtag('config', 'UA-132827597-1');
 </script>
 <meta charset="utf-8">
@@ -81,7 +76,7 @@
 							Home</a></li>
 					<li><a href="#/member" data-app-menu="member" data-app-icon="ion-person"></a></li>
 					<li><a href="#/member_kind" data-app-menu="member_kind" data-app-icon="ion-person"></a></li>
-					<li><a href="#/att" data-app-menu="att" data-app-icon="ion-checkmark-round"></a></li>
+					<li><a href="#/attendance" data-app-menu="attendance" data-app-icon="ion-checkmark-round"></a></li>
 					<li><a href="#/rank" data-app-menu="rank" data-app-icon="ion-trophy"></a></li>
 					<!-- li><a href="#/doc" data-app-menu="doc" data-app-icon="ion-easel"></a></li -->					
 					<li><a href="#/calendar" data-app-menu="calendar" data-app-icon="ion-calendar"></a></li>
@@ -125,7 +120,7 @@
 
 	<script src="view/main/main.js"></script>
 	<script src="view/member/member.js"></script>
-	<script src="view/att/att.js"></script>
+	<script src="view/attendance/attendance.js"></script>
 	<script src="view/login/login.controller.js"></script>
 	<script src="view/register/register.controller.js"></script>
 	<script src="view/rank/rank.js"></script>
@@ -139,13 +134,5 @@
 
 	<!-- Web Socket -->
 	<script src='bower_components/socket.io-client/dist/socket.io.js'></script>
-<!-- The core Firebase JS SDK is always required and must be listed first -->
-<script src="/__/firebase/6.3.0/firebase-app.js"></script>
-
-<!-- TODO: Add SDKs for Firebase products that you want to use
-     https://firebase.google.com/docs/web/setup#reserved-urls -->
-
-<!-- Initialize Firebase -->
-<script src="/__/firebase/init.js"></script>
 </body>
 </html>

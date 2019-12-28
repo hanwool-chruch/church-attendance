@@ -5,7 +5,6 @@ const sequelize = MODELS.Sequelize
 const memberCtl = require(appRoot + '/server/api/member/controller.js')
 const Op = MODELS.Op
 
-var API = {};
 var _ = {};
 
 _.getAllAttendances = async (req) => {
@@ -57,7 +56,7 @@ _.reportList = async (req) => {
   );
 }
 
-API.getAttendanceList = async (req) => {
+_.getAttendanceList = async (req) => {
   const depart = req.depart
 	const worships = await _.worshipList(req)
 	const attendances = await _.getAllAttendances(req)
@@ -71,7 +70,7 @@ API.getAttendanceList = async (req) => {
 	return resultList
 }
 
-API.getAttendanceDetail = async (req) => {
+_.getAttendanceDetail = async (req) => {
   const depart = req.depart
   const conditionWorkship = (req.params && req.params.id) ?  {WORSHIP_DT: req.params.id} : {};   
 
@@ -117,7 +116,7 @@ API.getAttendanceDetail = async (req) => {
   }
 }
 
-API.updateWorshipTitle = async (req) => {
+_.updateWorshipTitle = async (req) => {
   const body = req.body
   const depart = req.depart
   const WORSHIP_DT = body.WORSHIP_DT;
@@ -130,7 +129,7 @@ API.updateWorshipTitle = async (req) => {
   return data;
 }
 
-API.updateWorshipMessage = async (req) => {
+_.updateWorshipMessage = async (req) => {
   const body = req.body
   const depart = req.depart
   const WORSHIP_DT = body.WORSHIP_DT;
@@ -142,7 +141,7 @@ API.updateWorshipMessage = async (req) => {
 }
 
 
-API.updateReport = async (req) => {
+_.updateReport = async (req) => {
   const body = req.body
   const depart = req.depart
   const WORSHIP_DT = body.WORSHIP_DT;
@@ -156,7 +155,7 @@ API.updateReport = async (req) => {
   return await MODELS.REPORTS.upsert({REPORT: REPORT, DEPART_CD: depart, WORSHIP_DT: WORSHIP_DT, PART_CD: PART_CD});
 }
 
-API.createAttendance = async (req) => {
+_.createAttendance = async (req) => {
   const body = req.body
   const WORSHIP_DT = body.WORSHIP_DT;
   const MEMBER_ID = body.MEMBER_ID;
@@ -168,7 +167,7 @@ API.createAttendance = async (req) => {
   });
 }
 
-API.deleteAttendance = async (req) => {
+_.deleteAttendance = async (req) => {
   const body = req.body
   const WORSHIP_DT = body.WORSHIP_DT;
   const MEMBER_ID = body.MEMBER_ID;
@@ -181,4 +180,4 @@ API.deleteAttendance = async (req) => {
   });
 }
 
-module.exports = API
+module.exports = _

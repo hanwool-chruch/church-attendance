@@ -15,10 +15,9 @@
 
   angularModule.factory("RankSvc", [
     "$http", function($http) {
+      const PREFIX_API = "/api/rank"
       return {
-        getRankList: function() {
-          return $http.get('/rest/rank?t=' + new Date());
-        }
+        getRankList: $http.createGetRequestFn(PREFIX_API + "/list"),
       };
     }
   ]);
@@ -191,14 +190,16 @@ var config_pie = {
 			data.last_gender.map(function(item){
 				config_pie.data.datasets[1].data.push(item.c);
 			});
-
 			
 			data.total_part.map(function(item){
-				config_bar.data.labels.push(item.i);
+
+        data.part_list.map(function(part){
+          if(part.PART_CD == item.i) config_bar.data.labels.push(part.PART_NAME);
+        })
+
 				config_bar.data.datasets[0].data.push(item.c);
 			});
-
-			
+      
 			data.last_part.map(function(item){
 				config_bar.data.datasets[1].data.push(item.c);
 			});

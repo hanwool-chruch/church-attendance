@@ -9,7 +9,7 @@ const Op = Sequelize.Op;
 var _ = {};
 
 const ATTRIBUTE = {
-  MEMBER_LIST : ['MEMBER_ID', 'MEMBER_NAME', 'PHONE_NO', 'BIRTHDAY', 'PART_CD', 'STATUS_CD', 'BAPTISM_CD']
+  MEMBER_LIST : ['MEMBER_ID', 'MEMBER_NAME', 'PHONE_NO', 'BIRTHDAY', 'PART_CD', 'STATUS_CD', 'BAPTISM_CD', 'createdAt']
 }
 
 const covertMemberList = (member) => {
@@ -164,11 +164,7 @@ _.insertMember = async (req) => {
 }
 
 _.updateMember = async (req) => {
-
-  console.log("UPDATE")
-
   const member = req.body
-  console.log(member)
   return await MODELS.MEMBERS.update(
     member,
   {
