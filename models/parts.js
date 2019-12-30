@@ -1,8 +1,9 @@
 module.exports = function(sequelize, DataTypes) {
   let model = sequelize.define('parts', {
     PART_CD: {
-        type : DataTypes.STRING(10),
-        primaryKey: true
+        type : DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
     },
     TEACHER_NAME: DataTypes.STRING(20),
     PART_NAME: DataTypes.STRING(20),

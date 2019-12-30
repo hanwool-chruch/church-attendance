@@ -32,7 +32,14 @@
         getBaptismList: $http.createGetRequestFn(PREFIX_API + "/list/baptism"),
         getNameSortedMemberList: $http.createGetRequestFn(PREFIX_API + "/list/sortedName"),
         getBirthDayMemberList: $http.createGetRequestFn(PREFIX_API + "/list/birthday"),
+        getNeedPartList: $http.createGetRequestFn(PREFIX_API + "/list/needToMatchPart"),
         getDetail: $http.createGetRequestFn(PREFIX_API),
+        updatePart: function(member_id, part_cd) {
+          return $http.createPostRequestFn(PREFIX_API + "/part")({
+            MEMBER_ID: member_id,
+            PART_CD: part_cd
+          });
+        },
 
         deleteMember: function(id) {
          return $http.delete("/api/member/" + id);
@@ -102,7 +109,8 @@ angularModule.controller("memberKindCtrl", [
                  "장기 결석자", 
                  "최근 결석자",
                  "세례 대상자",
-                 "이름순 전체명단"
+                 "이름순 전체명단",
+                 "반평성 필요명단"
                 ]
 
       $q.all([
@@ -111,7 +119,8 @@ angularModule.controller("memberKindCtrl", [
         MemberSvc.getLatestAbsenteeList(), 
         MemberSvc.getLongAbsenteeList(), 
         MemberSvc.getBaptismList(),  
-        MemberSvc.getNameSortedMemberList()
+        MemberSvc.getNameSortedMemberList(),  
+        MemberSvc.getNeedPartList()
       ])
       .then(function(resultArray) {
 
@@ -126,22 +135,25 @@ angularModule.controller("memberKindCtrl", [
           list = resultArray[index+1].data;
           
           data.list = list.map(function(member){
-
+            member.isNeedPart = false
           //  member.BIRTHDAY = member.BIRTHDAY.substr(2)
             if(index==3){
                 code.baptismList.forEach(function(code) {
                 if(member.BAPTISM_CD == code.CODE_ID)
-                  member.BIRTHDAY = code.CMN_NAME;
+                  member.BIRTHDAY = code.CODE_NAME;
                 })
+            } else if(index==5){
+                member.isNeedPart = true;
             }
             return member;
-          });
-          
+          });          
           dataList[index] = data;
           index++;
         });
 
         $scope.dataList = dataList;
+        $scope.code = code;
+
         return $rootScope.backdrop = void 0;
       }); 
 
@@ -149,6 +161,12 @@ angularModule.controller("memberKindCtrl", [
         return $location.path("/member/view/" + memberId).search({});
       };
       
+      $scope.change = function(type, member_id, part_cd) {
+        console.log(type)
+        if(type == "part") 
+          return MemberSvc.updatePart(member_id, part_cd).success(() => $rootScope.backdrop = void 0)
+      };
+
       return $scope.regist = function() {
         return $location.path("/member/regist");
       };

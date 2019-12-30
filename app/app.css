@@ -134,3 +134,35 @@ div.notify {
 }
 
 textarea { height: auto; }
+
+
+.icon-big{
+	font-size: 15px;
+	padding-top : 10px;
+	vertical-align: middle;
+}
+
+div.gallery {
+	margin: 5px;
+	border: 1px solid #ccc;
+	float: left;
+	width: 90px;
+  }
+  
+  div.gallery:hover {
+	border: 1px solid #777;
+  }
+  
+  div.gallery img {
+	width: 100%;
+	height: auto;
+  }
+  
+  div.desc {
+	padding: 5px;
+	text-align: center;
+  }
+
+  .inline-block {
+	display: inline-block;
+  }

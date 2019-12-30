@@ -26,7 +26,6 @@
         "$scope", "$rootScope", "CalendarSvc", function ($scope, $rootScope, CalendarSvc) {
             var events = []
             return CalendarSvc.getEventList().success(function (event_list) {
-                console.log(event_list)
                 event_list.member.map(function (event) {
                     event.color = '#257e4a';
                     event.start = "2019-" + event.BIRTHDAY.substr(5);

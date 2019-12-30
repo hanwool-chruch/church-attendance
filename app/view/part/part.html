@@ -1,0 +1,61 @@
+<nav class="navbar title">
+	<div class="container" style="text-align: center;">
+		<ul class="pager">
+			<li class="previous"></li>
+			<li style="font-size:22px;" data-app-menu="member" data-app-icon="ion-person"></li>
+			<li class="next"></li>
+		</ul>
+	</div>
+</nav>
+<div class="container">
+	<div class="panel panel-default">
+		<div class="panel-heading" style="cursor: pointer;">
+			<span class="text-success font-weight-bold">반 관리 </span>
+			<span class="text-info font-weight-bold"></span>
+		</div>
+		<table class="table" data-ng-show="1">
+			<thead>
+				<tr>
+					<th class="text-center">반명</th>
+					<th class="text-center">선생명</th>
+					<th class="text-center">관리</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr data-ng-repeat="p in partList">
+					<td class="text-center">
+						<input type="text" class="form-control input_name" name="PART_NAME" data-ng-model="p.PART_NAME"
+							ng-blur="change('part_name', p.PART_CD, p.PART_NAME)">
+					</td>
+					<td class="text-center">
+						<input type="text" class="form-control input_name" name="TEACHER_NAME"
+							data-ng-model="p.TEACHER_NAME" ng-blur="change('teacher_name', p.PART_CD, p.TEACHER_NAME)">
+					</td>
+					<td class="text-center">
+						<!--<a href="javascript:;" data-ng-click="detail(p.PART_CD);"><i class='ion-arrow-up-a icon-big'></i></a>
+						<a href="javascript:;" data-ng-click="detail(p.PART_CD);"><i class='ion-arrow-down-a icon-big'></i></a>-->
+						<a href="javascript:;" data-ng-click="delete(p.PART_CD);"><i
+								class='ion-android-delete'>삭제</i></a>
+					</td>
+				</tr>
+				<tr class="modal-cell">
+					<td class="text-center">
+						<input type="text" class="form-control input_name" name="NEW_PART_NAME"
+							data-ng-model="newPart.PART_NAME" placeholder="추가 반이름">
+					</td>
+					<td class="text-center">
+						<input type="text" class="form-control input_name" name="NEW_TEACHER_NAME"
+							data-ng-model="newPart.TEACHER_NAME" placeholder="추가 선생님 이름">
+					</td>
+					<td class="text-center" style="min-width:70px;">
+						<!--<a href="javascript:;" data-ng-click="detail(p.PART_CD);"><i class='ion-arrow-up-a icon-big'></i></a>
+						<a href="javascript:;" data-ng-click="detail(p.PART_CD);"><i class='ion-arrow-down-a icon-big'></i></a>-->
+						<a href="javascript:;" data-ng-click="create(newPart.PART_NAME, newPart.TEACHER_NAME);"><i
+								class='ion-android-add'>추가</i></a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+

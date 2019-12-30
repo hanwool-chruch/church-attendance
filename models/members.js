@@ -14,9 +14,8 @@ module.exports = function(sequelize, DataTypes) {
     E_MAIL: DataTypes.STRING(50),
     ADDRESS: DataTypes.STRING(255),
     PART_CD: {
-        type: DataTypes.STRING(20),
-        defaultValue: 100,
-        allowNull: false
+      type: DataTypes.INTEGER, 
+      allowNull: false
     },
     GENDER_CD: {
         type: DataTypes.STRING(20),

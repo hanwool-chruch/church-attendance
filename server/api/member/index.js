@@ -14,6 +14,8 @@ router.get('/list/longAbsentee', helper.createResponseFn(controller.longAbsentee
 router.get('/list/latestAbsentee', helper.createResponseFn(controller.latestAbsenteeList))
 router.get('/list/baptism', helper.createResponseFn(controller.baptismList))
 router.get('/list/birthday', helper.createResponseFn(controller.birthDayMemberList))
+router.get('/list/needToMatchPart', helper.createResponseFn(controller.needToMathPartMemberList))
+
 
 router.get('/list/total', helper.createResponseFn(controller.baptismList))
 
@@ -21,5 +23,8 @@ router.get('/:mermberID', helper.createResponseFn(controller.detailMember))
 router.put('/', helper.createResponseFn(controller.updateMember))
 router.post('/', helper.createResponseFn(controller.insertMember))
 router.delete('/:mermberID', helper.createResponseFn(controller.deleteMember))
+
+router.post('/part', helper.createResponseFn(controller.updatePart))
+
 
 module.exports = router
