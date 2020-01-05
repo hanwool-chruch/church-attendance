@@ -15,7 +15,8 @@
 
   angularModule.factory("PartSvc", [
     "$http", function($http) {
-	  const PREFIX_API = "/api/part"
+    const PREFIX_API = "/api/part"
+    const MEMBER_PREFIX_API = "/api/member"
       return {
         getPartList: $http.createGetRequestFn(PREFIX_API + "/list"),
         updatePartName: function(part_cd, part_name) {
@@ -40,13 +41,18 @@
         deletePart: function(part_cd) {
           return $http.createDeleteRequestFn(PREFIX_API)(part_cd);
         },       
-
+        updatePart: function (member_id, part_cd) {
+          return $http.createPostRequestFn(MEMBER_PREFIX_API + "/part")({
+            MEMBER_ID: member_id,
+            PART_CD: part_cd
+          });
+        },
       };
     }
   ]);
 
   angularModule.controller("PartCtrl", [
-    "$scope", "$rootScope", "PartSvc","MemberSvc", "$q", function($scope, $rootScope, PartSvc, MemberSvc,  $q) {
+    "$scope", "$rootScope", "$location", "PartSvc","MemberSvc","CodeSvc", "$q", function($scope, $rootScope, $location, PartSvc, MemberSvc, CodeSvc, $q) {
     var events = []
     
     $scope.newPart = {
@@ -62,6 +68,16 @@
       if(type == "teacher_name") 
         return PartSvc.updateTeacherName(part, value).success(() => $rootScope.backdrop = void 0)
     };
+
+    $scope.change_member = function (type, member_id, part_cd) {
+      if (type == "part")
+        return MemberSvc.updatePart(member_id, part_cd).success(() => $rootScope.backdrop = void 0)
+    };
+
+    $scope.detail = function (memberId) {
+      return $location.path("/member/view/" + memberId)
+    };
+
 
     $scope.create = function(part_name, teacher_name) {   
       return PartSvc.createPart(part_name, teacher_name, $scope.partList.length).success((part) => {
@@ -81,10 +97,51 @@
       })
     }
 
-		return PartSvc.getPartList().success((data) => { 
-      $scope.partList = data;
+		return $q.all([
+      CodeSvc.getCodeList(), 
+      MemberSvc.needPartList(), 
+      MemberSvc.needMoreInformationList(), 
+    ]).then((resultArray) => {
+      console.log(resultArray)
+
+      code = resultArray[0].data;
+      $scope.partList = code.partList    
       
-      
+      index = 0;
+      dataList = []
+
+      dataTypes = [
+        "반평성 필요",
+        "추가 입력 필요"
+      ]
+
+      dataTypes.map(function (dataType) {
+
+        data = {};
+        data.title = dataType;
+        list = resultArray[index + 1].data;
+
+        data.list = list.map(function (member) {
+          let moreInfomationText = ""
+          if (index==0) member.needType = 'part';
+          if (index==1) {
+            console.log(member)
+            member.needType = 'more';
+            if(member.GENDER_CD == 3) moreInfomationText += "성별 "
+            if(member.BIRTHDAY == '') moreInfomationText += "생일 "
+            if(member.PHONE_NO == '' && member.MOTHER_PHONE == '' && member.FATHER_PHONE == '') moreInfomationText += "휴대폰 "
+            member.more = (moreInfomationText += " 입력필요 ")
+          }
+
+          return member;
+        });
+        dataList[index] = data;
+        index++;
+      });
+      console.log(dataList)
+      $scope.dataList = dataList
+      $scope.code = code;
+
 			return $rootScope.backdrop = void 0;
 		});
     }

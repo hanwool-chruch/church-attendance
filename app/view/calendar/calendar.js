@@ -27,8 +27,10 @@
             var events = []
             return CalendarSvc.getEventList().success(function (event_list) {
                 event_list.member.map(function (event) {
+                    if(event.BIRTHDAY == "" || event.BIRTHDAY == undefined) return;
+                    
                     event.color = '#257e4a';
-                    event.start = "2019-" + event.BIRTHDAY.substr(5);
+                    event.start = "2020-" + event.BIRTHDAY.substr(5);
                     event.title = event.MEMBER_NAME + "생일"
                     events.push(event);
                 })
@@ -52,7 +54,7 @@
                     weekends: true,
                     fixedWeekCount: false,
                     businessHours: false, // display business hours
-                    defaultDate: '2019-01-12',
+                    defaultDate: Date.now(),
                     navLinks: false, // can click day/week names to navigate views
                     editable: true,
                     eventLimit: true, // allow "more" link when too many events

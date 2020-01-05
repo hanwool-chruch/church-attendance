@@ -16,7 +16,7 @@ angular.module('myApp.info', [
 /* 메뉴명 */
 .constant('menu', {
 	main   : '주일학교 출석관리',
-	member : '반별 학생관리',
+	member : '반별 관리',
 	member_kind : '전체 학생정보',
 	attendance    : '출석관리',
 	rank   : '출석통계',

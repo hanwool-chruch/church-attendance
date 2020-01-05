@@ -7,3 +7,4 @@ tmp
 .idea
 choirzion-demo.iml
 app/photo/*
+config/*

@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-const port = 8080
+const port = 8000
 const bodyParser = require("body-parser")
 const cookieParser = require('cookie-parser')
 const jsonParser = require('json-parser');

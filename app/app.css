@@ -165,4 +165,10 @@ div.gallery {
 
   .inline-block {
 	display: inline-block;
-  }
+	}
+	
+	hr.bold{border:1px Groove skyblue;}
+
+	.vertical-align {
+		vertical-align: middle;
+	}

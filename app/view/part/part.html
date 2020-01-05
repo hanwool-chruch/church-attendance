@@ -9,11 +9,14 @@
 </nav>
 <div class="container">
 	<div class="panel panel-default">
-		<div class="panel-heading" style="cursor: pointer;">
+		<div class="panel-heading" data-ng-click="sView2 =! sView2" style="cursor: pointer;">
 			<span class="text-success font-weight-bold">반 관리 </span>
 			<span class="text-info font-weight-bold"></span>
+			<span style="float: right;">
+				<i data-ng-class="sView?'ion-chevron-up':'ion-chevron-down'"></i>
+			</span>
 		</div>
-		<table class="table" data-ng-show="1">
+		<table class="table" data-ng-show="sView2">
 			<thead>
 				<tr>
 					<th class="text-center">반명</th>
@@ -56,6 +59,36 @@
 				</tr>
 			</tbody>
 		</table>
-	</div>
+		</div>
+		<hr class="bold">
+		<h4>필수항목 누락 리스트</h4>
+		<div class="panel panel-default"  ng-repeat="data in dataList">
+			<div class="panel-heading" data-ng-click="sView =! sView" style="cursor: pointer;">
+			<span class="text-success font-weight-bold">{{data.title}} </span>
+			<span class="badge" data-ng-bind="data.list.length"></span>
+			<span style="float: right;">
+					<i data-ng-class="sView?'ion-chevron-up':'ion-chevron-down'"></i>
+			</span>
+			</div>
+			<table class="table" data-ng-show="sView">
+				<tr data-ng-repeat="m in data.list" ng-switch on="m.needType">
+						<td data-ng-bind="m.MEMBER_NAME" class="text-center"></td>            
+						<td data-ng-bind="m.BIRTHDAY" class="text-center"></td>
+						<td class="text-center" ng-switch-when="part">
+								<div class="btn-group" role="group"  >
+										<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="false" aria-expanded="true">
+										<span data-ng-bind="m.PART_NAME"></span> <span class="caret"></span></button>
+										<ul class="dropdown-menu" ><li data-ng-repeat=" c in code.partList"><a href="javascript:;" ng-blur="change_member('part', m.MEMBER_ID, m.PART_CD)"  
+											data-ng-bind="c.PART_NAME" 	data-ng-click="m.PART_CD = c.PART_CD; m.PART_NAME = c.PART_NAME;"></a></li>
+										</ul>
+								</div>				
+						</td>
+						<td class="text-center" style="color:#dc3545" ng-switch-when="more"  data-ng-bind="m.more">
+						</td>
+						<td class="text-center"><a href="javascript:;" data-ng-click="detail(m.MEMBER_ID);"><i class='ion-edit'></i> 상세</a></td>
+				</tr>
+			</table>
+		</div>
+	</div>	
 </div>
 

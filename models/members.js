@@ -14,36 +14,28 @@ module.exports = function(sequelize, DataTypes) {
     E_MAIL: DataTypes.STRING(50),
     ADDRESS: DataTypes.STRING(255),
     PART_CD: {
-      type: DataTypes.INTEGER, 
-      allowNull: false
+      type: DataTypes.INTEGER,
+    },
+    DEPART_CD: {
+      type: DataTypes.INTEGER,
     },
     GENDER_CD: {
         type: DataTypes.STRING(20),
-        defaultValue: 'UNKNOWN',
-        allowNull: false
     },
     BAPTISM_CD: {
         type: DataTypes.STRING(20),
-        defaultValue: 'NONE',
-        allowNull: false
     },
     STATUS_CD: {
         type: DataTypes.STRING(20),
-        defaultValue: 'ATTENDENCE',
-        allowNull: false
     },
-    ETC_MSG: {
-        type: DataTypes.TEXT,
-        defaultValue: 'ATTENDENCE',
-        allowNull: false
-    },
-    FATHER_NAME: DataTypes.STRING(20),
-    FATHER_PHONE: DataTypes.STRING(20),
-    MOTHER_NAME: DataTypes.STRING(20),
-    MOTHER_PHONE: DataTypes.STRING(20),
-    SCHOOL: DataTypes.STRING(20),
-    PHOTO: DataTypes.STRING(45),
-    DEPART_CD: DataTypes.STRING(10),
+    ETC_MSG: DataTypes.TEXT,
+    FATHER_NAME: DataTypes.STRING(50),
+    FATHER_PHONE: DataTypes.STRING(50),
+    MOTHER_NAME: DataTypes.STRING(50),
+    MOTHER_PHONE: DataTypes.STRING(50),
+    SCHOOL: DataTypes.STRING(50),
+    PHOTO: DataTypes.INTEGER,
+    MEMBER_TYPE:  DataTypes.STRING(20),
   },{
     freezeTableName: true,
     indexes:[

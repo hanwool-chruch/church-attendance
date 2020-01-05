@@ -27,19 +27,18 @@
 			<tr data-ng-repeat="m in part.memberList">
 				<td data-ng-bind="m.MEMBER_NAME" class="text-center"></td>
 				<td data-ng-bind="m.PHONE_NO" class="text-center"></td>
-				<td data-ng-bind="m.BIRTHDAY" class="text-center"></td>
+				<td data-ng-bind="m.ATTENDANCE" class="text-center" style="font-weight: bold; color: {{m.color}}"></td>
 				<td class="text-center"><a href="javascript:;" data-ng-click="detail(m.MEMBER_ID);"><i class='ion-edit'></i> 상세</a></td>
 			</tr>
 		</table>
 		<div class="panel-body" data-ng-show="sView">
 			<div class="gallery" data-ng-repeat="m in part.memberList">
 				<a href="javascript:;" data-ng-click="detail(m.MEMBER_ID);">
-					<img src="/photo/S1/{{m.PHOTO}}">
+					<img class="lazy" src="/photo/resize/{{m.PHOTO_URL}}" onError="this.src='/photo/resize/blank.png'">
 				</a>
 				<div class="desc">{{m.MEMBER_NAME}}</div>
 			</div>
-
 		</div>
-		<tr data-ng-repeat="m in part.memberList"></tr>
 	</div>
+	
 </div>

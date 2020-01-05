@@ -36,7 +36,7 @@ _.worshipList = async (req) => {
       where: {
         DEPART_CD: depart, 
         WORSHIP_DT: {
-          [Op.lt]: new Date(new Date() + 24 * 60 * 60 * 5),
+          [Op.lt]: new Date(),
         }
       },
       order: [["WORSHIP_DT", 'DESC']],

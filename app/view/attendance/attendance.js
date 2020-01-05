@@ -104,7 +104,7 @@
       $scope.mock = true;
       $rootScope.backdrop = "backdrop";
       init = function() {
-        return selectMenu(2);
+        return selectMenu(3);
       };
       init();
       p = 2;

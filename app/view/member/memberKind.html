@@ -17,18 +17,19 @@
         </span>
         </div>
         <table class="table" data-ng-show="sView">
-            <tr data-ng-repeat="m in data.list" ng-switch on="m.isNeedPart">
+            <tr data-ng-repeat="m in data.list" ng-switch on="m.isAttendence">
                 <td data-ng-bind="m.MEMBER_NAME" class="text-center"></td>
                 <td data-ng-bind="m.PHONE_NO" class="text-center"></td>                
                 <td data-ng-bind="m.BIRTHDAY" class="text-center" ng-switch-default></td>
-                <td class="text-center" ng-switch-when="true">
-                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span data-ng-bind="m.PART_NAME"></span> <span class="caret"></span></button>
-                    <ul class="dropdown-menu">
-                        <li data-ng-repeat=" c in code.partList"><a href="javascript:;" ng-blur="change('part', m.MEMBER_ID, m.PART_CD)"  data-ng-bind="c.PART_NAME" data-ng-click="m.PART_CD = c.PART_CD; m.PART_NAME = c.PART_NAME;"></a></li>
-                    </ul>
-                </td>
+                <td data-ng-bind="m.BIRTHDAY" class="text-center" ng-switch-when="true" style="font-weight: bold; color: {{m.color}}"></td>
                 <td class="text-center"><a href="javascript:;" data-ng-click="detail(m.MEMBER_ID);"><i class='ion-edit'></i> 상세</a></td>
             </tr>
-        </table>
+        </table> 
     </div>
+    <div class="btn-group btn-group-justified" role="group" aria-label="저장">
+		<div class="btn-group" role="group">
+			<A href="/api/member/downLoad/Excel" ></A><button type="button" class="btn btn-success" data-ng-click="downLoadExcel()"><i class='ion-ios-people'></i> 전체명단 다운로드</button></A>
+		</div>
+	</div>
+	<BR>
 </div>

@@ -1,6 +1,12 @@
 const appRoot = require('app-root-path')
 const MODELS = require(appRoot + '/models')
+const CODE = require(appRoot + '/server/api/common/code.js')
+const CONFIG = require(appRoot + '/server/api/common/config.js')
+
 const Sequelize = MODELS.Sequelize
+
+const Upload = require('./upload.js')
+const Excel = require('./excel.js')
 
 const ruleLongAbsentee = '3 MONTH'
 const ruleLatestAbsentee = '1 MONTH'
@@ -9,7 +15,8 @@ const Op = Sequelize.Op;
 var _ = {};
 
 const ATTRIBUTE = {
-  MEMBER_LIST: ['PHOTO', 'MEMBER_ID', 'MEMBER_NAME', 'PHONE_NO', 'BIRTHDAY', 'PART_CD', 'STATUS_CD', 'BAPTISM_CD', 'createdAt']
+  MEMBER_LIST: ['MEMBER_TYPE', 'PHOTO', 'MEMBER_ID', 'MEMBER_NAME', 'PHONE_NO', 'BIRTHDAY', 'PART_CD', 'STATUS_CD', 'BAPTISM_CD', 'createdAt', 'GENDER_CD', 'MOTHER_PHONE', 'FATHER_PHONE'],
+  MEMBER_JOIN: ['MEMBER_TYPE', 'PHOTO', 'M.MEMBER_ID', 'MEMBER_NAME', 'PHONE_NO', 'BIRTHDAY', 'PART_CD', 'STATUS_CD','DEPART_CD']
 }
 
 const covertMemberList = (member) => {
@@ -19,11 +26,56 @@ const covertMemberList = (member) => {
   if (member.BIRTHDAY === "" || member.BIRTHDAY === null || member.BIRTHDAY == undefined)
     member.BIRTHDAY = "0000-00-00"
 
-  if (member.PHOTO == undefined) member.PHOTO = "default-man.jpg";
-
+  member.PHOTO_URL = (member.PHOTO == 0) ? "blank.png" : member.PHOTO + "?" + (Date.now());
   member.BIRTHDAY = member.BIRTHDAY.substr(2)
+ // member.att_ratio = (member.att_ratio == null) ? 0: member.att_ratio
 
   return member
+}
+
+const covertAttendanceView = (member) => {
+  if( member.att_count > member.weeks ) {
+    member.weeks = member.att_count
+    member.att_ratio = 100
+  }
+
+  CONFIG.ATTRIBUTE_RULE.map(function(rule) {	
+    if(member.att_ratio <= rule.max && member.att_ratio >= rule.min){
+      return member.color = rule.color
+    }
+  })
+
+  member.ATTENDANCE = member.att_ratio + "% (" + member.att_count + "/"+  member.weeks + ")" 
+  return member
+}
+
+_.getMemberListWithAttendance = async (req) => {
+  const depart = req.depart
+
+  order = "att_ratio DESC"
+
+  var query = [ 
+    " SELECT " + ATTRIBUTE.MEMBER_JOIN.toString() + ", att_count, weeks, ROUND((att_count/weeks) * 100, 0) att_ratio"
+    , " FROM "
+    , "     (SELECT member.*, (ifnull (c_att, 0)) As att_count, (week(curdate()) - week(createdAt)) weeks"
+    , "        FROM members member LEFT OUTER JOIN "
+    , "             (SELECT MEMBER_ID, COUNT(*) c_att "
+    , "                FROM attendances "
+    , "      GROUP BY MEMBER_ID) A "
+    , "        ON member.MEMBER_ID = A.MEMBER_ID) M "
+    , " WHERE DEPART_CD = :depart AND M.MEMBER_TYPE= :memberType  "
+    , " ORDER BY :order"
+    ].join('')
+
+    const members = await MODELS.sequelize.query(query, { 
+      raw: true, 
+      replacements: { depart: depart, order: order, memberType: CODE.MEMBER_TYPE.STUDENT }, 
+      type: Sequelize.QueryTypes.SELECT,
+    })
+
+    return members
+    .map(covertMemberList)
+    .map(covertAttendanceView)
 }
 
 _.memberListWithPart = async (req) => {
@@ -34,28 +86,46 @@ _.memberListWithPart = async (req) => {
       raw: true,
       where: {
         DEPART_CD: depart
-      }
+      },
+      order: [
+        ['ORDERBY_NO', 'ASC']
+      ],
     });
+  
+  lastIndex = PARTS.length;
 
-  const members = await _.sortedNameList(req)
+  PARTS.push({
+    PART_NAME : "선생님"
+  })
 
+  const members = await _.getMemberListWithAttendance(req)
+  const teachers = await _.getTeacherList(req)
+  
   let partList = PARTS.map(function (part) {
     part.memberList = [];
     return part
   })
 
   members
-    .map(covertMemberList)
-    .map((member) => {
-      index = -1;
+  .map(covertMemberList)
+  .map(covertAttendanceView)
+  .map((member) => {
+    index = -1;
 
-      for (i = 0; i < partList.length; i++) {
-        if (member.PART_CD == partList[i].PART_CD)
-          index = i;
-      }
+    for (i = 0; i < partList.length; i++) {
+      if (member.PART_CD == partList[i].PART_CD)
+        index = i;
+    }   
 
-      if (index > -1) partList[index].memberList.push(member);
-    })
+    if (index > -1) partList[index].memberList.push(member);
+  })
+  
+  teachers  
+  .map(covertMemberList)
+  .map((member) => {
+    member.ATTENDANCE = member.BIRTHDAY
+    partList[lastIndex].memberList.push(member);
+  })
 
   return partList
 }
@@ -66,7 +136,24 @@ _.sortedNameList = async (req) => {
     {
       raw: true,
       where: {
-        DEPART_CD: depart
+        DEPART_CD: depart,
+        MEMBER_TYPE: CODE.MEMBER_TYPE.STUDENT
+      },
+      order: [
+        ['MEMBER_NAME', 'ASC']
+      ],
+      attributes: ATTRIBUTE.MEMBER_LIST
+    })
+}
+
+_.getTeacherList = async (req) => {
+  const depart = req.depart
+  return await MODELS.MEMBERS.findAll(
+    {
+      raw: true,
+      where: {
+        DEPART_CD: depart,
+        MEMBER_TYPE: CODE.MEMBER_TYPE.TEACHER
       },
       order: [
         ['MEMBER_NAME', 'ASC']
@@ -103,7 +190,28 @@ _.needToMathPartMemberList = async (req) => {
       ],
       where: {
         DEPART_CD: depart,
-        PART_CD: 0
+        PART_CD: 0,
+        MEMBER_TYPE: CODE.MEMBER_TYPE.STUDENT
+      },
+      attributes: ATTRIBUTE.MEMBER_LIST
+    })
+}
+
+_.needMoreInformation = async (req) => {
+  const depart = req.depart
+  return await MODELS.MEMBERS.findAll(
+    {
+      raw: true,
+      order: [
+        ['MEMBER_NAME', 'ASC']
+      ],
+      where: {
+        DEPART_CD: depart,
+        [Op.or]: [
+          { BIRTHDAY: '' }, 
+          { GENDER_CD: 3 },
+          {[Op.and]: [ {PHONE_NO:''}, {MOTHER_PHONE:''}, {FATHER_PHONE:''}]}
+        ]
       },
       attributes: ATTRIBUTE.MEMBER_LIST
     })
@@ -114,14 +222,19 @@ _.longAbsenteeList = async (req) => {
   const depart = req.depart
   var query = [
     'SELECT * FROM ( ' +
-    ' SELECT M.MEMBER_NAME, M.MEMBER_ID, M.PHONE_NO, M.BIRTHDAY, M.PART_CD, STATUS_CD, M.DEPART_CD, count(A.MEMBER_ID) cnt FROM members M ',
+    ' SELECT ' + ATTRIBUTE.MEMBER_JOIN.toString() + ', count(A.MEMBER_ID) cnt FROM members M ',
     ' LEFT JOIN',
-    ' (SELECT MEMBER_ID from attendances WHERE DEPART_CD = :depart AND WORSHIP_DT BETWEEN DATE_ADD(NOW(),INTERVAL-3 MONTH ) AND NOW()) A ',
-    ' ON M.MEMBER_ID = A.MEMBER_ID  group by M.MEMBER_ID HAVING count(A.MEMBER_ID) = 0) J',
-    ' WHERE J.DEPART_CD = :depart'
+    ' (SELECT MEMBER_ID from attendances WHERE DEPART_CD = :depart AND WORSHIP_DT BETWEEN DATE_ADD(NOW(),INTERVAL-'+ ruleLongAbsentee +' ) AND NOW()) A ',
+    ' ON M.MEMBER_ID = A.MEMBER_ID ',
+    ' group by M.MEMBER_ID HAVING count(A.MEMBER_ID) = 0) J',
+    ' WHERE J.DEPART_CD = :depart AND J.MEMBER_TYPE= :memberType '
   ].join('')
 
-  return await MODELS.sequelize.query(query, { raw: true, replacements: { depart: depart }, type: Sequelize.QueryTypes.SELECT })
+  return await MODELS.sequelize.query(query, { 
+    raw: true, 
+    replacements: { depart: depart, memberType: CODE.MEMBER_TYPE.STUDENT }, 
+    type: Sequelize.QueryTypes.SELECT 
+  })
 }
 
 /* 최근 결석자 리스트 */
@@ -129,14 +242,18 @@ _.latestAbsenteeList = async (req) => {
   const depart = req.depart
   var query = [
     'SELECT * FROM ( ' +
-    ' SELECT M.MEMBER_NAME, M.MEMBER_ID, M.PHONE_NO, M.BIRTHDAY, M.PART_CD, STATUS_CD, M.DEPART_CD, count(A.MEMBER_ID) cnt FROM members M ',
+    ' SELECT ' + ATTRIBUTE.MEMBER_JOIN.toString() + ', count(A.MEMBER_ID) cnt FROM members M ',
     ' LEFT JOIN',
-    ' (SELECT MEMBER_ID from attendances WHERE DEPART_CD = :depart AND WORSHIP_DT BETWEEN DATE_ADD(NOW(),INTERVAL-1 MONTH ) AND NOW()) A ',
-    ' ON M.MEMBER_ID = A.MEMBER_ID  group by M.MEMBER_ID HAVING count(A.MEMBER_ID) = 0) J',
-    ' WHERE J.DEPART_CD = :depart',
+    ' (SELECT MEMBER_ID from attendances WHERE DEPART_CD = :depart AND WORSHIP_DT BETWEEN DATE_ADD(NOW(),INTERVAL-'+ ruleLatestAbsentee +' ) AND NOW()) A ',
+    ' ON M.MEMBER_ID = A.MEMBER_ID group by M.MEMBER_ID HAVING count(A.MEMBER_ID) = 0) J',
+    ' WHERE J.DEPART_CD = :depart AND J.MEMBER_TYPE= :memberType',
   ].join('')
 
-  return await MODELS.sequelize.query(query, { raw: true, replacements: { depart: depart }, type: Sequelize.QueryTypes.SELECT })
+  return await MODELS.sequelize.query(query, { 
+    raw: true, 
+    replacements: { depart: depart, memberType: CODE.MEMBER_TYPE.STUDENT }, 
+    type: Sequelize.QueryTypes.SELECT 
+  })
 }
 
 /* 셰례 대상자 리스트 */
@@ -145,12 +262,7 @@ _.baptismList = async (req) => {
   const overMiddle = ["middle", "high"]
   const depart = req.depart
 
-  if (overMiddle.includes(depart)) {
-    checkBaptism = "BAPTISM"
-  }
-  else {
-    checkBaptism = "INFANT"
-  }
+  checkBaptism = (overMiddle.includes(depart)) ? CODE.BAPTISM.BAPTISM : CODE.BAPTISM.INFANT
 
   return await MODELS.MEMBERS.findAll(
     {
@@ -160,6 +272,7 @@ _.baptismList = async (req) => {
       ],
       where: {
         DEPART_CD: depart,
+        MEMBER_TYPE: CODE.MEMBER_TYPE.STUDENT,
         BAPTISM_CD: {
           [Sequelize.Op.ne]: checkBaptism
         }
@@ -169,8 +282,10 @@ _.baptismList = async (req) => {
 }
 
 _.insertMember = async (req) => {
+  const member = req.body
+  const depart = req.depart
 
-  const member = req.body.member
+  member.DEPART_CD = depart
 
   return await MODELS.MEMBERS.create(
     member,
@@ -205,8 +320,9 @@ _.deleteMember = async (req) => {
 _.detailMember = async (req) => {
   const memberID = req.params.mermberID
   const depart = req.depart
-  const member = await MODELS.MEMBERS.findOne(
+  let member = await MODELS.MEMBERS.findOne(
     {
+      raw: true,
       where: { DEPART_CD: depart, MEMBER_ID: memberID }
     })
 
@@ -226,5 +342,88 @@ _.updatePart = async (req) => {
       returning: true
     })
 }
+
+
+_.attendances = async (req) => {
+  const depart = req.depart
+  const member_id = req.params.mermberID;
+  
+  var query = [
+    "SELECT DATE_FORMAT(W.WORSHIP_DT, '%m-%d') WORSHIP_DT, if (isnull (A.MEMBER_ID), 0, 1) att_check"
+   ," FROM worships W"
+   ," LEFT OUTER JOIN "
+   ,"       (SELECT * FROM attendances where MEMBER_ID= :member_id ) A "
+   ,"       ON W.WORSHIP_DT = A.WORSHIP_DT AND  W.DEPART_CD = :depart"
+   ," WHERE W.WORSHIP_DT < now()"
+  ].join('')
+
+  return await MODELS.sequelize.query(query, { raw: true, replacements: { depart: depart, member_id: member_id  }, type: Sequelize.QueryTypes.SELECT })
+}
+
+_.uploadPhoto = async (req) => {
+  let filename = await Upload.upload(req)
+  req.filename = filename
+  await _.updateMemberImageFlag(req)
+  return filename
+}
+
+_.updateMemberImageFlag = async (req) => {
+  const filename = req.filename
+  const depart = req.depart
+  const memberID = req.params.mermberID
+
+  return await MODELS.MEMBERS.update(
+    {PHOTO: filename},
+    {
+      where: { DEPART_CD: depart, MEMBER_ID: memberID },
+      returning: true
+    })
+}
+
+
+_.downLoadExcel = async (req) => {
+
+  console.log("SSSSSSSSSSSSSSSSSSSSS")
+  const depart = req.depart
+
+	var query = [ 
+	' SELECT '
+	,' T.MEMBER_ID 고유번호,' 
+	,' P.PART_NAME 반명,'
+	,' P.TEACHER_NAME 반선생님,'
+	,' T.MEMBER_NAME 이름, C1.NAME 성별, T.BIRTHDAY 생일,' 
+	,' C2.NAME 세례여부, C3.NAME 출석상태, ROUND((att_count / weeks) * 100, 0) 출석율, CONCAT(att_count,"/",weeks) 출석기록,'
+	,' T.SCHOOL 학교, T.PHONE_NO 전화번호, T.ADDRESS 주소,'
+	,' T.MOTHER_NAME 엄마이름, T.MOTHER_PHONE 엄마휴대폰, T.FATHER_NAME 아빠이름, T.FATHER_PHONE 아빠번호,'
+	,' T.ETC_MSG 기타내용, T.createdAt 등록일'
+	,' FROM '
+	,'	(SELECT '
+	,'			M.*, '
+	,'					(IFNULL(c_att, 0)) AS att_count, '
+	,'					(WEEK(CURDATE()) - WEEK(createdAt)) weeks '
+	,'	FROM '
+	,'			members M '
+	,'	LEFT OUTER JOIN (SELECT '
+	,'			MEMBER_ID, COUNT(*) c_att '
+	,'	FROM '
+	,'			attendances '
+	,'	GROUP BY MEMBER_ID) A ON M.MEMBER_ID = A.MEMBER_ID) T '
+	,' LEFT OUTER JOIN parts P ON P.PART_CD = T.PART_CD '
+	,' LEFT OUTER JOIN codes C1 ON C1.CODE_ID = T.GENDER_CD '
+	,' LEFT OUTER JOIN codes C2 ON C2.CODE_ID = T.BAPTISM_CD '
+  ,' LEFT OUTER JOIN codes C3 ON C3.CODE_ID = T.STATUS_CD '
+  ,' WHERE T.DEPART_CD = :depart '
+	,' ORDER BY 반명, 출석율 DESC' 
+	].join('')
+  
+  members = await MODELS.sequelize.query(query, { 
+     raw: true, 
+     replacements: { depart: depart }, 
+     type: Sequelize.QueryTypes.SELECT 
+  })
+
+  return Excel.createExcel(members, depart)
+}
+
 
 module.exports = _

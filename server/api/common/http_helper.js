@@ -15,6 +15,22 @@ _.createResponseFn = (_fn) => {
     }
 }
 
+_.createDownloadFn = (_fn) => {
+  const fn = _fn;
+
+  return async (req, res) => {
+    try{
+      console.log("SFSF")
+      filename = await fn(req)      
+      res.download(filename)
+    }
+    catch(error){
+      _.response500(res, error)
+    }
+  }
+}
+
+
 _.response200 = (response, data) => {
     response
     .status(HttpStatus.OK)

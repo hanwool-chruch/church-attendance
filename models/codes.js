@@ -6,9 +6,8 @@ module.exports = function(sequelize, DataTypes) {
         primaryKey: true
     },
     KIND:  DataTypes.STRING(20),
-    CODE_ID: DataTypes.STRING(20),
+    CODE_ID: DataTypes.INTEGER,
     NAME: DataTypes.STRING(30),
-    ORDERBY_NO: DataTypes.INTEGER
   },{
     timestamps: false,
     freezeTableName: true

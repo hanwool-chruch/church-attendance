@@ -32,30 +32,33 @@
                     });
             }, 1000);*/
 
-						if(username=="S1" && password=="godlove"){
+						if(password=="godlove"){
 							callback({success:true});
 						}
-						else if(username=="high" && password=="godlove"){
+						else if(username=="1" && password=="0103"){
 							callback({success:true});
 						}
-						else if(username=="S1" && password=="0103"){
+						else if(username=="2" && password=="0405"){
 							callback({success:true});
 						}
-						else if(username=="high" && password=="1619"){
+						else if(username=="3" && password=="0607"){
 							callback({success:true});
-						}
-						else if(username=="middle" && password=="godlove"){
+                        }
+                        else if(username=="4" && password=="0810"){
 							callback({success:true});
-						}
-						else if(username=="middle" && password=="1416"){
+                        }
+                        else if(username=="5" && password=="1113"){
 							callback({success:true});
-						}
-						else if(username=="kindergarten" && password=="godlove"){
+                        }
+                        else if(username=="6" && password=="1416"){
 							callback({success:true});
-						}
-						else if(username=="kindergarten" && password=="0810"){
+                        }                      
+                        else if(username=="7" && password=="1619"){
 							callback({success:true});
-						}
+                        }
+                        else if(username=="8" && password=="eng"){
+							callback({success:true});
+                        }
 						else{
 							callback({success:false,message:"로그인정보가 맞지 않습니다"});
 						}		
@@ -77,7 +80,7 @@
                 currentUser: {
                     username: username,
                     authdata: authdata,
-										authtype: authtype
+					authtype: authtype
                 }
             };
 						

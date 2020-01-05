@@ -5,17 +5,33 @@ const Sequelize = MODELS.Sequelize
 var _ = {};
 
 const ATTRIBUTE = {
-	MEMBER_LIST : ['MEMBER_ID', 'MEMBER_NAME', 'PHONE_NO', 'BIRTHDAY', 'PART_CD', 'STATUS_CD', 'BAPTISM_CD']
+	MEMBER_LIST: ['MEMBER_ID', 'MEMBER_NAME', 'PHONE_NO', 'BIRTHDAY', 'PART_CD', 'STATUS_CD', 'BAPTISM_CD']
 }
 
 _.codeList = async (req) => {
-	const CODES = await MODELS.CODES.findAll({raw: true});
-	const PARTS = await MODELS.PARTS.findAll({raw: true});
+	
+	const depart = req.depart
 
-	let partList=[], baptismList=[], statusList=[], genderList=[];
+	const CODES = await MODELS.CODES.findAll({ 
+		raw: true,    
+		order: [
+			['CODE_ID', 'ASC']
+		], 
+	})
+
+	const PARTS = await MODELS.PARTS.findAll(
+		{
+			raw: true,
+			where: {
+				DEPART_CD: depart
+			}
+		}
+	);
+
+	let partList = [], baptismList = [], statusList = [], genderList = [];
 
 	CODES.map((code) => {
-		switch(code.KIND) {
+		switch (code.KIND) {
 			case "BAPTISM":
 				baptismList.push(code);
 				break;
@@ -29,10 +45,10 @@ _.codeList = async (req) => {
 	})
 
 	return {
-		partList   : PARTS, 
+		partList: PARTS,
 		baptismList: baptismList,
-		genderList : genderList,
-		statusList : statusList
+		genderList: genderList,
+		statusList: statusList
 	}
 }
 

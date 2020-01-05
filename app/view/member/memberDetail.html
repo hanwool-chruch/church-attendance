@@ -14,7 +14,6 @@
 <input type="hidden" name="BAPTISM_CD" data-ng-model="member.BAPTISM_CD"  />
 <input type="hidden" name="STATUS_CD" data-ng-model="member.STATUS_CD"  />
 
-
 <div class="container" style="margin-bottom:20px;">
     <div class="panel panel-default">
         <div class="panel-heading">이름 / 연락처 / 성별 </div>
@@ -38,7 +37,7 @@
                 </div>
             </div>
             <p></p>
-            <img id="member_photo" src="/photo/{{part_type}}/{{member.PHOTO}}" alt="학생사진 없음" class="rounded mx-auto d-block img-thumbnail">
+            <img id="member_photo" src="/photo/resize/{{member.PHOTO_URL}}" alt="학생사진 없음" class="rounded mx-auto d-block img-thumbnail">
             <BR>
             <div  class="btn btn-success" ngf-select="upload($file)" ng-model="file" name="file" ngf-pattern="'image/*'"
                 ngf-accept="'image/*'" ngf-max-size="200MB" ngf-min-height="100"
@@ -46,7 +45,7 @@
             </div>        
         </div>
     </div>
-    <div class="panel panel-default">
+    <div class="panel panel-default" data-ng-show="studentView">
         <div class="panel-heading">소속반 / 세례 / 출석</div>
         <div class="panel-body">
             <div class="btn-group btn-group-justified" role="group" aria-label="...">
@@ -89,7 +88,7 @@
             </div>
         </div>
     </div>
-    <div class="panel panel-default">
+    <div class="panel panel-default" data-ng-show="studentView">
         <div class="panel-heading">부모 정보</div>
         <div class="panel-body">
             <div class="input-group">
@@ -119,21 +118,21 @@
             </div>
         </div>
     </div>
-    <div class="panel panel-default">
-        <div class="panel-heading">출석현황{{attList}}</div>
-        <table class="table att-status">
-            <tbody>
-                <tr data-ng-repeat="attMonth in attMonthList">
-                    <td class="text-center" data-ng-bind="attMonth.month" style="vertical-align: middle;"></td>
-                    <td>
-                        <span data-ng-repeat="att in attMonth.data" style="margin-right:3px;" data-ng-class="att.practice_cd=='ATTENDENCE'?'success':att.practice_cd=='PART'?'info':att.practice_cd=='ABSENCE'?'danger':''">
-                            <i data-ng-class="att.member_id ? 'ion-ios-checkmark' : 'ion-ios-circle-outline'"></i>
-                        </span>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+	<div class="panel panel-default">
+		<div class="panel-heading">출석부</div>
+		<table class="table att-status">
+			<tbody>
+				<tr data-ng-repeat="month in attendnceList">
+					<td class="text-center" data-ng-bind="month.name" style="vertical-align: middle;"></td>
+					<td>
+            <span data-ng-repeat="day in month.days"  >
+              <span  data-ng-bind="day.date" data-ng-class="day.check=='1'?'success':'danger'" style="margin-right:5px;"></span>
+            </span>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 
     <div class="btn-group btn-group-justified" role="group" aria-label="저장">
         <div class="btn-group" role="group">
