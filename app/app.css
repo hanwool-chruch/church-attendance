@@ -147,28 +147,64 @@ div.gallery {
 	border: 1px solid #ccc;
 	float: left;
 	width: 90px;
-  }
-  
-  div.gallery:hover {
-	border: 1px solid #777;
-  }
-  
-  div.gallery img {
-	width: 100%;
-	height: auto;
-  }
-  
-  div.desc {
-	padding: 5px;
-	text-align: center;
-  }
+}
 
-  .inline-block {
-	display: inline-block;
-	}
-	
-	hr.bold{border:1px Groove skyblue;}
+div.gallery:hover {
+border: 1px solid #777;
+}
 
-	.vertical-align {
-		vertical-align: middle;
-	}
+div.gallery img {
+width: 100%;
+height: auto;
+}
+
+div.desc {
+padding: 5px;
+text-align: center;
+}
+
+.inline-block {
+display: inline-block;
+}
+
+hr.bold{border:1px Groove skyblue;}
+
+.vertical-align {
+	vertical-align: middle;
+}
+
+.badge:hover {
+	color: #ffffff;
+	text-decoration: none;
+	cursor: pointer;
+}
+.badge-error {
+	background-color: #b94a48;
+}
+.badge-error:hover {
+	background-color: #953b39;
+}
+.badge-warning {
+	background-color: #f89406;
+}
+.badge-warning:hover {
+	background-color: #c67605;
+}
+.badge-success {
+	background-color: #468847;
+}
+.badge-success:hover {
+	background-color: #356635;
+}
+.badge-info {
+	background-color: #3a87ad;
+}
+.badge-info:hover {
+	background-color: #2d6987;
+}
+.badge-inverse {
+	background-color: #333333;
+}
+.badge-inverse:hover {
+	background-color: #1a1a1a;
+}

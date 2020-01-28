@@ -8,7 +8,7 @@ const attendanceController = require(appRoot + '/server/api/attendance/controlle
 
 var _ = {};
 
-/* 장기 결석자 리스트 */
+
 _.rankList = async (req) => {
 
   const depart = req.depart
@@ -17,7 +17,7 @@ _.rankList = async (req) => {
   var memeber_results = [];
 
   members.map(function(member){
-	member.times = new Date(member.createdAt).getTime();
+	  member.times = new Date(member.createdAt).getTime();
   });
 
   attendances.map(function(attendance){
@@ -53,9 +53,9 @@ _.rankList = async (req) => {
 
   var query4 = [
     'SELECT P.PART_CD i, count(A.PART_CD) c FROM parts P left outer join',
-    ' (SELECT M.MEMBER_ID, M.PART_CD FROM attendances A, members M ',
+    ' (SELECT M.MEMBER_ID, M.PART_CD, A.DEPART_CD FROM attendances A, members M ',
 	' WHERE M.DEPART_CD = :depart AND M.MEMBER_ID = A.MEMBER_ID and A.WORSHIP_DT= :worship_dt) A',
-	' ON P.PART_CD = A.PART_CD group by P.PART_CD order by P.PART_CD' 
+	' ON P.PART_CD = A.PART_CD WHERE A.DEPART_CD = :depart group by P.PART_CD order by P.PART_CD' 
     ].join('')
 
   total_gender = await MODELS.sequelize.query(query1, { raw: true, replacements: { depart: depart }, type: Sequelize.QueryTypes.SELECT})

@@ -2,6 +2,7 @@ const appRoot = require('app-root-path')
 const MODELS = require(appRoot + '/models')
 const CODE = require(appRoot + '/server/api/common/code.js')
 const CONFIG = require(appRoot + '/server/api/common/config.js')
+const UTIL = require(appRoot + '/server/api/common/util.js')
 
 const Sequelize = MODELS.Sequelize
 
@@ -146,6 +147,21 @@ _.sortedNameList = async (req) => {
     })
 }
 
+_.allMemberList = async (req) => {
+  const depart = req.depart
+  return await MODELS.MEMBERS.findAll(
+    {
+      raw: true,
+      where: {
+        DEPART_CD: depart,
+      },
+      order: [
+        ['MEMBER_NAME', 'ASC']
+      ],
+      attributes: ATTRIBUTE.MEMBER_LIST
+    })
+}
+
 _.getTeacherList = async (req) => {
   const depart = req.depart
   return await MODELS.MEMBERS.findAll(
@@ -153,7 +169,11 @@ _.getTeacherList = async (req) => {
       raw: true,
       where: {
         DEPART_CD: depart,
-        MEMBER_TYPE: CODE.MEMBER_TYPE.TEACHER
+        [Op.or]: [ 
+          {MEMBER_TYPE: CODE.MEMBER_TYPE.TEACHER},
+          {MEMBER_TYPE: CODE.MEMBER_TYPE.MINISTER},
+        ]
+        
       },
       order: [
         ['MEMBER_NAME', 'ASC']
@@ -307,7 +327,7 @@ _.updateMember = async (req) => {
 }
 
 _.deleteMember = async (req) => {
-  const memberID = req.params.mermberID
+  const memberID = req.params.memberID
   const depart = req.depart
 
   return await MODELS.MEMBERS.destroy(
@@ -318,7 +338,7 @@ _.deleteMember = async (req) => {
 }
 
 _.detailMember = async (req) => {
-  const memberID = req.params.mermberID
+  const memberID = req.params.memberID
   const depart = req.depart
   let member = await MODELS.MEMBERS.findOne(
     {
@@ -343,21 +363,43 @@ _.updatePart = async (req) => {
     })
 }
 
+_.getHistory = async (req) => {
+  const depart = req.depart
+  const memberID = req.params.memberID;
+
+  return await MODELS.HISTORYS.findAll(
+  {
+    raw: true,
+    where: { MEMBER_ID: memberID },
+    order: [
+      ['createdAt', 'DESC']
+    ],
+  })
+}
 
 _.attendances = async (req) => {
   const depart = req.depart
-  const member_id = req.params.mermberID;
-  
+  const member_id = req.params.memberID;
+
+  const last_sunday = await UTIL.getLastSubday();
   var query = [
     "SELECT DATE_FORMAT(W.WORSHIP_DT, '%m-%d') WORSHIP_DT, if (isnull (A.MEMBER_ID), 0, 1) att_check"
    ," FROM worships W"
    ," LEFT OUTER JOIN "
    ,"       (SELECT * FROM attendances where MEMBER_ID= :member_id ) A "
-   ,"       ON W.WORSHIP_DT = A.WORSHIP_DT AND  W.DEPART_CD = :depart"
-   ," WHERE W.WORSHIP_DT < now()"
+   ,"       ON W.WORSHIP_DT = A.WORSHIP_DT"
+   ," WHERE W.WORSHIP_DT <= :lastSunday AND  W.DEPART_CD = :depart"
   ].join('')
 
-  return await MODELS.sequelize.query(query, { raw: true, replacements: { depart: depart, member_id: member_id  }, type: Sequelize.QueryTypes.SELECT })
+  return await MODELS.sequelize.query(query, { 
+    raw: true, 
+    replacements: { 
+      depart: depart, 
+      member_id: member_id, 
+      lastSunday: last_sunday
+    }, 
+    type: Sequelize.QueryTypes.SELECT 
+  })
 }
 
 _.uploadPhoto = async (req) => {
@@ -370,7 +412,7 @@ _.uploadPhoto = async (req) => {
 _.updateMemberImageFlag = async (req) => {
   const filename = req.filename
   const depart = req.depart
-  const memberID = req.params.mermberID
+  const memberID = req.params.memberID
 
   return await MODELS.MEMBERS.update(
     {PHOTO: filename},
@@ -383,7 +425,6 @@ _.updateMemberImageFlag = async (req) => {
 
 _.downLoadExcel = async (req) => {
 
-  console.log("SSSSSSSSSSSSSSSSSSSSS")
   const depart = req.depart
 
 	var query = [ 
@@ -424,6 +465,5 @@ _.downLoadExcel = async (req) => {
 
   return Excel.createExcel(members, depart)
 }
-
 
 module.exports = _

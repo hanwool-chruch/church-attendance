@@ -11,7 +11,7 @@ var _ = {};
 _.calendar = async (req) => {
   return{
     worship: await attendanceController.worshipList(req),
-    member : await memberController.sortedNameList(req),
+    member : await memberController.allMemberList(req),
   }
 };
 

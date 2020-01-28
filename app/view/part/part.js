@@ -102,8 +102,6 @@
       MemberSvc.needPartList(), 
       MemberSvc.needMoreInformationList(), 
     ]).then((resultArray) => {
-      console.log(resultArray)
-
       code = resultArray[0].data;
       $scope.partList = code.partList    
       
@@ -125,7 +123,6 @@
           let moreInfomationText = ""
           if (index==0) member.needType = 'part';
           if (index==1) {
-            console.log(member)
             member.needType = 'more';
             if(member.GENDER_CD == 3) moreInfomationText += "성별 "
             if(member.BIRTHDAY == '') moreInfomationText += "생일 "
@@ -138,7 +135,7 @@
         dataList[index] = data;
         index++;
       });
-      console.log(dataList)
+
       $scope.dataList = dataList
       $scope.code = code;
 

@@ -10,8 +10,9 @@
 <div class="container">
 	<div data-ng-click="detail(worship);"  style="cursor: pointer;" class="panel" data-ng-repeat="worship in worships" data-ng-class="'panel-success'">
 		<div class="panel-heading" >
-			<strong data-ng-bind="worship.WORSHIP_DT"></strong> 
-			<span class="badge" data-ng-bind="worship.attendanceCnt"></span>
+			<strong data-ng-bind="worship.WORSHIP_DT"></strong>
+			<span class="badge badge-success" data-ng-bind="worship.studentAttendanceCnt"></span>
+			<span class="badge badge-info" data-ng-bind="worship.teacherAttendanceCnt"></span>
 		</div>
 		<ul class="list-group" style="font-size:90%;">
 			<li class="list-group-item" data-ng-show="worship.TITLE"><i class="ion-android-document"></i> <span data-ng-bind="worship.TITLE"></span></li>

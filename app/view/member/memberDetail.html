@@ -118,6 +118,16 @@
             </div>
         </div>
     </div>
+    <div class="panel panel-default">
+		<div class="panel-heading">기록</div>
+		<table class="table att-status">
+			<tbody>
+				<tr data-ng-repeat="history in historys">
+					<td class="text-left" data-ng-bind="history.MESSAGE" style="vertical-align: middle;"></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 	<div class="panel panel-default">
 		<div class="panel-heading">출석부</div>
 		<table class="table att-status">
