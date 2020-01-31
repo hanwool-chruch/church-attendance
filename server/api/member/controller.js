@@ -40,6 +40,9 @@ const covertAttendanceView = (member) => {
     member.att_ratio = 100
   }
 
+  if (member.att_ratio == null)
+    att_ratio = 0
+
   CONFIG.ATTRIBUTE_RULE.map(function(rule) {	
     if(member.att_ratio <= rule.max && member.att_ratio >= rule.min){
       return member.color = rule.color
@@ -59,12 +62,12 @@ _.getMemberListWithAttendance = async (req) => {
     " SELECT " + ATTRIBUTE.MEMBER_JOIN.toString() + ", att_count, weeks, ROUND((att_count/weeks) * 100, 0) att_ratio"
     , " FROM "
     , "     (SELECT member.*, (ifnull (c_att, 0)) As att_count, (week(curdate()) - week(createdAt)) weeks"
-    , "        FROM members member LEFT OUTER JOIN "
-    , "             (SELECT MEMBER_ID, COUNT(*) c_att "
-    , "                FROM attendances "
-    , "      GROUP BY MEMBER_ID) A "
-    , "        ON member.MEMBER_ID = A.MEMBER_ID) M "
-    , " WHERE DEPART_CD = :depart AND M.MEMBER_TYPE= :memberType  "
+    , "        FROM members member LEFT OUTER JOIN"
+    , "             (SELECT MEMBER_ID, COUNT(*) c_att"
+    , "                FROM attendances"
+    , "      GROUP BY MEMBER_ID) A"
+    , "        ON member.MEMBER_ID = A.MEMBER_ID) M"
+    , " WHERE DEPART_CD = :depart AND M.MEMBER_TYPE= :memberType"
     , " ORDER BY :order"
     ].join('')
 
@@ -75,8 +78,11 @@ _.getMemberListWithAttendance = async (req) => {
     })
 
     return members
-    .map(covertMemberList)
-    .map(covertAttendanceView)
+          .map(covertMemberList)
+          .map(covertAttendanceView)
+          .sort(function(a, b) {
+            return b.att_ratio - a.att_ratio ;
+          })
 }
 
 _.memberListWithPart = async (req) => {
@@ -133,7 +139,7 @@ _.memberListWithPart = async (req) => {
 
 _.sortedNameList = async (req) => {
   const depart = req.depart
-  return await MODELS.MEMBERS.findAll(
+  members = await MODELS.MEMBERS.findAll(
     {
       raw: true,
       where: {
@@ -145,6 +151,10 @@ _.sortedNameList = async (req) => {
       ],
       attributes: ATTRIBUTE.MEMBER_LIST
     })
+
+  return members
+  .map(covertMemberList)
+
 }
 
 _.allMemberList = async (req) => {

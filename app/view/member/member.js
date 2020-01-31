@@ -200,8 +200,6 @@
       $q.all([MemberSvc.getDetail($routeParams.memberId), MemberSvc.getAttendances($routeParams.memberId), CodeSvc.getCodeList(), MemberSvc.getHistory($routeParams.memberId)])
         .then(function (resultArray) {
           member = resultArray[0].data;
-          //$scope.attMonthList = getAttMonthList(member.attMonthList);
-          //console.log($scope.attMonthList)
           attendnces = resultArray[1].data
           console.log(attendnces);
           var newArray = []          
