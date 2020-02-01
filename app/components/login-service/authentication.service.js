@@ -59,6 +59,9 @@
                         else if(username=="8" && password=="eng"){
 							callback({success:true});
                         }
+                        else if(username=="10" && password=="2030"){
+							callback({success:true});
+                        }
 						else{
 							callback({success:false,message:"로그인정보가 맞지 않습니다"});
 						}		

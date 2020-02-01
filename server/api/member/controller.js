@@ -78,7 +78,6 @@ _.getMemberListWithAttendance = async (req) => {
     })
 
     return members
-          .map(covertMemberList)
           .map(covertAttendanceView)
           .sort(function(a, b) {
             return b.att_ratio - a.att_ratio ;
@@ -153,7 +152,6 @@ _.sortedNameList = async (req) => {
     })
 
   return members
-  .map(covertMemberList)
 
 }
 
@@ -289,7 +287,7 @@ _.latestAbsenteeList = async (req) => {
 /* 셰례 대상자 리스트 */
 _.baptismList = async (req) => {
 
-  const overMiddle = ["middle", "high"]
+  const overMiddle = [6, 7, 10]
   const depart = req.depart
 
   checkBaptism = (overMiddle.includes(depart)) ? CODE.BAPTISM.BAPTISM : CODE.BAPTISM.INFANT

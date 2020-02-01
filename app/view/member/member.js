@@ -158,6 +158,7 @@
                 })
               }
               else if (index == 4){
+                
                 code.baptismList.forEach(function (code) {
                   if (member.BAPTISM_CD == code.CODE_ID)
                     member.BIRTHDAY = code.NAME;
