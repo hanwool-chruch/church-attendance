@@ -37,7 +37,6 @@
 					vm.dataLoading = true;
 					AuthenticationService.Login(vm.department, vm.password, vm.authtype, function (response) {
 
-						console.log(response);
 							if (response.success) {
 									AuthenticationService.SetCredentials(vm.department, vm.password, vm.authtype);
 									$location.path('/main');

@@ -7,7 +7,6 @@ const Sequelize = MODELS.Sequelize
 const memberCtl = require(appRoot + '/server/api/member/controller.js')
 const Op = MODELS.Op
 
-console.log(memberCtl)
 var _ = {};
 
 _.getAllAttendances = async (req) => {

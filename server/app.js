@@ -10,14 +10,16 @@ app.use(cookieParser())
 
 app.all('/api/*', function(req, res, next) {
 
-  var parser_data = jsonParser.parse(req.cookies.globals);
-  currentUser = parser_data.currentUser
+  if(req.cookies != undefined && req.cookies.globals != undefined){
+    
+    var parser_data = jsonParser.parse(req.cookies.globals);
+    currentUser = parser_data.currentUser
 
-  if(req.cookies==null || req.cookies.globals==null || currentUser==null || currentUser.username == null)
-    req.depart = "S1"
-  else
-    req.depart = currentUser.username
-
+    if(req.cookies==null || req.cookies.globals==null || currentUser==null || currentUser.username == null)
+      req.depart = "S1"
+    else
+      req.depart = currentUser.username
+  }
   next()
 })
 

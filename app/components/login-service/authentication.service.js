@@ -15,64 +15,16 @@
 
         return service;
 
-        function Login(username, password, authtype, callback) {
+        function Login(department, password, auth_type, callback) {
 
-            /* Dummy authentication for testing, uses $timeout to simulate api call
-             ----------------------------------------------*/
-            /*$timeout(function () {
-                var response;
-                UserService.GetByUsername(username)
-                    .then(function (user) {
-                        if (user !== null && user.password === password) {
-                            response = { success: true };
-                        } else {
-                            response = { success: false, message: 'Username or password is incorrect' };
-                        }
-                        callback(response);
-                    });
-            }, 1000);*/
-
-						if(password=="godlove"){
-							callback({success:true});
-						}
-						else if(username=="1" && password=="0103"){
-							callback({success:true});
-						}
-						else if(username=="2" && password=="0405"){
-							callback({success:true});
-						}
-						else if(username=="3" && password=="0607"){
-							callback({success:true});
-                        }
-                        else if(username=="4" && password=="0810"){
-							callback({success:true});
-                        }
-                        else if(username=="5" && password=="1113"){
-							callback({success:true});
-                        }
-                        else if(username=="6" && password=="1416"){
-							callback({success:true});
-                        }                      
-                        else if(username=="7" && password=="1619"){
-							callback({success:true});
-                        }
-                        else if(username=="8" && password=="eng"){
-							callback({success:true});
-                        }
-                        else if(username=="10" && password=="2030"){
-							callback({success:true});
-                        }
-						else{
-							callback({success:false,message:"로그인정보가 맞지 않습니다"});
-						}		
-
-            /* Use this for real authentication
-             ----------------------------------------------*/
-            //$http.post('/api/authenticate', { username: username, password: password })
-            //    .success(function (response) {
-            //        callback(response);
-            //    });
-
+            return $http.createPostRequestFn('/api/manager/login')({
+                DEPART_DT: department,
+                CRYPTOGRAM: password,
+                AUTH_TYPE: auth_type,
+                }).then((res)=>{
+                    console.log(res)
+                    callback({success:true});
+                })
         }
 
         function SetCredentials(username, password, authtype) {
@@ -86,9 +38,6 @@
 					authtype: authtype
                 }
             };
-						
-		         // set default auth header for http requests
-            //$http.defaults.headers.common['Authorization'] = 'Basic ' + authdata;
 
             // store user details in globals cookie that keeps user logged in for 1 week (or until they logout)
             var cookieExp = new Date();

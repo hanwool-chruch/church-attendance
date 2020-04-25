@@ -471,7 +471,7 @@ _.downLoadExcel = async (req) => {
      type: Sequelize.QueryTypes.SELECT 
   })
 
-  return Excel.createExcel(members, depart)
+  return await Excel.createExcel(members, depart)
 }
 
 module.exports = _
