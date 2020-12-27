@@ -43,6 +43,7 @@
         getAttributeRatio: $http.createGetRequestFn(PREFIX_API + "/list/attributeRatio"),
         getTeacherList: $http.createGetRequestFn(PREFIX_API + "/list/teacher"),
         getAttendances: $http.createGetRequestFn(PREFIX_API + "/attendance"),
+        getHistory: $http.createGetRequestFn(PREFIX_API + "/history"),
         getDetail: $http.createGetRequestFn(PREFIX_API),
         downLoadExcel: $http.createGetRequestFn(PREFIX_API + "/downLoad/Excel"),
         updatePart: function (member_id, part_cd) {
@@ -157,6 +158,7 @@
                 })
               }
               else if (index == 4){
+                
                 code.baptismList.forEach(function (code) {
                   if (member.BAPTISM_CD == code.CODE_ID)
                     member.BIRTHDAY = code.NAME;
@@ -179,7 +181,6 @@
       };
 
       $scope.downLoadExcel = function() {
-        console.log("ASDAS")
         return MemberSvc.downLoadExcel().success(function(data) {
           return $.notify("저장되었습니다.");
         });
@@ -196,22 +197,26 @@
 
       $rootScope.backdrop = "backdrop";
 
-      $q.all([MemberSvc.getDetail($routeParams.memberId), MemberSvc.getAttendances($routeParams.memberId), CodeSvc.getCodeList()])
+      $q.all([MemberSvc.getDetail($routeParams.memberId), MemberSvc.getAttendances($routeParams.memberId), CodeSvc.getCodeList(), MemberSvc.getHistory($routeParams.memberId)])
         .then(function (resultArray) {
-
           member = resultArray[0].data;
-          $scope.attMonthList = getAttMonthList(member.attMonthList);
-
+          attendnces = resultArray[1].data
+          console.log(attendnces);
           var newArray = []          
-          resultArray[1].data.map(function (attendnce) {
+          attendnces.map(function (attendnce) {
             mouth = parseInt(attendnce.WORSHIP_DT.substr(0, 2));
-            if (newArray[mouth] == undefined) {
-              newArray[mouth] = {};
-              newArray[mouth].name = mouth + " 월";
+            arrayIndex = mouth-1;
+            if (newArray[arrayIndex] == undefined) {
+              newArray[arrayIndex] = {};
+              newArray[arrayIndex].name = mouth + " 월";
             }
+            if(newArray[arrayIndex].days == undefined) newArray[arrayIndex].days = [];
+            newArray[arrayIndex].days.push({date: attendnce.WORSHIP_DT, check: attendnce.att_check})
           })
-
+    
+          $scope.attendnceList = newArray;
           $scope.code = resultArray[2].data;
+          $scope.historys = resultArray[3].data;
 
           $scope.code.partList.forEach(function (part) {
             if (member.PART_CD == part.PART_CD)
@@ -274,7 +279,6 @@
           data: { file: file }
         }).then(function (resp) {
           console.log('Success upload images')
-          console.log(resp.data);
           document.getElementById('member_photo').src = "/photo/resize/" + resp.data + "?" + (+new Date())
           $scope.member.PHOTO = resp.data;
           console.log($scope.member.PHOTO);

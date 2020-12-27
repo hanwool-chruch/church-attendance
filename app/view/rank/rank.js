@@ -165,9 +165,8 @@ var config_pie = {
 		var rank_total_gender = document.getElementById('rank_total_gender').getContext('2d');
 
 		return RankSvc.getRankList().success(function(data) {
-			console.log(data);
-
 			member_data = data.member;
+			console.log(data)
 
 			config_pie.data.datasets[0].data=[];
 			config_pie.data.datasets[1].data=[];
@@ -178,9 +177,11 @@ var config_pie = {
 			config_bar.data.labels=[];
 			
 			member_data.map(function(item){
-				config.data.labels.push(item.WORSHIP_DT.substr(5));
-				config.data.datasets[0].data.push(item.total_count);
-				config.data.datasets[1].data.push(item.att_count);
+				if(item.MEMBER_TYPE == 1){
+					config.data.labels.push(item.WORSHIP_DT.substr(5));
+					config.data.datasets[0].data.push(item.total_count);
+					config.data.datasets[1].data.push(item.attendanceCnt);
+				}
 			});
 
 			data.total_gender.map(function(item){

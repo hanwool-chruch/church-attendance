@@ -113,7 +113,7 @@
 				CodeSvc.getCodeList().success(function(result) {
           $scope.code = result;        
 					$scope.partList = $scope.code.partList;
-							return $rootScope.backdrop = void 0;
+					return $rootScope.backdrop = void 0;
 				})
 
      });

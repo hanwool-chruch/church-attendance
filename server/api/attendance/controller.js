@@ -1,7 +1,9 @@
 const appRoot = require('app-root-path')
 const MODELS = require(appRoot + '/models')
 const sequelize = MODELS.Sequelize
+const CODE = require(appRoot + '/server/api/common/code.js')
 
+const Sequelize = MODELS.Sequelize
 const memberCtl = require(appRoot + '/server/api/member/controller.js')
 const Op = MODELS.Op
 
@@ -9,12 +11,18 @@ var _ = {};
 
 _.getAllAttendances = async (req) => {
   const depart = req.depart
-  return await MODELS.ATTENDANCES.findAll({
-    raw: true,
-    where: { DEPART_CD: depart },
-    attributes: ['WORSHIP_DT', [sequelize.fn('COUNT', sequelize.col('*')), 'attendanceCnt']],
-    group: ['WORSHIP_DT']
-  });
+  const query = [
+    'SELECT WORSHIP_DT, MEMBER_TYPE, COUNT(MEMBER_TYPE) attendanceCnt ',
+    ' FROM attendances A, members M ',
+    ' WHERE A.MEMBER_ID = M.MEMBER_ID AND A.DEPART_CD = :depart ',
+    ' GROUP BY WORSHIP_DT, MEMBER_TYPE',
+  ].join('')
+
+  return await MODELS.sequelize.query(query, { 
+    raw: true, 
+    replacements: { depart: depart}, 
+    type: Sequelize.QueryTypes.SELECT 
+  })
 }
 
 _.attendanceList = async (req) => {
@@ -61,13 +69,23 @@ _.getAttendanceList = async (req) => {
 	const worships = await _.worshipList(req)
 	const attendances = await _.getAllAttendances(req)
 
-  resultList = worships.map((worship) => {
-    matchAttendance = attendances.find(attendance => attendance.WORSHIP_DT == worship.WORSHIP_DT)
-    worship.attendanceCnt = (matchAttendance == undefined) ? 0 : matchAttendance.attendanceCnt;
-    return worship
-	})
+  worships.map((w) => {
+    w.studentAttendance = 0
+    w.teacherAttendance = 0
+    return w
+  })
 
-	return resultList
+  resultList = worships.map((w) => {
+    studentAttendance = attendances.find(a => a.WORSHIP_DT == w.WORSHIP_DT && a.MEMBER_TYPE == CODE.MEMBER_TYPE.STUDENT)
+    teacherAttendance = attendances.find(a => a.WORSHIP_DT == w.WORSHIP_DT && a.MEMBER_TYPE == CODE.MEMBER_TYPE.TEACHER)
+    studentAttendanceCnt = (studentAttendance) ? studentAttendance.attendanceCnt : 0 ;
+    teacherAttendanceCnt = (teacherAttendance) ? teacherAttendance.attendanceCnt : 0 ;
+    w.studentAttendanceCnt = "학생 " + studentAttendanceCnt
+    w.teacherAttendanceCnt = "선생님 " + teacherAttendanceCnt
+    return w
+  })
+  
+  return resultList
 }
 
 _.getAttendanceDetail = async (req) => {
@@ -78,8 +96,8 @@ _.getAttendanceDetail = async (req) => {
     {
       raw: true,
       where: {
-          DEPART_CD: depart, 
-          WORSHIP_DT: req.params.id
+        DEPART_CD: depart, 
+        WORSHIP_DT: req.params.id
       }          
     }
   )
@@ -103,8 +121,8 @@ _.getAttendanceDetail = async (req) => {
       member.attYn = 'N';
       attendances.forEach(attendance => {
         if(member.MEMBER_ID == attendance.MEMBER_ID){
-            member.attYn = 'Y'
-            return
+          member.attYn = 'Y'
+          return
         }
       })
     })
@@ -125,7 +143,7 @@ _.updateWorshipTitle = async (req) => {
   let data =  await MODELS.WORSHIPS.update({TITLE: title}, {
     where: { DEPART_CD: depart, WORSHIP_DT: WORSHIP_DT }
   });
-  console.log(data);
+
   return data;
 }
 
@@ -164,6 +182,7 @@ _.createAttendance = async (req) => {
   return await MODELS.ATTENDANCES.findOrCreate({
     raw: true,
     where: { DEPART_CD: depart, WORSHIP_DT: WORSHIP_DT, MEMBER_ID: MEMBER_ID}
+    
   });
 }
 

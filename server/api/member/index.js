@@ -22,13 +22,14 @@ router.get('/list/teacher', helper.createResponseFn(controller.getTeacherList))
 router.get('/list/total', helper.createResponseFn(controller.baptismList))
 router.get('/downLoad/excel', helper.createDownloadFn(controller.downLoadExcel))
 
-router.get('/:mermberID', helper.createResponseFn(controller.detailMember))
+router.get('/:memberID', helper.createResponseFn(controller.detailMember))
 router.put('/', helper.createResponseFn(controller.updateMember))
 router.post('/', helper.createResponseFn(controller.insertMember))
-router.delete('/:mermberID', helper.createResponseFn(controller.deleteMember))
-router.get('/attendance/:mermberID', helper.createResponseFn(controller.attendances))
+router.delete('/:memberID', helper.createResponseFn(controller.deleteMember))
+router.get('/attendance/:memberID', helper.createResponseFn(controller.attendances))
+router.get('/history/:memberID', helper.createResponseFn(controller.getHistory))
 
 router.post('/part', helper.createResponseFn(controller.updatePart))
-router.post('/uploadPhoto/:mermberID', helper.createResponseFn(controller.uploadPhoto))
+router.post('/uploadPhoto/:memberID', helper.createResponseFn(controller.uploadPhoto))
 
 module.exports = router

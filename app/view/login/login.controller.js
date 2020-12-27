@@ -18,7 +18,8 @@
 				{text:'초등부', value:'5'},
 				{text:'중등부', value:'6'},
 				{text:'고등부', value:'7'},
-				{text:'영어예배', value:'8'}
+				{text:'영어예배', value:'8'},
+				{text:'청년부', value:'10'}
 			];
 
 			vm.authtypes = [
@@ -36,7 +37,6 @@
 					vm.dataLoading = true;
 					AuthenticationService.Login(vm.department, vm.password, vm.authtype, function (response) {
 
-						console.log(response);
 							if (response.success) {
 									AuthenticationService.SetCredentials(vm.department, vm.password, vm.authtype);
 									$location.path('/main');

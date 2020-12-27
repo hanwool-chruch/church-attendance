@@ -24,8 +24,6 @@ const storage = multer.diskStorage({
 
     image_name = file.uploadedFile.name + "_" + nowTime + "." + "jpg"
 
-    console.log(image_name);
-    console.log(oriImagePath + '/' + image_name);
     //updateMemberImage(db, new_image_name, memberId);
     cb(null, image_name);
   },
