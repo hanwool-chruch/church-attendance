@@ -434,13 +434,12 @@ _.updateMemberImageFlag = async (req) => {
 _.downLoadExcel = async (req) => {
 
   const depart = req.depart
-
-	var query = [ 
+	var query = [
 	' SELECT '
-	,' T.MEMBER_ID 고유번호,' 
+	,' T.MEMBER_ID 고유번호,'
 	,' P.PART_NAME 반명,'
 	,' P.TEACHER_NAME 반선생님,'
-	,' T.MEMBER_NAME 이름, C1.NAME 성별, T.BIRTHDAY 생일,' 
+	,' T.MEMBER_NAME 이름, C1.NAME 성별, T.BIRTHDAY 생일,'
 	,' C2.NAME 세례여부, C3.NAME 출석상태, ROUND((att_count / weeks) * 100, 0) 출석율, CONCAT(att_count,"/",weeks) 출석기록,'
 	,' T.SCHOOL 학교, T.PHONE_NO 전화번호, T.ADDRESS 주소,'
 	,' T.MOTHER_NAME 엄마이름, T.MOTHER_PHONE 엄마휴대폰, T.FATHER_NAME 아빠이름, T.FATHER_PHONE 아빠번호,'
@@ -458,11 +457,11 @@ _.downLoadExcel = async (req) => {
 	,'			attendances '
 	,'	GROUP BY MEMBER_ID) A ON M.MEMBER_ID = A.MEMBER_ID) T '
 	,' LEFT OUTER JOIN parts P ON P.PART_CD = T.PART_CD '
-	,' LEFT OUTER JOIN codes C1 ON C1.CODE_ID = T.GENDER_CD '
-	,' LEFT OUTER JOIN codes C2 ON C2.CODE_ID = T.BAPTISM_CD '
-  ,' LEFT OUTER JOIN codes C3 ON C3.CODE_ID = T.STATUS_CD '
-  ,' WHERE T.DEPART_CD = :depart '
-	,' ORDER BY 반명, 출석율 DESC' 
+	,' LEFT OUTER JOIN codes C1 ON C1.CODE_ID = T.GENDER_CD AND C1.KIND = "GENDER"'
+	,' LEFT OUTER JOIN codes C2 ON C2.CODE_ID = T.BAPTISM_CD AND C1.KIND = "BAPTISM"'
+    ,' LEFT OUTER JOIN codes C3 ON C3.CODE_ID = T.STATUS_CD  AND C1.KIND = "STATUS"'
+    ,' WHERE T.DEPART_CD = :depart AND MEMBER_TYPE = 1 '
+	,' ORDER BY 반명, 출석율 DESC'
 	].join('')
   
   members = await MODELS.sequelize.query(query, { 
