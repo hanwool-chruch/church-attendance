@@ -181,7 +181,6 @@
       };
 
       $scope.downLoadExcel = function() {
-        console.log("ASDAS")
         return MemberSvc.downLoadExcel().success(function(data) {
           return $.notify("저장되었습니다.");
         });
