@@ -22,7 +22,6 @@
                 CRYPTOGRAM: password,
                 AUTH_TYPE: auth_type,
                 }).then((res)=>{
-                    console.log(res)
                     callback({success:true});
                 })
         }

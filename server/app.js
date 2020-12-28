@@ -10,6 +10,9 @@ app.use(cookieParser())
 
 app.all('/api/*', function(req, res, next) {
 
+  if( req.path == "/api/manager/login")
+    return next()
+
   var parser_data = jsonParser.parse(req.cookies.globals);
   currentUser = parser_data.currentUser
 
@@ -18,7 +21,7 @@ app.all('/api/*', function(req, res, next) {
   else
     req.depart = currentUser.username
 
-  next()
+  return next()
 })
 
 app.use(express["static"](__dirname + "/../app"))

@@ -20,8 +20,7 @@ _.createDownloadFn = (_fn) => {
 
   return async (req, res) => {
     try{
-      console.log("SFSF")
-      filename = await fn(req)      
+      filename = await fn(req)
       res.download(filename)
     }
     catch(error){
