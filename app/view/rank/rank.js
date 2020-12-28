@@ -166,7 +166,6 @@ var config_pie = {
 
 		return RankSvc.getRankList().success(function(data) {
 			member_data = data.member;
-			console.log(data)
 
 			config_pie.data.datasets[0].data=[];
 			config_pie.data.datasets[1].data=[];

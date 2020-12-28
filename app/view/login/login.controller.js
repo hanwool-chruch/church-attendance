@@ -27,7 +27,6 @@
 				{text:'선생님', value:'teacher'}
 			];
 
-		  console.log("LOGIN");
 			(function initController() {
 					// reset login status
 					AuthenticationService.ClearCredentials();
