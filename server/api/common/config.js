@@ -15,7 +15,8 @@ config.PART_LIST = {
 	5: '초등부',
 	6: '중등부',
 	7: '고등부',
-	8: '영어예배'
+	8: '영어예배',
+	10: '청년부'
 };
 
 module.exports = config
