@@ -35,7 +35,11 @@ const covertMemberList = (member) => {
 }
 
 const covertAttendanceView = (member) => {
-  if( member.att_count > member.weeks ) {
+  if( member.weeks = 0 ) {
+    member.weeks = 0
+    member.att_ratio = 0
+  }
+  else if( member.att_count > member.weeks ) {
     member.weeks = member.att_count
     member.att_ratio = 100
   }
@@ -64,10 +68,10 @@ _.getMemberListWithAttendance = async (req) => {
     , "     (SELECT member.*, (ifnull (c_att, 0)) As att_count, (week(curdate()) - week(createdAt)) weeks"
     , "        FROM members member LEFT OUTER JOIN"
     , "             (SELECT MEMBER_ID, COUNT(*) c_att"
-    , "                FROM attendances"
+    , "                FROM attendances WHERE WORSHIP_DT > '2021-01-01'"
     , "      GROUP BY MEMBER_ID) A"
     , "        ON member.MEMBER_ID = A.MEMBER_ID) M"
-    , " WHERE DEPART_CD = :depart AND M.MEMBER_TYPE= :memberType"
+    , " WHERE DEPART_CD = :depart AND M.MEMBER_TYPE= :memberType "
     , " ORDER BY :order"
     ].join('')
 
@@ -466,7 +470,7 @@ _.downLoadExcel = async (req) => {
   
   members = await MODELS.sequelize.query(query, { 
      raw: true, 
-     replacements: { depart: depart }, 
+     replacements: { depart: depart },
      type: Sequelize.QueryTypes.SELECT 
   })
 

@@ -14,7 +14,7 @@ _.getAllAttendances = async (req) => {
   const query = [
     'SELECT WORSHIP_DT, MEMBER_TYPE, COUNT(MEMBER_TYPE) attendanceCnt ',
     ' FROM attendances A, members M ',
-    ' WHERE A.MEMBER_ID = M.MEMBER_ID AND A.DEPART_CD = :depart ',
+    ' WHERE A.MEMBER_ID = M.MEMBER_ID AND A.DEPART_CD = :depart AND A.WORSHIP_DT > "2021-01-01" ',
     ' GROUP BY WORSHIP_DT, MEMBER_TYPE',
   ].join('')
 
@@ -45,6 +45,7 @@ _.worshipList = async (req) => {
         DEPART_CD: depart, 
         WORSHIP_DT: {
           [Op.lt]: new Date(),
+          [Op.gt]: new Date("2021-01-01"),
         }
       },
       order: [["WORSHIP_DT", 'DESC']],
