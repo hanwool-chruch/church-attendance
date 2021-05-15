@@ -44,7 +44,6 @@ _.upload = async (req, res) => {
 
   const upload = util.promisify(upload_file);
   await upload(req, res);
-  console.log("DSDDDDD : " + image_name)
 
   await Sharp(oriImagePath + '/' + image_name)
   .rotate()

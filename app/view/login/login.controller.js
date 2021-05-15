@@ -27,7 +27,6 @@
 				{text:'선생님', value:'teacher'}
 			];
 
-		  console.log("LOGIN");
 			(function initController() {
 					// reset login status
 					AuthenticationService.ClearCredentials();
@@ -36,12 +35,11 @@
 			function login() {
 					vm.dataLoading = true;
 					AuthenticationService.Login(vm.department, vm.password, vm.authtype, function (response) {
-
 							if (response.success) {
 									AuthenticationService.SetCredentials(vm.department, vm.password, vm.authtype);
 									$location.path('/main');
 							} else {
-									$.notify(response.message);
+									$.notify("사용자가 존재하지 않거나 암호가 틀립니다.");
 									vm.dataLoading = false;
 							}
 					});

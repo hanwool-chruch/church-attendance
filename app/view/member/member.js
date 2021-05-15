@@ -201,7 +201,7 @@
         .then(function (resultArray) {
           member = resultArray[0].data;
           attendnces = resultArray[1].data
-          console.log(attendnces);
+
           var newArray = []          
           attendnces.map(function (attendnce) {
             mouth = parseInt(attendnce.WORSHIP_DT.substr(0, 2));
@@ -281,8 +281,6 @@
           console.log('Success upload images')
           document.getElementById('member_photo').src = "/photo/resize/" + resp.data + "?" + (+new Date())
           $scope.member.PHOTO = resp.data;
-          console.log($scope.member.PHOTO);
-
         }, function (resp) {
           console.log('Error status: ' + resp.status);
         }, function (evt) {
@@ -293,7 +291,7 @@
 
       $scope.delete = function () {
         return MemberSvc.deleteMember($routeParams.memberId).success(function (data) {
-          console.log(data);
+
           $rootScope.backdrop = void 0;
           $.notify("삭제되었습니다.");
           return $location.path("/member");
