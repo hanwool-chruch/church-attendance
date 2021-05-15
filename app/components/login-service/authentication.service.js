@@ -22,13 +22,17 @@
                 CRYPTOGRAM: password,
                 AUTH_TYPE: auth_type,
                 }).then((res)=>{
-                    callback({success:true});
+                    if(res.data == null) {
+                        callback({success: false});
+                    }else{
+                        callback({success: true});
+                    }
                 })
         }
 
         function SetCredentials(username, password, authtype) {
 
-            var authdata = Base64.encode(username + ':' + password);
+            var authdata = Base64.encode(username);
 
             $rootScope.globals = {
                 currentUser: {

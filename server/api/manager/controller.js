@@ -11,7 +11,8 @@ var _ = {};
 
 _.login = async (req) => {
   const manager = req.body
-  return await MODELS.MANAGERS.findAll({
+  console.log(manager)
+  return await MODELS.MANAGERS.findOne({
       raw: true,
       where: {
         CRYPTOGRAM: manager.CRYPTOGRAM,
