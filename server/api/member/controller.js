@@ -35,19 +35,7 @@ const covertMemberList = (member) => {
 }
 
 const covertAttendanceView = (member) => {
-  if( member.weeks = 0 ) {
-    member.weeks = 0
-    member.att_ratio = 0
-  }
-  else if( member.att_count > member.weeks ) {
-    member.weeks = member.att_count
-    member.att_ratio = 100
-  }
-
-  if (member.att_ratio == null)
-    att_ratio = 0
-
-  CONFIG.ATTRIBUTE_RULE.map(function(rule) {	
+  CONFIG.ATTRIBUTE_RULE.map(function(rule) {
     if(member.att_ratio <= rule.max && member.att_ratio >= rule.min){
       return member.color = rule.color
     }
@@ -61,14 +49,15 @@ _.getMemberListWithAttendance = async (req) => {
   const depart = req.depart
 
   order = "att_ratio DESC"
+  const last_sunday = await UTIL.getLastSubday();
 
   var query = [ 
-    " SELECT " + ATTRIBUTE.MEMBER_JOIN.toString() + ", att_count, weeks, ROUND((att_count/weeks) * 100, 0) att_ratio"
+    " SELECT " + ATTRIBUTE.MEMBER_JOIN.toString() + ", att_count, week(curdate()) weeks, ROUND((att_count/week(curdate())) * 100, 0) att_ratio"
     , " FROM "
-    , "     (SELECT member.*, (ifnull (c_att, 0)) As att_count, (week(curdate()) - week(createdAt)) weeks"
+    , "     (SELECT member.*, (ifnull (c_att, 0)) As att_count"
     , "        FROM members member LEFT OUTER JOIN"
     , "             (SELECT MEMBER_ID, COUNT(*) c_att"
-    , "                FROM attendances WHERE WORSHIP_DT > '2021-01-01'"
+    , "                FROM attendances WHERE WORSHIP_DT > '2021-01-01' AND  WORSHIP_DT <= :last_sunday"
     , "      GROUP BY MEMBER_ID) A"
     , "        ON member.MEMBER_ID = A.MEMBER_ID) M"
     , " WHERE DEPART_CD = :depart AND M.MEMBER_TYPE= :memberType "
@@ -77,7 +66,7 @@ _.getMemberListWithAttendance = async (req) => {
 
     const members = await MODELS.sequelize.query(query, { 
       raw: true, 
-      replacements: { depart: depart, order: order, memberType: CODE.MEMBER_TYPE.STUDENT }, 
+      replacements: { depart: depart, order: order, memberType: CODE.MEMBER_TYPE.STUDENT, last_sunday: last_sunday },
       type: Sequelize.QueryTypes.SELECT,
     })
 
@@ -400,7 +389,7 @@ _.attendances = async (req) => {
    ," LEFT OUTER JOIN "
    ,"       (SELECT * FROM attendances where MEMBER_ID= :member_id ) A "
    ,"       ON W.WORSHIP_DT = A.WORSHIP_DT"
-   ," WHERE W.WORSHIP_DT <= :lastSunday AND  W.DEPART_CD = :depart"
+   ," WHERE W.WORSHIP_DT <= :lastSunday AND W.WORSHIP_DT > '2021-01-01' AND  W.DEPART_CD = :depart"
   ].join('')
 
   return await MODELS.sequelize.query(query, { 
@@ -452,7 +441,7 @@ _.downLoadExcel = async (req) => {
 	,'	(SELECT '
 	,'			M.*, '
 	,'					(IFNULL(c_att, 0)) AS att_count, '
-	,'					(WEEK(CURDATE()) - WEEK(createdAt)) weeks '
+	,'					WEEK(CURDATE())  weeks '
 	,'	FROM '
 	,'			members M '
 	,'	LEFT OUTER JOIN (SELECT '
