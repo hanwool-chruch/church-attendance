@@ -123,15 +123,13 @@ var config_pie = {
 				labels: [],
 				datasets: [{
 					label: '재적인원',
-					backgroundColor: window.chartColors.red,
-					borderColor: window.chartColors.red,
+					backgroundColor: 'rgb(255, 99, 132)',
 					data: [],
 					fill: false,
 				}, {
 					label: '출석인원',
 					fill: false,
-					backgroundColor: window.chartColors.blue,
-					borderColor: window.chartColors.blue,
+					backgroundColor: 'rgb(54, 162, 235)',
 					data: [],
 				}]
 			},
