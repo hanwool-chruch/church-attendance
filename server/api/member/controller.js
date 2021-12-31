@@ -16,8 +16,8 @@ const Op = Sequelize.Op;
 var _ = {};
 
 const ATTRIBUTE = {
-  MEMBER_LIST: ['MEMBER_TYPE', 'PHOTO', 'MEMBER_ID', 'MEMBER_NAME', 'PHONE_NO', 'BIRTHDAY', 'PART_CD', 'STATUS_CD', 'BAPTISM_CD', 'createdAt', 'GENDER_CD', 'MOTHER_PHONE', 'FATHER_PHONE'],
-  MEMBER_JOIN: ['MEMBER_TYPE', 'PHOTO', 'M.MEMBER_ID', 'MEMBER_NAME', 'PHONE_NO', 'BIRTHDAY', 'PART_CD', 'STATUS_CD','DEPART_CD']
+  MEMBER_LIST: ['MEMBER_TYPE', 'MOTHER_PHONE','FATHER_PHONE', 'PHOTO', 'MEMBER_ID', 'MEMBER_NAME', 'PHONE_NO', 'BIRTHDAY', 'PART_CD', 'STATUS_CD', 'BAPTISM_CD', 'createdAt', 'GENDER_CD', 'MOTHER_PHONE', 'FATHER_PHONE'],
+  MEMBER_JOIN: ['MEMBER_TYPE', 'MOTHER_PHONE','FATHER_PHONE', 'PHOTO', 'M.MEMBER_ID', 'MEMBER_NAME', 'PHONE_NO', 'BIRTHDAY', 'PART_CD', 'STATUS_CD','DEPART_CD']
 }
 
 const covertMemberList = (member) => {
@@ -57,7 +57,7 @@ _.getMemberListWithAttendance = async (req) => {
     , "     (SELECT member.*, (ifnull (c_att, 0)) As att_count"
     , "        FROM members member LEFT OUTER JOIN"
     , "             (SELECT MEMBER_ID, COUNT(*) c_att"
-    , "                FROM attendances WHERE WORSHIP_DT > '2021-01-01' AND  WORSHIP_DT <= :last_sunday"
+    , "                FROM attendances WHERE WORSHIP_DT > '2022-01-01' AND  WORSHIP_DT <= :last_sunday"
     , "      GROUP BY MEMBER_ID) A"
     , "        ON member.MEMBER_ID = A.MEMBER_ID) M"
     , " WHERE DEPART_CD = :depart AND M.MEMBER_TYPE= :memberType "
@@ -248,7 +248,7 @@ _.getPromotedStudents = async (req) => {
             ],
             where: {
                 DEPART_CD: depart,
-                await: 1,
+                PROMOTED: 1,
                 MEMBER_TYPE: CODE.MEMBER_TYPE.STUDENT
             },
             attributes: ATTRIBUTE.MEMBER_LIST
@@ -407,7 +407,7 @@ _.attendances = async (req) => {
    ," LEFT OUTER JOIN "
    ,"       (SELECT * FROM attendances where MEMBER_ID= :member_id ) A "
    ,"       ON W.WORSHIP_DT = A.WORSHIP_DT"
-   ," WHERE W.WORSHIP_DT <= :lastSunday AND W.WORSHIP_DT > '2021-01-01' AND  W.DEPART_CD = :depart"
+   ," WHERE W.WORSHIP_DT <= :lastSunday AND W.WORSHIP_DT > '2022-01-01' AND  W.DEPART_CD = :depart"
   ].join('')
 
   return await MODELS.sequelize.query(query, { 

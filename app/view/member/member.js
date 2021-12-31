@@ -42,6 +42,7 @@
         needMoreInformationList: $http.createGetRequestFn(PREFIX_API + "/list/need/more"),
         getAttributeRatio: $http.createGetRequestFn(PREFIX_API + "/list/attributeRatio"),
         getTeacherList: $http.createGetRequestFn(PREFIX_API + "/list/teacher"),
+        getPromotedStudents: $http.createGetRequestFn(PREFIX_API + "/list/promotedStudents"),
         getAttendances: $http.createGetRequestFn(PREFIX_API + "/attendance"),
         getHistory: $http.createGetRequestFn(PREFIX_API + "/history"),
         getDetail: $http.createGetRequestFn(PREFIX_API),
@@ -114,12 +115,25 @@
       };
       init();
 
+      const _getPhoneNumber = function(member){
+        if(member.PHONE_NO){
+          return member.PHONE_NO;
+        }else if(member.MOTHER_PHONE) {
+          return member.MOTHER_PHONE +" (엄마)";
+        }else if(member.FATHER_PHONE) {
+          return member.FATHER_PHONE +" (아빠)";
+        }else {
+          return "";
+        }
+      }
+
       dataTypes = [
         "이번달 생일자",
         "출석율 순",
         "장기 결석자",
         "최근 결석자",
         "세례 대상자",
+        "진급자 명단",
         "학생 명단",
         "선생님 명단"
       ]
@@ -131,6 +145,7 @@
         MemberSvc.getLatestAbsenteeList(),
         MemberSvc.getLongAbsenteeList(),
         MemberSvc.getBaptismList(),
+        MemberSvc.getPromotedStudents(),
         MemberSvc.getNameSortedMemberList(),
         MemberSvc.getTeacherList()
       ])
@@ -164,6 +179,8 @@
                     member.BIRTHDAY = code.NAME;
                 })
               }
+              member.PHONE_NO = _getPhoneNumber(member);
+
               return member;
             });
             dataList[index] = data;
@@ -191,6 +208,8 @@
       };
     }
   ]);
+
+
 
   angularModule.controller("MemberDetailCtrl", [
     "$scope", "$rootScope", "$window", "$routeParams", "MemberSvc", "$location", "CodeSvc", "$q", "Upload", function ($scope, $rootScope, $window, $routeParams, MemberSvc, $location, CodeSvc, $q, Upload) {

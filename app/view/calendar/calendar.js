@@ -30,7 +30,7 @@
                     if(event.BIRTHDAY == "" || event.BIRTHDAY == undefined) return;
                     
                     event.color = '#257e4a';
-                    event.start = "2021-" + event.BIRTHDAY.substr(5);
+                    event.start = "2022-" + event.BIRTHDAY.substr(5);
                     event.title = event.MEMBER_NAME + "생일"
                     events.push(event);
                 })
