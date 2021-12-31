@@ -19,6 +19,7 @@ router.get('/list/need/more', helper.createResponseFn(controller.needMoreInforma
 
 router.get('/list/attributeRatio', helper.createResponseFn(controller.getMemberListWithAttendance))
 router.get('/list/teacher', helper.createResponseFn(controller.getTeacherList))
+router.get('/list/promoted', helper.createResponseFn(controller.getPromotedStudents))
 router.get('/list/total', helper.createResponseFn(controller.baptismList))
 router.get('/downLoad/excel', helper.createDownloadFn(controller.downLoadExcel))
 

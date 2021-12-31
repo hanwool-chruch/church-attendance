@@ -238,6 +238,24 @@ _.needMoreInformation = async (req) => {
     })
 }
 
+_.getPromotedStudents = async (req) => {
+    const depart = req.depart
+    const result = await MODELS.MEMBERS.findAll(
+        {
+            raw: true,
+            order: [
+                ['MEMBER_NAME', 'ASC']
+            ],
+            where: {
+                DEPART_CD: depart,
+                await: 1,
+                MEMBER_TYPE: CODE.MEMBER_TYPE.STUDENT
+            },
+            attributes: ATTRIBUTE.MEMBER_LIST
+        });
+    return result;
+}
+
 /* 장기 결석자 리스트 */
 _.longAbsenteeList = async (req) => {
   const depart = req.depart

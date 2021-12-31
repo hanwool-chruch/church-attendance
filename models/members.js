@@ -36,6 +36,7 @@ module.exports = function(sequelize, DataTypes) {
     SCHOOL: DataTypes.STRING(50),
     PHOTO: DataTypes.INTEGER,
     MEMBER_TYPE:  DataTypes.STRING(20),
+    PROMOTED: DataTypes.INTEGER,
   },{
     freezeTableName: true,
     indexes:[
