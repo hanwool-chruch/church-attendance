@@ -9,8 +9,8 @@
 </nav>
 <form name="memberForm">
 <input type="hidden" name="MEMBER_ID" data-ng-model="member.MEMBER_ID"/>
-<input type="hidden" name="GENDER_CD" data-ng-model="member.GENDER_CD"/>
-<input type="hidden" name="PART_CD" data-ng-model="member.PART_CD" data-ng-required="true" />
+<input type="hidden" name="GENDER_CD" data-ng-model="member.GENDER_CD" data-ng-required=true />
+<input type="hidden" name="PART_CD" data-ng-model="member.PART_CD" data-ng-required="memberType == MEMBER_TYPE.STUDENT" />
 <input type="hidden" name="BAPTISM_CD" data-ng-model="member.BAPTISM_CD"  />
 <input type="hidden" name="STATUS_CD" data-ng-model="member.STATUS_CD"  />
 
@@ -27,42 +27,57 @@
          data-ng-maxlength="20" maxlength="20" style="min-width:120px">
                 <div class="input-group-btn"  style="width:10px">
                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <span data-ng-bind="member.GENDER_NAME"></span> <span class="caret"></span>
+                        <span ng-show="!member.GENDER_NAME" class="text-danger">성별</span>
+                        <span data-ng-bind="member.GENDER_NAME"></span>
+                        <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-right" >
                         <li data-ng-repeat=" c in code.genderList">
-              <a href="javascript:;" data-ng-bind="c.NAME" data-ng-click="member.GENDER_CD = c.CODE_ID; member.GENDER_NAME = c.NAME;"></a>
-            </li>
+                            <a href="javascript:;" data-ng-bind="c.NAME" data-ng-click="member.GENDER_CD = c.CODE_ID; member.GENDER_NAME = c.NAME;"></a>
+                        </li>
                     </ul>
                 </div>
             </div>
             <p></p>
-            <img id="member_photo" src="/photo/resize/{{member.PHOTO_URL}}" alt="학생사진 없음" class="rounded mx-auto d-block img-thumbnail">
+            <img id="member_photo" src="/photo/resize/{{member.PHOTO_URL}}" alt="사진 없음" class="rounded mx-auto d-block img-thumbnail">
             <BR>
             <div  class="btn btn-success" ngf-select="upload($file)" ng-model="file" name="file" ngf-pattern="'image/*'"
                 ngf-accept="'image/*'" ngf-max-size="200MB" ngf-min-height="100"
-                ngf-resize="{width: 450}">새로운 학생사진 업로드
+                ngf-resize="{width: 450}">새로운 사진 업로드
             </div>        
         </div>
     </div>
-    <div class="panel panel-default" data-ng-show="studentView">
+    <div class="panel panel-default" ng-if="memberType == MEMBER_TYPE.STUDENT">
         <div class="panel-heading">소속반 / 세례 / 출석</div>
         <div class="panel-body">
             <div class="btn-group btn-group-justified" role="group" aria-label="...">
                 <div class="btn-group" role="group">
-                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span data-ng-bind="member.PART_NAME"></span> <span class="caret"></span></button>
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span ng-show="!member.PART_NAME" class="text-danger">소속반</span>
+                        <span data-ng-bind="member.PART_NAME"></span>
+                        <span class="caret"></span>
+                    </button>
                     <ul class="dropdown-menu">
-                        <li data-ng-repeat=" c in code.partList"><a href="javascript:;" data-ng-bind="c.PART_NAME" data-ng-click="member.PART_CD = c.PART_CD; member.PART_NAME = c.PART_NAME;"></a></li>
+                        <li data-ng-repeat=" c in code.partList">
+                            <a href="javascript:;" data-ng-bind="c.PART_NAME" data-ng-click="member.PART_CD = c.PART_CD; member.PART_NAME = c.PART_NAME;"></a>
+                        </li>
                     </ul>
                 </div>
                 <div class="btn-group" role="group">
-                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span data-ng-bind="member.BAPTISM_NAME"></span> <span class="caret"></span></button>
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span ng-show="!member.BAPTISM_NAME" class="text-danger">세례여부</span>
+                        <span data-ng-bind="member.BAPTISM_NAME"></span>
+                        <span class="caret"></span>
+                    </button>
                     <ul class="dropdown-menu">
                         <li data-ng-repeat=" c in code.baptismList"><a href="javascript:;" data-ng-bind="c.NAME" data-ng-click="member.BAPTISM_CD = c.CODE_ID; member.BAPTISM_NAME = c.NAME;"></a></li>
                     </ul>
                 </div>
                 <div class="btn-group" role="group">
-                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span data-ng-bind="member.STATUS_NAME"></span> <span class="caret"></span></button>
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span ng-show="!member.STATUS_NAME" class="text-danger">출석여부</span>
+                        <span data-ng-bind="member.STATUS_NAME"></span>
+                        <span class="caret"></span></button>
                     <ul class="dropdown-menu pull-right">
                         <li data-ng-repeat=" c in code.statusList"><a href="javascript:;" data-ng-bind="c.NAME" data-ng-click="member.STATUS_CD = c.CODE_ID;member.STATUS_NAME = c.NAME;"></a></li>
                     </ul>
@@ -75,7 +90,7 @@
         <div class="panel-body">
             <div class="input-group">
                 <span class="input-group-addon" id="sizing-addon3"><i class="ion-briefcase"></i></span>
-                <input type="text" class="form-control" name="SCHOOL" aria-label="학교" placeholder="학교" data-ng-model="member.SCHOOL" maxlength="10" data-ng-maxlength="10">
+                <input type="text" class="form-control" name="SCHOOL" aria-label="학교" placeholder="학교/구역" data-ng-model="member.SCHOOL" maxlength="10" data-ng-maxlength="10">
                 <span class="input-group-addon" id="sizing-addon3"><i class="ion-calendar"></i></span>
                 <input type="text" class="form-control" id="BIRTHDAY" name="BIRTHDAY" aria-label="생일" placeholder="생일" data-ng-model="member.BIRTHDAY">
                 <!-- /btn-group -->
@@ -88,7 +103,7 @@
             </div>
         </div>
     </div>
-    <div class="panel panel-default" data-ng-show="studentView">
+    <div class="panel panel-default" ng-if="memberType == MEMBER_TYPE.STUDENT">
         <div class="panel-heading">부모 정보</div>
         <div class="panel-body">
             <div class="input-group">
@@ -118,7 +133,7 @@
             </div>
         </div>
     </div>
-    <div class="panel panel-default">
+    <div class="panel panel-default" ng-if="memberType == MEMBER_TYPE.STUDENT">
 		<div class="panel-heading">기록</div>
 		<table class="table att-status">
 			<tbody>

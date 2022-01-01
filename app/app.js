@@ -27,7 +27,11 @@
         templateUrl: 'view/login/login.view.html',
         controllerAs: 'vm'
       })
-
+      .when('/logout', {
+        controller: 'LogoutController',
+        templateUrl: 'view/login/logout.view.html',
+        controllerAs: 'vm'
+      })
       .otherwise({ redirectTo: '/login' });
   }
 
@@ -39,8 +43,20 @@
 
     if ($rootScope.globals.currentUser) {
       $http.defaults.headers.common['Authorization'] = 'Basic ' + $rootScope.globals.currentUser.authdata;
-      //$location.path('/main');
+
+      $location.path('/main');
     }
+
+    $rootScope.$watch('globals.currentUser', function(newValue, oldValue){
+      if (newValue) {
+        $("#login_menu").css("display", "none");
+        $("#logout_menu").css("display", "");
+      }else{
+        $("#login_menu").css("display", "");
+        $("#logout_menu").css("display", "none");
+      }
+    })
+
 
     $http.createGetRequestFn = (url) => {
       http = $http;

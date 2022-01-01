@@ -7,6 +7,23 @@
     { max: 40, min: 0, color: "#dc3545" }
   ];
 
+  const MEMBER_TYPE = {
+    STUDENT: 1,
+    TEACHER: 2
+  }
+
+  const DEFAULT_DATE = {
+    '1': new Date(2022, 1, 1),
+    '2': new Date(2019, 1, 1),
+    '3': new Date(2017, 1, 1),
+    '4': new Date(2015, 1, 1),
+    '5': new Date(2012, 1, 1),
+    '6': new Date(2009, 1, 1),
+    '7': new Date(2006, 1, 1),
+    '10': new Date(2003, 1, 1),
+    'default': new Date(2000, 6, 1)
+  }
+
   angularModule = angular.module("myApp.member", ["ngRoute", "ngResource", "ngFileUpload"]);
 
   angularModule.config([
@@ -17,7 +34,7 @@
       }).when("/member/view/:memberId", {
         templateUrl: "view/member/memberDetail.html",
         controller: "MemberDetailCtrl"
-      }).when("/member/regist", {
+      }).when("/member/regist/:memberType", {
         templateUrl: "view/member/memberDetail.html",
         controller: "MemberRegistCtrl"
       }).when("/member_kind", {
@@ -89,6 +106,8 @@
       };
       init();
 
+      $scope.MEMBER_TYPE = MEMBER_TYPE;
+
       $q.all([MemberSvc.getMemberList()])
         .then(function (result) {
           partList = result[0].data
@@ -100,8 +119,8 @@
         return $location.path("/member/view/" + memberId)
       };
 
-      return $scope.regist = function () {
-        return $location.path("/member/regist");
+      return $scope.regist = function (memberType) {
+        return $location.path("/member/regist/" + memberType);
       };
     }
   ]);
@@ -123,7 +142,7 @@
         }else if(member.FATHER_PHONE) {
           return member.FATHER_PHONE +" (아빠)";
         }else {
-          return "";
+          return "            ";
         }
       }
 
@@ -215,6 +234,8 @@
     "$scope", "$rootScope", "$window", "$routeParams", "MemberSvc", "$location", "CodeSvc", "$q", "Upload", function ($scope, $rootScope, $window, $routeParams, MemberSvc, $location, CodeSvc, $q, Upload) {
 
       $rootScope.backdrop = "backdrop";
+      $scope.MEMBER_TYPE = MEMBER_TYPE;
+
 
       $q.all([MemberSvc.getDetail($routeParams.memberId), MemberSvc.getAttendances($routeParams.memberId), CodeSvc.getCodeList(), MemberSvc.getHistory($routeParams.memberId)])
         .then(function (resultArray) {
@@ -258,7 +279,6 @@
           })
 
           $scope.enableDelete = 0
-          $scope.studentView = 0
 
           if ($rootScope && $rootScope.globals && $rootScope.globals.currentUser && $rootScope.globals.currentUser.authtype == "admin") {
             $scope.enableDelete = 1
@@ -268,10 +288,11 @@
           }
 
           member.PHOTO_URL = (member.PHOTO == 0) ? "blank.png" : member.PHOTO + "?" + (+new Date());
-          if(member.MEMBER_TYPE == 1)
-            $scope.studentView = 1
+          $scope.memberType = member.MEMBER_TYPE || MEMBER_TYPE.STUDENT
 
-          $("#BIRTHDAY").datetimepicker({ format: 'YYYY-MM-DD' }).data('DateTimePicker').date(new Date(2002, 6, 1));
+          const defatultDate = DEFAULT_DATE[$scope.part_type] || DEFAULT_DATE["default"];
+
+          $("#BIRTHDAY").datetimepicker({ format: 'YYYY-MM-DD', defaultDate: defatultDate }).data('DateTimePicker');
           $("#BIRTHDAY").on("dp.change", function () {
             $scope.member.BIRTHDAY = $("#BIRTHDAY").val();
           });
@@ -333,9 +354,13 @@
   ]);
 
   angularModule.controller("MemberRegistCtrl", [
-    "$scope", "$rootScope", "$window", "MemberSvc", "$location", "CodeSvc", "$q", function ($scope, $rootScope, $window, MemberSvc, $location, CodeSvc, $q) {
+    "$scope", "$rootScope", "$window", "$routeParams", "$location", "MemberSvc",  "CodeSvc", "$q",
+    function ($scope, $rootScope, $window, $routeParams, $location, MemberSvc, CodeSvc, $q) {
 
       $rootScope.backdrop = "backdrop";
+      $scope.MEMBER_TYPE = MEMBER_TYPE;
+      $scope.memberType = $routeParams.memberType || MEMBER_TYPE.STUDENT;
+
       var init = function () {
         return selectMenu(1);
       };
@@ -344,13 +369,17 @@
         $scope.code = resultArray[0].data;
 
         $rootScope.backdrop = void 0;
-        $scope.member = new Object();
-        $scope.member.GENDER_CD = 1;
-        $scope.member.GENDER_NAME = "남";
-        $scope.studentView = 1
+        $scope.member = {};
+        $scope.member.MEMBER_TYPE = $scope.memberType;
+        $scope.member.PHOTO_URL = "blank.png";
       });
 
-      $("#BIRTHDAY").datetimepicker({ format: 'YYYY-MM-DD' }).data('DateTimePicker').date(new Date(2002, 6, 1));
+      if ($rootScope && $rootScope.globals && $rootScope.globals.currentUser) {
+        $scope.part_type = $rootScope.globals.currentUser.username;
+      }
+
+      const defatultDate = DEFAULT_DATE[$scope.part_type] || DEFAULT_DATE["default"];
+      $("#BIRTHDAY").datetimepicker({ format: 'YYYY-MM-DD', defaultDate: defatultDate }).data('DateTimePicker');
       $("#BIRTHDAY").on("dp.change", function () {
         $scope.member.BIRTHDAY = $("#BIRTHDAY").val();
       });
@@ -359,12 +388,12 @@
       $scope.gotoMemberList = function () {
         return $location.path("/member");
       };
+
       return $scope.save = function () {
         if ($scope.memberForm.$invalid) {
-          return $.notify("이름 / 성별 / 소속반 / 출석여부를 입력해주세요.");
+          return $.notify("이름 / 성별 / 소속반를 입력해주세요.");
         } else {
           $rootScope.backdrop = "backdrop";
-          console.log("insert")
           return MemberSvc.save("insert", $scope.member).success(function (data) {
             $rootScope.backdrop = void 0;
             $location.path("/member");

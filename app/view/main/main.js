@@ -8,13 +8,16 @@
     '$routeProvider', function($routeProvider) {
       return $routeProvider.when('/main', {
         templateUrl: 'view/main/main.html',
-        controller: 'MainCtrl'
+        controller: 'MainController'
       });
     }
   ]);
 
-  angularModule.controller("MainCtrl", function() {
+  angularModule.controller("MainController", function() {
     var init;
+
+    $("#login_menu").style = "display:none";
+
     init = function() {
       return selectMenu(0);
     };

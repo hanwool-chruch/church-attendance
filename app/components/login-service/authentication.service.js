@@ -39,7 +39,8 @@
                     username: username,
                     authdata: authdata,
 					authtype: authtype
-                }
+                },
+                isLogin : true
             };
 
             // store user details in globals cookie that keeps user logged in for 1 week (or until they logout)
@@ -51,7 +52,6 @@
         function ClearCredentials() {
             $rootScope.globals = {};
             $cookies.remove('globals');
-            //$http.defaults.headers.common.Authorization = 'Basic';
         }
     }
 

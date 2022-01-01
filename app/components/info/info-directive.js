@@ -25,6 +25,8 @@ angular.module('myApp.info.info-directive', [])
 
 /* 메뉴명 디렉티브 */
 .directive('appMenu', ['menu', function(menu) {
+
+
 	return function(scope, elm, attrs) {
 		if(attrs.appIcon) {
 			elm.html('<i class="'+attrs.appIcon+'"></i> ' + menu[attrs.appMenu]);

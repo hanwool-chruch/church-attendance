@@ -22,6 +22,7 @@ angular.module('myApp.info', [
 	rank   : '출석통계',
 	doc    : '회의록',
 	login  : '로그인',
+	logout  : '로그아웃',
 	calendar : '교회일정',
 	part : '부서관리'
 })
