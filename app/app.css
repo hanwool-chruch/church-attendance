@@ -1,210 +1,228 @@
 /* app css stylesheet */
 .menu {
-	list-style: none;
-	border-bottom: 0.1em solid black;
-	margin-bottom: 2em;
-	padding: 0 0 0.5em;
+    list-style: none;
+    border-bottom: 0.1em solid black;
+    margin-bottom: 2em;
+    padding: 0 0 0.5em;
 }
 
 .menu:before {
-	content: "[";
+    content: "[";
 }
 
 .menu:after {
-	content: "]";
+    content: "]";
 }
 
-.menu>li {
-	display: inline;
+.menu > li {
+    display: inline;
 }
 
-.menu>li:before {
-	content: "|";
-	padding-right: 0.3em;
+.menu > li:before {
+    content: "|";
+    padding-right: 0.3em;
 }
 
-.menu>li:nth-child(1):before {
-	content: "";
-	padding: 0;
+.menu > li:nth-child(1):before {
+    content: "";
+    padding: 0;
 }
 
 nav.title {
-	color:#fff;
-	background: #304CD8;
-	background: -webkit-linear-gradient(left, #304CD8 0%, #9F3762 100%);
-	background: -ms-linear-gradient(left, #304CD8 0%, #9F3762 100%);
-	background: linear-gradient(to right, #304CD8 0%, #9F3762 100%);
+    color: #fff;
+    background: #304CD8;
+    background: -webkit-linear-gradient(left, #304CD8 0%, #9F3762 100%);
+    background: -ms-linear-gradient(left, #304CD8 0%, #9F3762 100%);
+    background: linear-gradient(to right, #304CD8 0%, #9F3762 100%);
 }
 
 span.badge {
-	color:#fff;
-	vertical-align: text-top!important;
-	padding: 3px 10px!important;
-	font-size:11px!important;
+    color: #fff;
+    vertical-align: text-top !important;
+    padding: 3px 10px !important;
+    font-size: 11px !important;
 }
 
 div.backdrop {
-	width: 100%;
-	height: 100%;
-	position: fixed;
-	z-index:9998;
-	background-color: rgba(255, 255, 255, 0.4);
-	top:0;
-	left:0;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    z-index: 9998;
+    background-color: rgba(255, 255, 255, 0.4);
+    top: 0;
+    left: 0;
 }
 
 .backdrop .fa {
-	font-size: 30px;
-	position: absolute;
-	top:50%;
-	left:50%;
-	margin-top:-19px;
-	margin-left:-19px;
-	color:#8B000C;
+    font-size: 30px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -19px;
+    margin-left: -19px;
+    color: #8B000C;
 }
 
 body.backdrop {
-	overflow: hidden;
+    overflow: hidden;
 }
 
 .main-menu {
-	cursor: pointer;
+    cursor: pointer;
 }
 
 .main-menu:HOVER {
-	background-color: #F5F5F5;
-}
-table.att tr.att {
-	background-color: #FFE18A;
-}
-tr.att i.chk {
-	color: #10A000;
+    background-color: #F5F5F5;
 }
 
+
 tr.ng-scope i.unchk {
-	color: #E6E6E6;
+    color: #E6E6E6;
 }
 
 div.notify {
-	background-color: rgba(24,22,33,0.8);
-	color:#E8E8E8;
+    background-color: rgba(24, 22, 33, 0.8);
+    color: #E8E8E8;
 }
 
 .notify i {
-	font-size:30px;
-	float:left;
-	vertical-align:middle;
-	margin-right:15px;
-	border: none;
-	padding: 0px 10px;
-	border-radius:10px;
-	color:#fff;
-	background: #00C575;
-	background: -webkit-linear-gradient(up, #00BC43 0%, #A5EC72 100%);
-	background: -ms-linear-gradient(up, #00BC43 0%, #A5EC72 100%);
-	background: linear-gradient(to top, #00BC43 0%, #A5EC72 100%);
+    font-size: 30px;
+    float: left;
+    vertical-align: middle;
+    margin-right: 15px;
+    border: none;
+    padding: 0px 10px;
+    border-radius: 10px;
+    color: #fff;
+    background: #00C575;
+    background: -webkit-linear-gradient(up, #00BC43 0%, #A5EC72 100%);
+    background: -ms-linear-gradient(up, #00BC43 0%, #A5EC72 100%);
+    background: linear-gradient(to top, #00BC43 0%, #A5EC72 100%);
 }
 
 .att-status span.danger {
-	color:#a94442;
+    color: #a94442;
 }
 
 .att-status span.success {
-	color:#3C763D;
+    color: #3C763D;
 }
 
 .att-status span.info {
-	color:#31708F;
+    color: #31708F;
 }
 
 .panel > .panel-body {
     background-image: none;
-	padding: 12px
+    padding: 12px
 
 }
 
 .form-control > .name {
     background-color: red;
-	padding: 12px
+    padding: 12px
 
 }
 
-#calendar h2{
-	font-size: 20px;
+#calendar h2 {
+    font-size: 20px;
 }
 
-textarea { height: auto; }
+textarea {
+    height: auto;
+}
 
 
-.icon-big{
-	font-size: 15px;
-	padding-top : 10px;
-	vertical-align: middle;
+.icon-big {
+    font-size: 15px;
+    padding-top: 10px;
+    vertical-align: middle;
 }
 
 div.gallery {
-	margin: 5px;
-	border: 1px solid #ccc;
-	float: left;
-	width: 90px;
+    margin: 5px;
+    border: 1px solid #ccc;
+    float: left;
+    width: 90px;
 }
 
 div.gallery:hover {
-border: 1px solid #777;
+    border: 1px solid #777;
 }
 
 div.gallery img {
-width: 100%;
-height: auto;
+    width: 100%;
+    height: auto;
 }
 
 div.desc {
-padding: 5px;
-text-align: center;
+    padding: 5px;
+    text-align: center;
 }
 
 .inline-block {
-display: inline-block;
+    display: inline-block;
 }
 
-hr.bold{border:1px Groove skyblue;}
+hr.bold {
+    border: 1px Groove skyblue;
+}
 
 .vertical-align {
-	vertical-align: middle;
+    vertical-align: middle;
 }
 
 .badge:hover {
-	color: #ffffff;
-	text-decoration: none;
-	cursor: pointer;
+    color: #ffffff;
+    text-decoration: none;
+    cursor: pointer;
 }
+
 .badge-error {
-	background-color: #b94a48;
+    background-color: #b94a48 !important;
 }
+
 .badge-error:hover {
-	background-color: #953b39;
+    background-color: #953b39 !important;
 }
+
 .badge-warning {
-	background-color: #f89406;
+    background-color: #f89406 !important;
 }
+
 .badge-warning:hover {
-	background-color: #c67605;
+    background-color: #c67605 !important;
 }
+
 .badge-success {
-	background-color: #468847;
+    background-color: #468847 !important;
 }
+
 .badge-success:hover {
-	background-color: #356635;
+    background-color: #356635 !important;
 }
+
+
+.badge-danger {
+    background-color: #d9534f !important;
+}
+
+.badge-danger:hover, .badge-danger:focus {
+    background-color: #c9302c !important;
+}
+
 .badge-info {
-	background-color: #3a87ad;
+    background-color: #3a87ad;
 }
+
 .badge-info:hover {
-	background-color: #2d6987;
+    background-color: #2d6987;
 }
+
 .badge-inverse {
-	background-color: #333333;
+    background-color: #333333;
 }
+
 .badge-inverse:hover {
-	background-color: #1a1a1a;
+    background-color: #1a1a1a;
 }

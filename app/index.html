@@ -2,142 +2,148 @@
 <html lang="ko" data-ng-app="myApp" class="no-js">
 <!--<![endif]-->
 <head>
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-132827597-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'UA-132827597-1');
-</script>
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title data-app-title></title>
-<meta name="description" content="한울교회 주일학교 출석관리">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-132827597-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
 
-<meta name="msapplication-TileColor" content="#ffffff" />
-<meta name="msapplication-TileImage" content="favicon/cloud-144-193455.png">
-<link rel="apple-touch-icon-precomposed" sizes="152x152" href="favicon/cloud-152-193455.png">
-<link rel="apple-touch-icon-precomposed" sizes="144x144" href="favicon/cloud-144-193455.png">
-<link rel="apple-touch-icon-precomposed" sizes="120x120" href="favicon/cloud-120-193455.png">
-<link rel="apple-touch-icon-precomposed" sizes="114x114" href="favicon/cloud-114-193455.png">
-<link rel="apple-touch-icon-precomposed" sizes="72x72" href="favicon/cloud-72-193455.png">
-<link rel="apple-touch-icon-precomposed" href="favicon/cloud-57-193455.png">
-<link rel="icon" href="favicon/cloud-32-193455.png" sizes="32x32">
-<link rel="icon" type="image/x-icon" href="favicon/favicon.ico">
-<link rel="apple-touch-icon-precomposed" href="favicon/cloud-152-193455.png">
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+        gtag('config', 'UA-132827597-1');
+    </script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title data-app-title></title>
+    <meta name="description" content="한울교회 주일학교 출석관리">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
+    <meta name="msapplication-TileColor" content="#ffffff"/>
+    <meta name="msapplication-TileImage" content="favicon/cloud-144-193455.png">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="favicon/cloud-152-193455.png">
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="favicon/cloud-144-193455.png">
+    <link rel="apple-touch-icon-precomposed" sizes="120x120" href="favicon/cloud-120-193455.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="favicon/cloud-114-193455.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="favicon/cloud-72-193455.png">
+    <link rel="apple-touch-icon-precomposed" href="favicon/cloud-57-193455.png">
+    <link rel="icon" href="favicon/cloud-32-193455.png" sizes="32x32">
+    <link rel="icon" type="image/x-icon" href="favicon/favicon.ico">
+    <link rel="apple-touch-icon-precomposed" href="favicon/cloud-152-193455.png">
 
 
+    <link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/normalize.css">
+    <link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/main.css">
+    <link rel="stylesheet" href="bower_components/ionicons/css/ionicons.min.css">
+    <link rel="stylesheet" href="bower_components/components-font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet"
+          href="https://cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/d2626984ecd61c5739c44657c8bfd9c78a0f4113/build/css/bootstrap-datetimepicker.css"/>
+    <link rel="stylesheet" href="bower_components/fullcalendar/dist/fullcalendar.min.css"/>
 
-<link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/normalize.css">
-<link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/main.css">
-<link rel="stylesheet" href="bower_components/ionicons/css/ionicons.min.css">
-<link rel="stylesheet" href="bower_components/components-font-awesome/css/font-awesome.min.css">
-<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
-<link rel="stylesheet" href="https://cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/d2626984ecd61c5739c44657c8bfd9c78a0f4113/build/css/bootstrap-datetimepicker.css" />
-<link rel="stylesheet" href="bower_components/fullcalendar/dist/fullcalendar.min.css" />
+    <!-- CSS -->
+    <link rel="stylesheet" href="app.css">
+    <link rel="stylesheet" href="notify.css">
 
-<!-- CSS -->
-<link rel="stylesheet" href="app.css">
-<link rel="stylesheet" href="notify.css">
+    <!-- Javascript -->
+    <script type="text/javascript" src="bower_components/moment/min/moment.min.js"></script>
+    <script type="text/javascript" src="bower_components/moment/locale/ko.js"></script>
 
-<!-- Javascript -->
-<script type="text/javascript" src="bower_components/moment/min/moment.min.js"></script>
-<script type="text/javascript" src="bower_components/moment/locale/ko.js"></script>
+    <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript"
+            src="https://cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/d2626984ecd61c5739c44657c8bfd9c78a0f4113/src/js/bootstrap-datetimepicker.js"></script>
+    <script type="text/javascript" src="bower_components/bootbox/bootbox.js"></script>
 
-<script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
-<script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="https://cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/d2626984ecd61c5739c44657c8bfd9c78a0f4113/src/js/bootstrap-datetimepicker.js"></script>
-<script type="text/javascript" src="bower_components/bootbox/bootbox.js"></script>
-
-<script type="text/javascript" src="bower_components/fullcalendar/dist/fullcalendar.min.js"></script>
-<script type="text/javascript" src="bower_components/fullcalendar/dist/locale/ko.js"></script>
+    <script type="text/javascript" src="bower_components/fullcalendar/dist/fullcalendar.min.js"></script>
+    <script type="text/javascript" src="bower_components/fullcalendar/dist/locale/ko.js"></script>
 </head>
 
 
 <body data-ng-class="backdrop">
-	<nav class="navbar navbar-default" style="margin-bottom: 0;">
-		<div class="container">
-			<div class="navbar-header">
-				<button type="button" class="navbar-toggle collapsed"
-					data-toggle="collapse" data-target="#navbar" aria-expanded="false"
-					aria-controls="navbar">
-					<span class="sr-only">Toggle navigation</span> 
-					<span class="icon-bar"></span> 
-					<span class="icon-bar"></span> 
-					<span class="icon-bar"></span>
-				</button>
-				<a class="navbar-brand" href="#/main"><i class="ion-android-cloud-done"></i> <span data-app-title></span></a>
-			</div>
-			<div id="navbar" class="collapse navbar-collapse">
-				<ul class="nav navbar-nav">
-					<li class="active"><a href="#/main"><i class="ion-home"></i>
-							Home</a></li>
-					<li><a href="#/member" data-app-menu="member" data-app-icon="ion-person"></a></li>
-					<li><a href="#/member_kind" data-app-menu="member_kind" data-app-icon="ion-person"></a></li>
-					<li><a href="#/attendance" data-app-menu="attendance" data-app-icon="ion-checkmark-round"></a></li>
-					<li><a href="#/rank" data-app-menu="rank" data-app-icon="ion-trophy"></a></li>
-					<li><a href="#/part" data-app-menu="part" data-app-icon="ion-easel"></a></li>					
-					<li><a href="#/calendar" data-app-menu="calendar" data-app-icon="ion-calendar"></a></li>
-					<li id="login_menu"><a href="#/login" data-app-menu="login" data-app-icon="ion-log-in"></a></li>
-					<li id="logout_menu"><a href="#/logout" data-app-menu="logout" data-app-icon="ion-log-in"></a></li>
+<nav class="navbar navbar-default" style="margin-bottom: 0;">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed"
+                    data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+                    aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#/main"><i class="ion-android-cloud-done"></i> <span
+                    data-app-title></span></a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="#/main"><i class="ion-home"></i>
+                    Home</a></li>
+                <li><a href="#/member" data-app-menu="member" data-app-icon="ion-person"></a></li>
+                <li><a href="#/member_kind" data-app-menu="member_kind" data-app-icon="ion-person"></a></li>
+                <li><a href="#/attendance" data-app-menu="attendance" data-app-icon="ion-checkmark-round"></a></li>
+                <li><a href="#/rank" data-app-menu="rank" data-app-icon="ion-trophy"></a></li>
+                <li><a href="#/part" data-app-menu="part" data-app-icon="ion-easel"></a></li>
+                <li><a href="#/calendar" data-app-menu="calendar" data-app-icon="ion-calendar"></a></li>
+                <li id="login_menu"><a href="#/login" data-app-menu="login" data-app-icon="ion-log-in"></a></li>
+                <li id="logout_menu"><a href="#/logout" data-app-menu="logout" data-app-icon="ion-log-in"></a></li>
 
-				</ul>
-			</div>
-		</div>
-	</nav>
+            </ul>
+        </div>
+    </div>
+</nav>
 
-	<!--[if lt IE 7]>
-		<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-	<![endif]-->
-	<div data-ng-view></div>
-	<div class='backdrop' data-ng-show="backdrop!=undefined"><i class="fa fa-spinner fa-spin"></i></div>
+<!--[if lt IE 7]>
+<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade
+    your browser</a> to improve your experience.</p>
+<![endif]-->
+<div data-ng-view></div>
+<div class='backdrop' data-ng-show="backdrop!=undefined"><i class="fa fa-spinner fa-spin"></i></div>
 
-	<footer class="footer">
-		<nav class="navbar navbar-default" style="margin-bottom:0px;">
-			<div class="container" style="text-align: center">
-				<p class="text-muted" style="margin: 10px;" data-app-copyright></p>
-			</div>
-		</nav>
-	</footer>
-	
-	<script src="notify.js"></script>
-	<script src="bower_components/angular/angular.min.js"></script>
-	<script src="bower_components/angular-route/angular-route.min.js"></script>
-	<script src="bower_components/angular-resource/angular-resource.min.js"></script>
-	<script src="bower_components/angular-animate/angular-animate.min.js"></script>
-	<script src="bower_components/angular-cookies/angular-cookies.min.js"></script>
-	<script src="bower_components/ng-file-upload/ng-file-upload.js"></script>
+<footer class="footer">
+    <nav class="navbar navbar-default" style="margin-bottom:0px;">
+        <div class="container" style="text-align: center">
+            <p class="text-muted" style="margin: 10px;" data-app-copyright></p>
+        </div>
+    </nav>
+</footer>
 
-	<script src="app.js"></script>
+<script src="notify.js"></script>
+<script src="bower_components/angular/angular.min.js"></script>
+<script src="bower_components/angular-route/angular-route.min.js"></script>
+<script src="bower_components/angular-resource/angular-resource.min.js"></script>
+<script src="bower_components/angular-animate/angular-animate.min.js"></script>
+<script src="bower_components/angular-cookies/angular-cookies.min.js"></script>
+<script src="bower_components/ng-file-upload/ng-file-upload.js"></script>
 
-	<script src="components/info/info.js"></script>
-	<script src="components/info/info-directive.js"></script>
-	<script src="components/login-service/authentication.service.js"></script>
-	<script src="components/login-service/flash.service.js"></script>
-    <script src="components/login-service/user.service.js"></script>
+<script src="app.js"></script>
+
+<script src="components/info/info.js"></script>
+<script src="components/info/info-directive.js"></script>
+<script src="components/login-service/authentication.service.js"></script>
+<script src="components/login-service/flash.service.js"></script>
+<script src="components/login-service/user.service.js"></script>
 
 
+<script src="view/main/main.js"></script>
+<script src="view/member/member.js"></script>
+<script src="view/attendance/attendance.js"></script>
+<script src="view/login/login.controller.js"></script>
+<script src="view/login/logout.controller.js"></script>
+<script src="view/register/register.controller.js"></script>
+<script src="view/rank/rank.js"></script>
+<script src="view/calendar/calendar.js"></script>
+<script src="view/part/part.js"></script>
 
-	<script src="view/main/main.js"></script>
-	<script src="view/member/member.js"></script>
-	<script src="view/attendance/attendance.js"></script>
-	<script src="view/login/login.controller.js"></script>
-	<script src="view/login/logout.controller.js"></script>
-	<script src="view/register/register.controller.js"></script>
-	<script src="view/rank/rank.js"></script>
-	<script src="view/calendar/calendar.js"></script>
-	<script src="view/part/part.js"></script>
+<!-- script src="components/version/version.js"></script -->
+<!-- script src="components/version/version-directive.js"></script -->
+<!-- script src="components/version/interpolate-filter.js"></script -->
+<script src="https://www.chartjs.org/dist/2.7.3/Chart.bundle.js"></script>
 
-	<!-- script src="components/version/version.js"></script -->
-	<!-- script src="components/version/version-directive.js"></script -->
-	<!-- script src="components/version/interpolate-filter.js"></script -->
-	<script src="https://www.chartjs.org/dist/2.7.3/Chart.bundle.js"></script>
-
-	<!-- Web Socket -->
-	<script src='bower_components/socket.io-client/dist/socket.io.js'></script>
+<!-- Web Socket -->
+<script src='bower_components/socket.io-client/dist/socket.io.js'></script>
 </body>
 </html>

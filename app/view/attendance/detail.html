@@ -12,9 +12,10 @@
 <div class="container" style="margin-bottom:20px;">
 	<div class="panel" data-ng-class="'panel-success'">
 		<div class="panel-heading"><i data-ng-class="worship.lockYn=='Y'?'ion-locked':'ion-calendar'"></i> 
-			<strong data-ng-bind="worship.WORSHIP_DT"></strong> 
-			<span class="badge" data-ng-bind="worship.TITLE"></span> 
-			<span class="badge" data-ng-bind="worship.attendanceCnt"></span> 
+			<strong data-ng-bind="worship.WORSHIP_DT"></strong>
+			<span class="badge badge-success" data-ng-bind="totalCounter.local"></span>
+			<span class="badge badge-warning" data-ng-bind="totalCounter.online"></span>
+			<span class="badge badge-danger" data-ng-bind="totalCounter.absent"></span>
 		</div>
 		<ul class="list-group" style="font-size:90%;">
 			<li class="list-group-item">
@@ -38,11 +39,13 @@
 		</ul>
 	</div>
 
-	<div ng-repeat="part in partList" class="panel panel-default" data-ng-class="'panel-success'">		
+	<div ng-repeat="part in partList" class="panel panel-default" data-ng-class="'panel-success'">
 		<div  class="panel-heading" data-ng-click="sView =! sView" style="cursor: pointer;">
 			<span class="text-success font-weight-bold">{{part.PART_NAME}} </span>	
 			<span class="text-info font-weight-bold">{{part.TEACHER_NAME}} </span>
-			<span class="badge" data-ng-bind="(part.memberList | filter:'Y').length"></span>
+			<span class="badge badge-success" data-ng-bind="(part.memberList | filter:{attendanceType: 1}).length"></span>
+			<span class="badge badge-warning" data-ng-bind="(part.memberList | filter:{attendanceType: 2}).length"></span>
+			<span class="badge badge-danger" data-ng-bind="(part.memberList | filter:{attendanceType: 0}).length"></span>
 			<span style="float: right;"><i data-ng-class="sView?'ion-chevron-up':'ion-chevron-down'"></i></span>
 		</div>
 		<div class="panel-group" data-ng-show="sView" style="padding: 10px">
@@ -50,9 +53,15 @@
 			<div class="panel-heading">출석명단</div>
 			<div class="panel-body">
 				<table class="table" >
-					<tr data-ng-repeat="m in part.memberList" data-ng-class="m.attYn=='Y'?'att':''" data-ng-click="select(worship.WORSHIP_DT, m.MEMBER_ID, m.attYn);">
-						<td class="text-center"><i class='ion-checkmark-round' data-ng-class="m.attYn=='Y'?'chk':m.attYn=='N'?'unchk':''"></i></td>
-						<td data-ng-bind="m.MEMBER_NAME" class="text-center"></td>
+					<tr data-ng-repeat="m in part.memberList"  data-ng-class="m.attendanceType == 1 ? 'bg-success': (m.attendanceType == 2 ?  'bg-warning' : 'bg-danger')" >
+						<td data-ng-bind="m.MEMBER_NAME" class="text-center" style="vertical-align: middle;" ></td>
+						<td class="text-center"  style="text-align: right">
+							<div class="btn-group mr-5" role="group">
+								<button ng-click="changeAttendance(worship.WORSHIP_DT, m, 1)" type="button" class="btn btn-primary btn-success" style="margin-right: 0px">현장</button>
+								<button ng-click="changeAttendance(worship.WORSHIP_DT, m, 2)" type="button" class="btn btn-primary btn-warning" style="margin-right: 0px">온라인</button>
+								<button ng-click="changeAttendance(worship.WORSHIP_DT, m, 0)" type="button" class="btn btn-primary btn-danger">결석</button>
+							</div>
+						</td>
 					</tr>
 				</table>
 			</div>
